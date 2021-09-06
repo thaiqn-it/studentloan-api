@@ -1,8 +1,8 @@
 const express = require("express");
-const { majorController } = require('../controllers/major.controller')
+const { getAllMajor } = require('../controllers/major.controller')
 const router = express.Router();
 
-// router.get("/", majorController.getAll(req,res,next))
+ //router.get("/", getAllMajor)
 router.get("/", async (req,res,next) => {
     try {
         const majors = await majorService.getAll();

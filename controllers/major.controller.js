@@ -7,7 +7,9 @@ const {
 const { restError } = require("../errors/rest");
 const { body, validationResult } = require("express-validator");
 
-const getAll = async (req,res,next) => {
+const majorController = {}
+
+majorController.getAllMajor = async (req,res,next) => {
     try {
         const majors = await majorService.getAll();
         return res.json({
@@ -21,8 +23,7 @@ const getAll = async (req,res,next) => {
 }
 
 module.exports = {
-    majorController : {
-        getAll,
+    
+        majorController,
 
-    }
 }
