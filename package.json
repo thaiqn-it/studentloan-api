@@ -10,8 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "sequelize": "^6.6.5"
+    "http-status": "^1.5.0",
+    "response-time": "^2.3.2",
+    "sequelize": "^6.6.5",
+    "tedious": "^12.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

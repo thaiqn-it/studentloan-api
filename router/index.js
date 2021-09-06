@@ -1,11 +1,12 @@
-const express = require('express')
+const express = require("express");
 
+const { schoolRouter } = require("./school.route");
 const router = express.Router();
 
-router.get("/" , (req , res) =>{
-    res.json({
-        msg: "Student Loan Api Server"
-    })
-})
+router.use("/school", schoolRouter);
 
-module.exports = {apiRouter : router}
+router.get("/", async (req, res) => {
+  res.json("this is student loan api");
+});
+
+module.exports = { apiRouter: router };
