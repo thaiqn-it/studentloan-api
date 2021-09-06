@@ -6,9 +6,12 @@ const {apiRouter} = require('./router')
 app.use(express.json)
 
 const { Wallet } = require('./models/wallet.model')
+const { Major } = require('./models/major.model')
+const { School } = require('./models/school.model')
+const { SchoolMajor } = require('./models/schoolmajor.model')
 
 sequelize
-        .sync()
+        .sync({force : true})
         .then((result) => {
             console.log("Connected to DB")
         })

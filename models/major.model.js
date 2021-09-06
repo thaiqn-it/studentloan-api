@@ -1,18 +1,20 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require('../db/index.js')
 
-const Wallet = sequelize.define('Wallet', {
+const Major = sequelize.define('Major', {
   id : {
     type : DataTypes.INTEGER,
     autoIncrement : true,
     allowNull : false,
     primaryKey : true,  
   },
-  money : {
+  name : {
     type : DataTypes.STRING,
     require : true,
     allowNull : false,
   }
-}, { timestamps: false });
+});
 
-module.exports = { Wallet };
+Major.hasMany(Major, {foreignKey : 'parentId'})
+
+module.exports = { Major };

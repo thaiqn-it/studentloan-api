@@ -1,6 +1,9 @@
 const express = require('express')
+const { majorRouter } = require("./major.route");
 
 const router = express.Router();
+
+router.use("/majors", majorRouter)
 
 router.get("/" , (req , res) =>{
     res.json({
