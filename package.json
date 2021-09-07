@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "sequelize": "^6.6.5"
+    "sequelize": "^6.6.5",
+    "tedious": "^12.2.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "sequelize-cli": "^6.2.0"
   }
 }
