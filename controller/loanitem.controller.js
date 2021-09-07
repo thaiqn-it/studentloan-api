@@ -1,14 +1,14 @@
 const {
-    findAllLoanItemService,
-    createLoanItemService,
-    updateLoanItemService
-  } = require("../service/loanitem.service");
+    findAllLoanItem,
+    createLoanItem,
+    updateLoanItem
+  } = require("..//loanitem.");
   const { INTERNAL_SERVER_ERROR } = require("http-status");
   const { restError } = require("../error/rest");
   
-  const findAllLoanItemService = async (req, res, next) => {
+  const findAllLoanItem = async (req, res, next) => {
     try {
-      const listLoanItem = await findAllLoanItemService();
+      const listLoanItem = await findAllLoanItem();
       console.log(listLoanItem);
       return res.json(listLoanItem);
     } catch (error) {
@@ -18,10 +18,10 @@ const {
     }
   };
   
-  const createLoanItemService = async (req, res, next) => {
+  const createLoanItem = async (req, res, next) => {
     const { remainMoney, paidDay, loanPayId } = req.body;
     try {
-      const newLoanItem = await createLoanItemService({ remainMoney, paidDay, loanPayId });
+      const newLoanItem = await createLoanItem({ remainMoney, paidDay, loanPayId });
       return res.json(newLoanItem);
     } catch (error) {
       return res
@@ -30,10 +30,10 @@ const {
     }
   };
 
-  const updateLoanItemService = async(req,res,next) => {
+  const updateLoanItem = async(req,res,next) => {
     const{remainMoney, paidDay, loanPayId} = req.body;
     try {
-      const updatedLoanItem = await updateLoanItemService({remainMoney, paidDay, loanPayId});
+      const updatedLoanItem = await updateLoanItem({remainMoney, paidDay, loanPayId});
       return res.json(updatedLoanItem);
     } catch (error) {
       return res
@@ -42,4 +42,4 @@ const {
     }
   }
   
-  module.exports = { findAllLoanItemService, createLoanItemService, updateLoanItemService};
+  module.exports = { findAllLoanItem, createLoanItem, updateLoanItem};

@@ -1,11 +1,17 @@
-const { LoanItem } = require("../model/loanitem.model");
+const { LoanItem } = require("../models/loanitem");
 
-const findAllLoanItemService = async () => {
+const findAllLoanItem = async () => {
   return await LoanItem.findAll();
 };
 
-const createLoanItemService = async (loanItem) => {
+const createLoanItem = async (loanItem) => {
   return await LoanItem.create(loanItem);
 };
 
-module.exports = { findAllLoanItemService, createLoanItemService };
+const updateLoanItem = async (LoanItem) => {
+  return await LoanItem.update(LoanItem,{
+
+  });
+}
+
+module.exports = { findAllLoanItem, createLoanItem, updateLoanItem };
