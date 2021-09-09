@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "sa",
+    "password": "123",
+    "database": "StudentLoan",
+    "host": "localhost",
+    "dialect": "mssql",
+    "logging" : false
+  },
+  "test": {
+    "username": "sa",
+    "password": "123",
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mssql"
+  },
+  "production": {
+    "username": "root",
+    "password": "123",
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

@@ -1,9 +1,17 @@
 const express = require('express');
-const dbConnection = require('./db/dbConn')
-const app = express();
+const cors = require("cors");
+const helmet = require("helmet");
+const responseTime = require("response-time");
+const dbConnection = require('./db/index')
 const { APP_PORT } = require('./constants/index')
-const {apiRouter} = require('./router')
-app.use(express.json)
+const { apiRouter } = require('./router')
+
+const app = express();
+
+app.use(cors());
+app.use(helmet());
+app.use(responseTime());
+app.use(express.json());
 
 dbConnection
         .then(() => {
@@ -16,6 +24,8 @@ dbConnection
 app.use("/api" , apiRouter)
 
 
-app.listen(APP_PORT , () =>{
-    console.log(`server running at port ${APP_PORT}`)
+app.listen(APP_PORT , () => {
+    console.log(
+        `⚡️ [server]: Server is running at http://localhost:${APP_PORT}`
+    )
 })

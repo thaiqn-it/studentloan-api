@@ -1,15 +1,15 @@
-const { Major } = require('../models/major.model')
+const db = require('../models/index')
 
 const getAll = async () => {
-    return await Major.findAll()
+    return await db.Major.findAll()
 } 
 
 const getOneById = async (id) => {
-    return await Major.findByPk(id)
+    return await db.Major.findByPk(id)
 }
 
 const deleteById = async (id) => {
-    return await Major.destroy({
+    return await db.Major.destroy({
         where : {
             id : id
         }
@@ -17,7 +17,7 @@ const deleteById = async (id) => {
 }
 
 const updateById = async (id,data) => {
-    return Major.update(data, {
+    return db.Major.update(data, {
         where : {
             id : id
         }

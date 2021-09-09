@@ -1,15 +1,15 @@
-const { School } = require('../models/school.model')
+const db = require('../models/index')
 
 const getAll = async () => {
-    return await School.findAll()
+    return await db.School.findAll({ raw : true })
 } 
 
 const getOneById = async (id) => {
-    return await School.findByPk(id)
+    return await db.School.findByPk(id)
 }
 
 const deleteById = async (id) => {
-    return await School.destroy({
+    return await db.School.destroy({
         where : {
             id : id
         }
@@ -17,7 +17,7 @@ const deleteById = async (id) => {
 }
 
 const updateById = async (id,data) => {
-    return School.update(data, {
+    return db.School.update(data, {
         where : {
             id : id
         }
