@@ -14,9 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   School.init({
-    uuid : {
+    id : {
       type : DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
+      primaryKey : true,
     },
     name: DataTypes.STRING,
     city: DataTypes.STRING,
