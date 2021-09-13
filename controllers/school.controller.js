@@ -1,7 +1,7 @@
 const {
   findAllSchoolService,
   createSchoolService,
-} = require("../service/school.service");
+} = require("../services/school.service");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../error/rest");
 

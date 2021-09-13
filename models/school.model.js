@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
-const { mssqlConnection } = require("../db");
+const { db } = require("../db");
 
-const School = mssqlConnection.define("School", {
+const School = db.define("School", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -16,6 +16,10 @@ const School = mssqlConnection.define("School", {
   },
   district: {
     type: DataTypes.STRING,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
 });
 

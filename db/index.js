@@ -1,8 +1,21 @@
 const { Sequelize } = require("sequelize");
-const sequelize = new Sequelize("StudentLoan", "DBW", "123456", {
-  host: "localhost",
-  dialect: "mssql",
-  logging: false,
-});
+const {
+  DATABASE_NAME,
+  DATABASE_USER,
+  DATABASE_PASSWORD,
+  DATABASE_ADDRESS,
+  DATABASE_TYPE,
+} = require("../constants");
 
-module.exports = { mssqlConnection: sequelize };
+const sequelize = new Sequelize(
+  DATABASE_NAME,
+  DATABASE_USER,
+  DATABASE_PASSWORD,
+  {
+    host: DATABASE_ADDRESS,
+    dialect: DATABASE_TYPE,
+    logging: false,
+  }
+);
+
+module.exports = { db: sequelize };

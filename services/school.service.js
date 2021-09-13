@@ -1,4 +1,4 @@
-const { School } = require("../model/School.model");
+const { School } = require("../models/School.model");
 
 const findAllSchoolService = async () => {
   return await School.findAll();

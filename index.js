@@ -1,18 +1,18 @@
 const express = require("express");
 const cors = require("cors");
-const { mssqlConnection } = require("./db");
+const { db } = require("./db");
 const responseTime = require("response-time");
 
-const { apiRouter } = require("./router");
-const { APP_PORT } = require("./constant");
+const { apiRouter } = require("./routers");
+const { APP_PORT } = require("./constants");
 
 const app = express();
 const port = APP_PORT;
 app.use(express.json());
 app.use(responseTime());
 app.use(cors());
-mssqlConnection
-  .sync()
+
+db.sync({ alter: true })
 
   .then(() => {
     console.log("Connected to database");
