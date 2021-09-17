@@ -1,15 +1,15 @@
 const express = require("express");
-const userControler = require("../controllers/user.controler");
+const userController = require("../controllers/user.controller");
 const { userAuth } = require("../middlewares/jwt_auth");
 
 const router = express.Router();
 
-router.post("/student", userControler.creatUser);
+router.post("/student", userController.creatUser);
 
-router.post("/investor", userControler.creatUser);
+router.post("/investor", userController.creatUser);
 
-router.post("/login", userControler.login);
+router.post("/login", userController.login);
 
-router.get("/me", userAuth, userControler.getProfile);
+router.get("/me", userAuth, userController.getProfile);
 
 module.exports = { userRoute: router };

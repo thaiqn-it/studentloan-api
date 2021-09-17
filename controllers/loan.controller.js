@@ -39,7 +39,7 @@ const create = async (req, res, next) => {
 		}
     const data = req.body
     try {      
-        const loan = await loanService.create(data);
+        const loan = await loanService.create(data)
         return res.json(loan);
     } catch (error) {
         return res

@@ -13,14 +13,14 @@ const create = async ({ ...data }) => {
 };
 
 const updateById = async (id,data) => {
-  return loan = await db.Loan.update(data, {
+  return await db.Loan.update(data, {
     where: {
       id : id
     }
   })
 };
 
-exports.loanScheduleService = { 
+exports.loanService = { 
     findAll, 
     findById,
     create,

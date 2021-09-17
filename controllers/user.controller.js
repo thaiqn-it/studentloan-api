@@ -1,5 +1,5 @@
 const userService = require("../services/user.service");
-const { USER_STATUS } = require("../models/enum/user.enum");
+const { USER_STATUS } = require("../models/enum/index");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
 const jwt = require("jsonwebtoken");
