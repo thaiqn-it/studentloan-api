@@ -18,3 +18,11 @@ exports.validateVNPhoneNumber = (value) => {
 	}
 	return Promise.resolve();
 };
+
+exports.mapErrorArrayExpressValidator = (errorArr) => {
+	let errorParams = {};
+	for (let x of errorArr) {
+		errorParams[x.param] = x.msg;
+	}
+	return errorParams;
+};
