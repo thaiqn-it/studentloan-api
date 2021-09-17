@@ -13,9 +13,17 @@ app.use(helmet());
 app.use(responseTime());
 app.use(express.json());
 
-app.use("/api" , apiRouter)
+app.use("/api", apiRouter);
 
-db.sequelize.sync({ alter : true })
+db.sequelize
+  .sync({ alter : true })
+  .then(() => {
+    console.log("Connected to database");
+  })
+  .catch((error) => {
+    console.log("Error connect to db");
+    console.log(error);
+  });
 
 app.listen(APP_PORT , () => {
     console.log(

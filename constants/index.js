@@ -6,5 +6,5 @@ exports.DB_PASSWORD = process.env.DB_PASSWORD || '123';
 exports.DB_NAME = process.env.DB_NAME || 'StudentLoan';
 exports.DB_HOST = process.env.DB_HOST || 'localhost';
 exports.DB_DIALECT = process.env.DB_DIALECT || 'mssql';
-exports.BCRYPT_SALT_ROUND = 10;
-exports.JWT_SECRET_KEY = "sdlo20";
+exports.BCRYPT_SALT_ROUND = 12;
+exports.JWT_SECRET_KEY = "123456789";

@@ -19,4 +19,4 @@ const BAD_REQUEST = new defaultError("Bad Request!");
 const INTERNAL_SERVER_ERROR = new defaultError("Server Error!");
 const NOT_FOUND = new defaultError("Resource Not Found!");
 
-exports.restError = {BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND};
+exports.restError = { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND };

@@ -1,0 +1,9 @@
+exports.USER_TYPE = {
+  STUDENT: "STUDENT",
+  INVESTOR: "INVESTOR",
+};
+
+exports.USER_STATUS = {
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+};

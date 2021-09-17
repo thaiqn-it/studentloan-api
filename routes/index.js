@@ -1,11 +1,13 @@
 const express = require('express');
 const { loanRouter } = require('./loan.route');
 const { loanScheduleRouter } = require('./loanSchedule.route')
+const { userRoute } = require("./user.route");
 
 const router = express.Router();
 
 router.use("/loans/", loanRouter)
 router.use("/loanSchedules/", loanScheduleRouter)
+router.use("/user", userRoute);
 
 router.get("/" , (req , res) =>{
     res.json({
