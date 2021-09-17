@@ -1,25 +1,30 @@
 module.exports = (sequelize, DataTypes) => {
-  const School = sequelize.define("School", {
+  const User = sequelize.define("User", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
     },
-    name: {
+    phoneNumber: {
       type: DataTypes.STRING,
     },
-    city: {
+    password: {
       type: DataTypes.STRING,
     },
-    district: {
+    type: {
       type: DataTypes.STRING,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+    status: {
+      type: DataTypes.STRING,
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
+    oAuthId: {
+      type: DataTypes.STRING,
     },
   });
- 
-  return School;
+
+  return User;
 };

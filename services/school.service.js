@@ -1,5 +1,5 @@
-const { School } = require("../models/School.model");
-
+const db = require("../models/index");
+const School = db.School;
 const findAllSchoolService = async () => {
   return await School.findAll();
 };

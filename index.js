@@ -1,9 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-const { db } = require("./db");
+const sequelize = require("./db");
 const responseTime = require("response-time");
 
-const { apiRouter } = require("./routers");
+const { apiRouter } = require("./routes");
 const { APP_PORT } = require("./constants");
 
 const app = express();
@@ -12,7 +12,8 @@ app.use(express.json());
 app.use(responseTime());
 app.use(cors());
 
-db.sync({ alter: true })
+sequelize
+  .sync({ alter: true })
 
   .then(() => {
     console.log("Connected to database");

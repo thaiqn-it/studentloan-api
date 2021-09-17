@@ -7,8 +7,4 @@ router.get("/", universityController.findAllUniversity);
 
 router.post("/", universityController.createSchool);
 
-// router.put("/" , universityController.)
-
-// router.delete("/" , universityController.)
-
 module.exports = { schoolRouter: router };

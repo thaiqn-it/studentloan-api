@@ -15,7 +15,10 @@ const sequelize = new Sequelize(
     host: DATABASE_ADDRESS,
     dialect: DATABASE_TYPE,
     logging: false,
+    define: {
+      freezeTableName: true,
+    },
   }
 );
 
-module.exports = { db: sequelize };
+module.exports = sequelize;

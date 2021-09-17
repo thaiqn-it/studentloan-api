@@ -1,9 +1,9 @@
 const express = require("express");
 
-const { schoolRouter } = require("./school.route");
+const { userRoute } = require("./user.route");
 const router = express.Router();
 
-router.use("/school", schoolRouter);
+router.use("/user", userRoute);
 
 router.get("/", async (req, res) => {
   res.json("this is student loan api");

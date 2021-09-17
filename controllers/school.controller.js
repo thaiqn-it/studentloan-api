@@ -3,12 +3,12 @@ const {
   createSchoolService,
 } = require("../services/school.service");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
-const { restError } = require("../error/rest");
+const { restError } = require("../errors/rest");
 
 const findAllUniversity = async (req, res, next) => {
   try {
     const students = await findAllSchoolService();
-    console.log(students);
+
     return res.json(students);
   } catch (error) {
     return res
