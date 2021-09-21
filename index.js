@@ -14,7 +14,7 @@ app.use(responseTime());
 app.use(express.json());
 
 app.use("/api", apiRouter);
-//hohohoho
+
 db.sequelize
   .sync({ alter: true })
   .then(() => {
