@@ -1,10 +1,10 @@
-const express = require('express');
+const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const responseTime = require("response-time");
-const db = require('./models/index')
-const { APP_PORT } = require('./constants/index')
-const { apiRouter } = require('./routes')
+const db = require("./models/index");
+const { APP_PORT } = require("./constants/index");
+const { apiRouter } = require("./routes");
 
 const app = express();
 
@@ -14,9 +14,9 @@ app.use(responseTime());
 app.use(express.json());
 
 app.use("/api", apiRouter);
-
+//hohohoho
 db.sequelize
-  .sync({ alter : true })
+  .sync({ alter: true })
   .then(() => {
     console.log("Connected to database");
   })
@@ -25,8 +25,8 @@ db.sequelize
     console.log(error);
   });
 
-app.listen(APP_PORT , () => {
-    console.log(
-        `⚡️ [server]: Server is running at http://localhost:${APP_PORT}`
-    )
-})
+app.listen(APP_PORT, () => {
+  console.log(
+    `⚡️ [server]: Server is running at http://localhost:${APP_PORT}`
+  );
+});
