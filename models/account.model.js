@@ -1,21 +1,24 @@
 module.exports = (sequelize, DataTypes) => {
-  const School = sequelize.define("School", {
+  const Account = sequelize.define("Account", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
     },
-    name: {
-      type: DataTypes.STRING,
+    money: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
     },
-    city: {
+    type: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
-    district: {
+    status: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
   });
 
-  return School;
+  return Account;
 };

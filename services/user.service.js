@@ -1,4 +1,5 @@
 const db = require("../models");
+const { USER_STATUS } = require("../models/enum/user.enum");
 const { hashPassword, comparePassword } = require("../utils");
 const User = db.User;
 
@@ -26,4 +27,23 @@ const loginService = async (phoneNumber, password) => {
   }
 };
 
-module.exports = { createUserService, loginService };
+const deleteUserService = async (id) => {
+  const user = await User.findByPk(id);
+  if (user === null) throw new Error();
+  user.status = USER_STATUS.INACTIVE;
+  return await user.save();
+};
+
+const updateUserService = async (data) => {
+  let user = await User.findByPk(data.id);
+  if (user === null) throw new Error();
+  user = { ...user, ...data };
+  return await user.save();
+};
+
+module.exports = {
+  createUserService,
+  loginService,
+  deleteUserService,
+  updateUserService,
+};

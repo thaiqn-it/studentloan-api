@@ -8,3 +8,8 @@ exports.hashPassword = (raw) => {
 exports.comparePassword = (raw, hashed) => {
   return bcrypt.compareSync(raw, hashed);
 };
+
+exports.excludePassword = (user) => {
+  const { password, ...data } = user;
+  return data;
+};

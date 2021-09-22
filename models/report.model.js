@@ -1,21 +1,25 @@
 module.exports = (sequelize, DataTypes) => {
-  const School = sequelize.define("School", {
+  const Report = sequelize.define("Report", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
     },
-    name: {
+    loanId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    imageId: {
+      type: DataTypes.UUID,
+    },
+    description: {
       type: DataTypes.STRING,
     },
-    city: {
-      type: DataTypes.STRING,
-    },
-    district: {
+    status: {
       type: DataTypes.STRING,
     },
   });
 
-  return School;
+  return Report;
 };

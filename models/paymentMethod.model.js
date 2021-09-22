@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const School = sequelize.define("School", {
+  const PaymentMethod = sequelize.define("PaymentMethod", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -8,14 +8,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-    },
-    city: {
-      type: DataTypes.STRING,
-    },
-    district: {
-      type: DataTypes.STRING,
+      allowNull: false,
     },
   });
 
-  return School;
+  return PaymentMethod;
 };

@@ -12,4 +12,8 @@ router.post("/login", userControler.login);
 
 router.get("/me", userAuth, userControler.getProfile);
 
+router.put("/", userAuth, userControler.updateUser);
+
+router.delete("/", userControler.deleteUser);
+
 module.exports = { userRoute: router };
