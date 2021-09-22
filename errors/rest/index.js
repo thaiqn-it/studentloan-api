@@ -1,18 +1,18 @@
 function defaultError(msg) {
-  this.error = {
-    error: msg,
-  };
+    this.error = {
+        error: msg,
+    };
 }
 
 defaultError.prototype.extra = function (items) {
-  return {
-    ...this.error,
-    ...items,
-  };
+    return {
+        ...this.error,
+        ...items,
+    };
 };
 
 defaultError.prototype.default = function () {
-  return this.error;
+    return this.error;
 };
 
 const BAD_REQUEST = new defaultError("Bad Request!");

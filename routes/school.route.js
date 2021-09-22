@@ -1,10 +1,14 @@
 const express = require("express");
-const universityController = require("../controllers/school.controller");
+const {schoolControllers} = require("../controllers/school.controller");
 
 const router = express.Router();
 
-router.get("/", universityController.findAllUniversity);
+router.get("/", schoolControllers.findAllSchool)
 
-router.post("/", universityController.createSchool);
+router.get("/:id", schoolControllers.findOneSchool)
 
-module.exports = { schoolRouter: router };
+router.post("/", schoolControllers.createNewSchool)
+
+router.put("/:id", schoolControllers.updateSchool)
+
+module.exports = { schoolRoute: router }

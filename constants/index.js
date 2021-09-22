@@ -1,9 +1,10 @@
+const dotenv = require("dotenv");
+dotenv.config();
 exports.APP_PORT = process.env.PORT || 3000;
-exports.DATABASE_NAME = process.env.DATABASE_NAME || "StudentLoan";
-exports.DATABASE_USER = process.env.DATABASE_USER || "DBW";
-exports.DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || "123456";
-exports.DATABASE_TYPE = process.env.DATABASE_TYPE || "mssql";
-exports.DATABASE_ADDRESS = process.env.DATABASE_ADDRESS || "localhost";
-
+exports.DB_USERNAME = process.env.DB_USERNAME || 'sa';
+exports.DB_PASSWORD = process.env.DB_PASSWORD || '123';
+exports.DB_NAME = process.env.DB_NAME || 'StudentLoan';
+exports.DB_HOST = process.env.DB_HOST || 'localhost';
+exports.DB_DIALECT = process.env.DB_DIALECT || 'mssql';
 exports.BCRYPT_SALT_ROUND = 12;
-exports.JWT_SECRET = "123456789";
+exports.JWT_SECRET_KEY = "123456789";

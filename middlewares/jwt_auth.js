@@ -1,8 +1,9 @@
 const { BAD_REQUEST } = require("http-status");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../constants");
+const db = require("../models/index");
+const { JWT_SECRET_KEY } = require("../constants");
 const { restError } = require("../errors/rest");
-const db = require("../models");
+
 const User = db.User;
 const Student = db.Student;
 const Investor = db.Investor;
@@ -10,7 +11,7 @@ const Investor = db.Investor;
 const userAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const data = jwt.verify(token, JWT_SECRET);
+    const data = jwt.verify(token, JWT_SECRET_KEY);
     const user = await User.findOne({ where: { id: data.id } });
     if (user === null) throw new Error();
     req.user = user;

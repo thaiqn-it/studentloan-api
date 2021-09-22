@@ -1,30 +1,24 @@
 const express = require("express");
 const cors = require("cors");
-const sequelize = require("./db");
+const helmet = require("helmet");
 const responseTime = require("response-time");
-
+const db = require("./models");
+const { APP_PORT } = require("./constants/index");
 const { apiRouter } = require("./routes");
-const { APP_PORT } = require("./constants");
 
 const app = express();
-const port = APP_PORT;
-app.use(express.json());
-app.use(responseTime());
+
 app.use(cors());
-
-sequelize
-  .sync({ alter: true })
-
-  .then(() => {
-    console.log("Connected to database");
-  })
-  .catch((error) => {
-    console.log("error connect to db");
-    console.log(error);
-  });
+app.use(helmet());
+app.use(responseTime());
+app.use(express.json());
 
 app.use("/api", apiRouter);
 
-app.listen(port, () => {
-  console.log(`server running at port ${port}`);
+db.sequelize.sync({alter:true}).then(() => {
+  app.listen(APP_PORT, () =>
+    console.log(
+      `⚡️ [server]: Server is running at http://localhost:${APP_PORT}`
+    )
+  );
 });

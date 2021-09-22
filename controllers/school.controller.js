@@ -1,33 +1,60 @@
 const {
-  findAllSchoolService,
-  createSchoolService,
-} = require("../services/school.service");
-const { INTERNAL_SERVER_ERROR } = require("http-status");
+  NOT_FOUND,
+  BAD_REQUEST,
+  INTERNAL_SERVER_ERROR,
+} = require("http-status");
 const { restError } = require("../errors/rest");
+const {schoolServices} = require('../services/school.service');
 
-const findAllUniversity = async (req, res, next) => {
+const findAllSchool = async (req, res, next) => {
   try {
-    const students = await findAllSchoolService();
-
-    return res.json(students);
+    const schools = await schoolServices.findAllSchool();
+    console.log(schools);
+    return res.json(schools);
   } catch (error) {
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
   }
 };
-
-const createSchool = async (req, res, next) => {
-  const { name, city, district } = req.body;
+const findOneSchool = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const school = await createSchoolService({ name, city, district });
+    const school = await schoolServices.findOneSchool(id);
+    console.log(school);
     return res.json(school);
   } catch (error) {
+    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
   }
 };
 
-const createNewUniversity = async (req, res, next) => {};
-module.exports = { findAllUniversity, createSchool };
+const createNewSchool = async (req, res, next) => {
+  const data = req.body;
+  try {
+    const newSchool = await schoolServices.createNewSchool(data);
+    return res.json(newSchool);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+const updateSchool = async (req, res, next) => {
+  const { id } = req.params;
+  const data = req.body;
+  try {
+    const newSchoolForUpdate = await schoolServices.updateById(id, data);
+    return res.json(newSchoolForUpdate);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+exports.schoolControllers = { findAllSchool, findOneSchool, createNewSchool, updateSchool};
