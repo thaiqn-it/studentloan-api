@@ -13,6 +13,8 @@ module.exports = {
     database: DB_NAME,
     host: DB_HOST,
     dialect: DB_DIALECT,
+    logging : false,
+    freezeTableName : true,
   },
   test: {
     username: DB_USERNAME,
@@ -20,6 +22,8 @@ module.exports = {
     database: DB_NAME,
     host: DB_HOST,
     dialect: DB_DIALECT,
+    logging : false,
+    freezeTableName : true,
   },
   production: {
     username: DB_USERNAME,
@@ -27,5 +31,7 @@ module.exports = {
     database: DB_NAME,
     host: DB_HOST,
     dialect: DB_DIALECT,
+    logging : false,
+    freezeTableName : true,
   },
 };
