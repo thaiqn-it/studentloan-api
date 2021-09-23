@@ -1,5 +1,6 @@
 const db = require("../models");
-const { USER_STATUS } = require("../models/enum/user.enum");
+const { USER_STATUS } = require("../models/enum");
+
 const { hashPassword, comparePassword } = require("../utils");
 const User = db.User;
 
