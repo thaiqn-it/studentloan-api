@@ -4,6 +4,7 @@ const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../constants");
+const { excludePassword } = require("../utils");
 
 const creatUser = async (req, res) => {
   try {
@@ -40,7 +41,32 @@ const login = async (req, res) => {
 const getProfile = async (req, res) => {
   const user = req.user;
 
-  res.json(user);
+  res.json(excludePassword(user));
 };
 
-module.exports = { creatUser, login, getProfile };
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const user = await userService.deleteUserService(id);
+
+    res.json(user);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await userService.updateUserService(data);
+    res.json(user);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+module.exports = { creatUser, login, getProfile, deleteUser, updateUser };
