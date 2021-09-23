@@ -4,7 +4,7 @@ const {
   INTERNAL_SERVER_ERROR,
 } = require("http-status");
 const { restError } = require("../errors/rest");
-const {schoolServices} = require('../services/school.service');
+const { schoolServices } = require("../services/school.service");
 
 const findAllSchool = async (req, res, next) => {
   try {
@@ -57,4 +57,9 @@ const updateSchool = async (req, res, next) => {
       .json(restError.INTERNAL_SERVER_ERROR.default);
   }
 };
-exports.schoolControllers = { findAllSchool, findOneSchool, createNewSchool, updateSchool};
+exports.schoolControllers = {
+  findAllSchool,
+  findOneSchool,
+  createNewSchool,
+  updateSchool,
+};
