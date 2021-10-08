@@ -23,8 +23,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     oAuthId: {
       type: DataTypes.STRING,
-    },
+    },  
   });
-
+  
+  User.associate = (models) => {
+    User.hasOne(models.Student, {
+      foreignKey: "userId",
+    });
+    User.hasOne(models.Investor, {
+      foreignKey: "userId",
+    });
+    User.hasOne(models.Account, {
+      foreignKey: "userId",
+    });
+    models.Student.belongsTo(User,{
+      foreignKey: "userId",
+    })
+  };
   return User;
 };

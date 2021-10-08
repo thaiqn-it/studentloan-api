@@ -55,6 +55,9 @@ module.exports = (sequelize, DataTypes) => {
         Loan.hasMany(models.LoanSchedule, {
             foreignKey: "loanId",
         })
+        Loan.hasMany(models.Report,{
+            foreignKey : "loanId"
+        })
     };
     
     return Loan;

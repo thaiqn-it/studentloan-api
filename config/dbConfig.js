@@ -14,7 +14,9 @@ module.exports = {
     host: DB_HOST,
     dialect: DB_DIALECT,
     logging : false,
-    freezeTableName : true,
+    define: {
+      freezeTableName: true
+    },
   },
   test: {
     username: DB_USERNAME,
@@ -23,7 +25,9 @@ module.exports = {
     host: DB_HOST,
     dialect: DB_DIALECT,
     logging : false,
-    freezeTableName : true,
+    define: {
+      freezeTableName: true
+    },
   },
   production: {
     username: DB_USERNAME,
@@ -32,6 +36,8 @@ module.exports = {
     host: DB_HOST,
     dialect: DB_DIALECT,
     logging : false,
-    freezeTableName : true,
+    define: {
+      freezeTableName: true
+    },
   },
 };

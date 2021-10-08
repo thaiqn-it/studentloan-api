@@ -20,50 +20,37 @@ module.exports = (sequelize, DataTypes) => {
     Image.hasOne(models.Investor, {
       foreignKey: "frontCitizenCardImageId",
     });
-  };
 
-  Image.associate = (models) => {
     Image.hasOne(models.Investor, {
       foreignKey: "backCitizenCardImageId",
     });
-  };
 
-  Image.associate = (models) => {
     Image.belongsToMany(models.Evidence, {
       through: "Image_Evidence",
-      foreignKey: "ImageId",
-      otherKey: "EvidenceId",
+      foreignKey: "imageId",
+      otherKey: "evidenceId",
     });
+
+    Image.hasOne(models.Report, {
+        foreignKey: "imageId",
+    });
+
+    // Image.hasOne(models.Student, {
+    //     foreignKey: "frontCitizenCardImageId",
+    // });
+
+    // Image.hasOne(models.Student, {
+    //         foreignKey: "backCitizenCardImageId",
+    // });
+
+    // Image.hasOne(models.Student, {
+    //       foreignKey: "frontStudentCardImageId",
+    // }); 
+
+    // Image.hasOne(models.Student, {
+    //   foreignKey: "backStudentCardImageId",
+    // });
   };
-
-  //   Image.associate = (models) => {
-  //     Image.hasOne(models.Report, {
-  //       foreignKey: "ImageId",
-  //     });
-  //   };
-
-  //   Image.associate = (models) => {
-  //     Image.hasOne(models.Student, {
-  //       foreignKey: "FrontCitizenCardImageId",
-  //     });
-  //   };
-
-  //   Image.associate = (models) => {
-  //     Image.hasOne(models.Student, {
-  //       foreignKey: "BackCitizenCardImageId",
-  //     });
-  //   };
-  //   Image.associate = (models) => {
-  //     Image.hasOne(models.Student, {
-  //       foreignKey: "FrontStudentCardImageId",
-  //     });
-  //   };
-
-  //   Image.associate = (models) => {
-  //     Image.hasOne(models.Student, {
-  //       foreignKey: "BackStudentCardImageId",
-  //     });
-  //   };
-
+  
   return Image;
 };

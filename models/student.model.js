@@ -6,27 +6,11 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
-      userId: {
-        type: DataTypes.UUID,
-        // allowNull: false,
-        // references:{
-        //     model:"Users",
-        //     key:"UserId"
-        // }
-      },
       firstName:{
         type: DataTypes.STRING(70)
       },
       lastName:{
         type: DataTypes.STRING(70)
-      },
-      schoolId: {
-        type: DataTypes.UUID,
-        // allowNull: false,
-        // references:{
-        //     model:"Schools",
-        //     key:"id"
-        // }
       },
       major:{
           type: DataTypes.STRING(70)
@@ -66,19 +50,16 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.DATE
       },
       citizenCardCreatedPlace:{
-          type: DataTypes.DATE
+          type: DataTypes.TEXT
       },
       parentId:{
         type: DataTypes.UUID,
-        // allowNull: false
+        references : {
+          model: "Student",
+          key: "id"
+        }
       }
     });
-
-    // Student.associate = (models) => {
-    //     Student.hasOne(models.School, {
-    //       foreignKey: "studentId",
-    //     });
-    //   };
 
     return Student;
   };

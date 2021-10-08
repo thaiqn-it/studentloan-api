@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
         references:{
-            model:"Majors",
+            model:"Major",
             key:"id"
         }
       },
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
         references:{
-            model:"Schools",
+            model:"School",
             key:"id"
         }
       },

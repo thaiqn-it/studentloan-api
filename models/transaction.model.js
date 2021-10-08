@@ -30,10 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    walletId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
     status: {
       type: DataTypes.STRING,
       allowNull: false,

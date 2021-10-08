@@ -3,7 +3,7 @@ const { USER_STATUS } = require("../models/enum/index");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../constants");
+const { JWT_SECRET_KEY } = require("../constants");
 const { excludePassword } = require("../utils");
 
 const creatUser = async (req, res) => {
@@ -27,9 +27,9 @@ const creatUser = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { phoneNumber, password } = req.body;
-    const user = await userService.loginService(phoneNumber, password);
-    const token = jwt.sign({ id: user.id }, JWT_SECRET);
+    const { email, password } = req.body;
+    const user = await userService.loginService(email, password);
+    const token = jwt.sign({ id: user.id }, JWT_SECRET_KEY);
     res.json({ token });
   } catch (err) {
     res

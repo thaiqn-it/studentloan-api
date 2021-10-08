@@ -20,5 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
+  Account.associate = (models) => {
+    Account.hasOne(models.Transaction, {
+      foreignKey: "accountId",
+    });
+  };
+
   return Account;
 };

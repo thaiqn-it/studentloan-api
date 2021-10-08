@@ -11,13 +11,13 @@ const createUserService = async (userInfo, password) => {
   return await User.create(user);
 };
 
-const loginService = async (phoneNumber, password) => {
+const loginService = async (email, password) => {
   const user = await User.findOne({
     where: {
-      phoneNumber: "0123456789",
+      email: email.trim(),
     },
+    raw: true,
   });
-
   if (user === null) {
     throw new Error();
   }
