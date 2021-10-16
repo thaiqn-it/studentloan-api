@@ -17,6 +17,9 @@ module.exports = {
     define: {
       freezeTableName: true
     },
+    query: {
+      raw:true
+    }
   },
   test: {
     username: DB_USERNAME,
@@ -28,6 +31,9 @@ module.exports = {
     define: {
       freezeTableName: true
     },
+    query: {
+      raw:true
+    }
   },
   production: {
     username: DB_USERNAME,
@@ -39,5 +45,8 @@ module.exports = {
     define: {
       freezeTableName: true
     },
+    query: {
+      raw:true
+    }
   },
 };

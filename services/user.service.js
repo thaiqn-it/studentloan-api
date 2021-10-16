@@ -1,15 +1,24 @@
 const db = require("../models");
 const { USER_STATUS } = require("../models/enum");
 
-const { hashPassword, comparePassword } = require("../utils");
+const { comparePassword } = require("../utils");
 const User = db.User;
 
-const createUserService = async (userInfo, password) => {
-  const hashedPassword = hashPassword(password);
-
-  const user = { ...userInfo, password: hashedPassword };
-  return await User.create(user);
+const createUserService = async ({ ...user }) => {
+  return (await User.create(user)).get({plain:true})
 };
+
+const count = async (oAuthId) => {
+  const result = await User.count({
+    where : {
+      oAuthId : oAuthId
+    }
+  })
+  if (result === null) {
+    throw new Error();
+  }
+  return result
+}
 
 const loginService = async (email, password) => {
   const user = await User.findOne({
@@ -42,9 +51,18 @@ const updateUserService = async (data) => {
   return await user.save();
 };
 
+const getOne = async ({ ...data }) => {
+  return await User.findOne({
+    where : data,
+    raw : true
+  },)
+}
+
 module.exports = {
   createUserService,
   loginService,
   deleteUserService,
   updateUserService,
+  count,
+  getOne
 };

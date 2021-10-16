@@ -8,3 +8,4 @@ exports.DB_HOST = process.env.DB_HOST || 'localhost';
 exports.DB_DIALECT = process.env.DB_DIALECT || 'mssql';
 exports.BCRYPT_SALT_ROUND = 12;
 exports.JWT_SECRET_KEY = "123456789";
+exports.VERIFY_TOKEN = "123456789";

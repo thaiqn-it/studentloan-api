@@ -1,16 +1,24 @@
 const express = require("express");
 const userController = require("../controllers/user.controller");
-const { userAuth, studentAuth } = require("../middlewares/jwt_auth");
+const { userAuth, studentAuth, investorAuth } = require("../middlewares/jwt_auth");
 
 const router = express.Router();
 
-router.post("/student", userController.creatUser);
+router.post("/", userController.creatUser);
 
-router.post("/investor", userController.creatUser);
+router.post("/registerByFb", userController.registerByFb);
+
+router.post("/sendOTP", userController.sendOTP);
+
+router.post("/verifyOTP", userController.verifyOTP);
 
 router.post("/login", userController.login);
 
-router.get("/me", studentAuth, userController.getProfile);
+router.post("/loginByFb", userController.loginByFb);
+
+router.get("/student/me", studentAuth, userController.getProfile);
+
+router.get("/investor/me", investorAuth, userController.getProfile);
 
 router.put("/", userAuth, userController.updateUser);
 
