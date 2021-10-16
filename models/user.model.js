@@ -28,16 +28,28 @@ module.exports = (sequelize, DataTypes) => {
   
   User.associate = (models) => {
     User.hasOne(models.Student, {
-      foreignKey: "userId",
+      foreignKey: {
+        name : "userId",
+        allowNull : false
+      }   
     });
     User.hasOne(models.Investor, {
-      foreignKey: "userId",
+      foreignKey: {
+        name : "userId",
+        allowNull : false
+      } 
     });
     User.hasOne(models.Account, {
-      foreignKey: "userId",
+      foreignKey: {
+        name : "userId",
+        allowNull : false
+      } 
     });
     models.Student.belongsTo(User,{
-      foreignKey: "userId",
+      foreignKey: {
+        name : "userId",
+        allowNull : false
+      } 
     })
   };
   return User;

@@ -14,6 +14,7 @@ const {evidenceRoute} = require("../routes/evidence.route");
 const {imageRoute} = require("../routes/image.route"); 
 const {investmentRoute} = require("../routes/investment.route"); 
 const {investorRoute} = require("../routes/investor.route"); 
+const { studentRouter } = require("../routes/student.route");
 
 const router = express.Router();
 
@@ -31,6 +32,6 @@ router.use("/account", accountRouter);
 router.use("/paymentMethod", paymentMethodRouter);
 router.use("/report", reportRouter);
 router.use("/transaction", transactionRouter);
-
+router.use("/student", studentRouter);
 
 module.exports = { apiRouter: router };

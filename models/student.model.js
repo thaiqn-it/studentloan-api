@@ -27,19 +27,21 @@ module.exports = (sequelize, DataTypes) => {
       studentCardId:{
           type: DataTypes.STRING(50)
       },
-
+      profileUrl : {
+          type: DataTypes.STRING
+      },
       //
-      frontCitizenCardImageId:{
-        type: DataTypes.UUID,
+      frontCitizenCardImageUrl:{
+        type: DataTypes.STRING,
       },
-      backCitizenCardImageId:{
-        type: DataTypes.UUID,
+      backCitizenCardImageUrl:{
+        type: DataTypes.STRING,
       },
-      frontStudentCardImageId:{
-        type: DataTypes.UUID,
+      frontStudentCardImageUrl:{
+        type: DataTypes.STRING,
       },
-      backStudentCardImageId:{
-        type: DataTypes.UUID,
+      backStudentCardImageUrl:{
+        type: DataTypes.STRING,
       },
       //
 
