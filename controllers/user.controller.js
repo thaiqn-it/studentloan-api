@@ -97,15 +97,16 @@ const verifyOTP = (req,res) => {
 
 const creatUser = async (req, res) => {
   try {
-    const { phoneNumber, password, type, email } = req.body;
-    const status = USER_STATUS.ACTIVE;
+    const { data } = req.body;
+    const status = USER_STATUS.INACTIVE;
+    const password = hashPassword(data.password);
     const user = await userService.createUserService(
       {
-        phoneNumber,
-        type,
-        email,
-        status,
-        password : hashPassword(password)
+        email : data.email,
+        phoneNumber : data.phoneNumber,
+        password,
+        type : data.type,
+        status
       },   
     );
     res.json(user);
@@ -131,13 +132,55 @@ const loginByFb = async (req,res) => {
   const { access_token } = req.body;
   try {
     const fbRes = await axios.get(
-			`https://graph.facebook.com/me?access_token=${access_token}`
+			`https://graph.facebook.com/me?access_token=${access_token}&fields=email,first_name,last_name`
 		);
-		const { id: fb_userId } = fbRes.data; 
+		const { id: fb_userId, email, first_name, last_name } = fbRes.data; 
     const user = await userService.getOne({ oAuthId : fb_userId})
 
     if (!user) {
-      return res.json({ isNew : true });
+      return res.json({ 
+        isNew : true,
+        user : {
+          email,
+          first_name,
+          last_name
+        } 
+      });
+    } else {
+      const token = jwt.sign(
+        {
+          userId: user.id,
+        },
+        JWT_SECRET_KEY
+      );
+      return res.json({
+        token,
+      });
+    }		
+	} catch (err) {
+		return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
+	}
+}
+
+const loginByGoogle = async (req,res) => {
+  const { access_token } = req.body;
+  try {
+    let googleRes = await axios('https://www.googleapis.com/userinfo/v2/me', {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+		const { id: gog_userId, email, given_name: first_name,family_name: last_name } = googleRes.data; 
+    const user = await userService.getOne({ oAuthId : gog_userId})
+
+    if (!user) {
+      return res.json({ 
+        isNew : true,
+        user : {
+          email,
+          first_name,
+          last_name
+        } 
+      });
     } else {
       const token = jwt.sign(
         {
@@ -159,25 +202,49 @@ const registerByFb = async (req,res) =>{
     const { data } = req.body;
 
     let fbRes = await axios.get(
-      `https://graph.facebook.com/me?access_token=${data.access_token}&fields=id,name,email,picture,first_name,last_name`
+      `https://graph.facebook.com/me?access_token=${data.access_token}&fields=id,picture,email`
     );
-    const { id: fb_userId, name, email,last_name, first_name } = fbRes.data;
+    const { id: fb_userId, email } = fbRes.data;
     const profileUrl = fbRes.data.picture?.data?.url || "";
-    const password = hashPassword(
-      name.replace(/\s/g, "") + new Date().toISOString()
-    );
+    const password = hashPassword(data.password);
+    const status = USER_STATUS.INACTIVE;
     const user = await userService.createUserService(
       {
         oAuthId : fb_userId,
-        name,
         email,
         phoneNumber : data.phoneNumber,
         password,
         type : data.type,
-        status : 'INACTIVE'
+        status
       }
     );
-    return res.json(excludePassword(user));
+    return res.json({...excludePassword(user),profileUrl});
+  } catch (error) {
+    return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
+  }
+}
+
+const registerByGoogle = async (req,res) =>{
+  try {
+    const { data } = req.body;
+    let googleRes = await axios('https://www.googleapis.com/userinfo/v2/me', {
+      headers: { Authorization: `Bearer ${data.access_token}` },
+    });
+
+    const { id: google_userId,email,picture } = googleRes.data;
+    const password = hashPassword(data.password);
+    const status = USER_STATUS.INACTIVE;
+    const user = await userService.createUserService(
+      {
+        oAuthId : google_userId,
+        email,
+        phoneNumber : data.phoneNumber,
+        password,
+        type : data.type,
+        status
+      }
+    );
+    return res.json({...excludePassword(user),profileUrl : picture});
   } catch (error) {
     return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
   }
@@ -223,5 +290,7 @@ module.exports = {
   sendOTP,
   verifyOTP,
   registerByFb,
-  loginByFb
+  loginByFb,
+  loginByGoogle,
+  registerByGoogle,
 };

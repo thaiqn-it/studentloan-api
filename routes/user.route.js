@@ -8,6 +8,8 @@ router.post("/", userController.creatUser);
 
 router.post("/registerByFb", userController.registerByFb);
 
+router.post("/registerByGog", userController.registerByGoogle);
+
 router.post("/sendOTP", userController.sendOTP);
 
 router.post("/verifyOTP", userController.verifyOTP);
@@ -15,6 +17,8 @@ router.post("/verifyOTP", userController.verifyOTP);
 router.post("/login", userController.login);
 
 router.post("/loginByFb", userController.loginByFb);
+
+router.post("/loginByGoogle", userController.loginByGoogle);
 
 router.get("/student/me", studentAuth, userController.getProfile);
 
