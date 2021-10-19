@@ -28,12 +28,11 @@ const studentAuth = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const data = jwt.verify(token, JWT_SECRET_KEY);
     const user = await User.findOne({
-      where: { id: data.id },
+      where: { id: data.userId },
       include : Student,
       raw : true,
       nest : true,
     });
-
     if (user === null) throw new Error();
     req.user = user
     next();
@@ -50,7 +49,9 @@ const investorAuth = async (req, res, next) => {
     const data = jwt.verify(token, JWT_SECRET_KEY);
     const user = await User.findOne({
       where: { id: data.id },
-      include: [Investor],
+      include : Investor,
+      raw : true,
+      nest : true,
     });
     if (user === null) throw new Error();
     req.user = user;
