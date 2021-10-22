@@ -110,7 +110,7 @@ const creatUser = async (req, res) => {
         })
       );
     }
-    const { ...data } = req.body;
+    const data = req.body;
 
     const status = USER_STATUS.INACTIVE;
     const password = hashPassword(data.password);
@@ -216,7 +216,7 @@ const loginByGoogle = async (req, res) => {
 
 const registerByFb = async (req, res) => {
   try {
-    const { data } = req.body;
+    const data = req.body;
 
     let fbRes = await axios.get(
       `https://graph.facebook.com/me?access_token=${data.access_token}&fields=id,picture,email`
@@ -241,7 +241,7 @@ const registerByFb = async (req, res) => {
 
 const registerByGoogle = async (req, res) => {
   try {
-    const { data } = req.body;
+    const data = req.body;
     let googleRes = await axios("https://www.googleapis.com/userinfo/v2/me", {
       headers: { Authorization: `Bearer ${data.access_token}` },
     });
