@@ -1,12 +1,18 @@
 const express = require("express");
 const userController = require("../controllers/user.controller");
-const { userAuth, studentAuth, investorAuth } = require("../middlewares/jwt_auth");
+const {
+  userAuth,
+  studentAuth,
+  investorAuth,
+} = require("../middlewares/jwt_auth");
 
 const router = express.Router();
 
 router.post("/", userController.creatUser);
 
 router.post("/registerByFb", userController.registerByFb);
+
+router.post("/checkEmail", userController.checkEmail);
 
 router.post("/registerByGog", userController.registerByGoogle);
 

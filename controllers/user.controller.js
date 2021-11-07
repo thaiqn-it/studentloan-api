@@ -5,62 +5,62 @@ const { restError } = require("../errors/rest");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY, VERIFY_TOKEN } = require("../constants");
 const { excludePassword, hashPassword } = require("../utils");
-const { authenticator } = require('otplib');
+const { authenticator } = require("otplib");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = require('twilio')(accountSid, authToken);
-const nodemailer = require('nodemailer')
+const client = require("twilio")(accountSid, authToken);
+const nodemailer = require("nodemailer");
 const axios = require("axios");
 
 const sendMail = async (token) => {
   const transporter = nodemailer.createTransport({
-    host : 'smtp.gmail.com',
-    port : 465,
-    secure : true,
-    auth : {
-      user : `${process.env.EMAIL_ADDRESS}`,
-      pass : `${process.env.EMAIL_PASSWORD}`
-    }
-  })
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: `${process.env.EMAIL_ADDRESS}`,
+      pass: `${process.env.EMAIL_PASSWORD}`,
+    },
+  });
 
   const mailOptions = {
-    from : `${process.env.EMAIL_ADDRESS}`,
-    to : 'qthai20102000@gmail.com',
-    subject : 'Verify your account',
-    text : `OTP code is ${token}`
-  }
+    from: `${process.env.EMAIL_ADDRESS}`,
+    to: "qthai20102000@gmail.com",
+    subject: "Verify your account",
+    text: `OTP code is ${token}`,
+  };
   const key = jwt.sign(
-    { 
-      token
-    }, 
+    {
+      token,
+    },
     VERIFY_TOKEN,
     {
-      expiresIn : '1h',
+      expiresIn: "1h",
     }
-    );
+  );
 
-  await transporter.verify()
+  await transporter.verify();
 
-  await transporter.sendMail(mailOptions, (err,res) => {
+  await transporter.sendMail(mailOptions, (err, res) => {
     if (err) {
       console.log(err);
     } else {
-      console.log('success');
+      console.log("success");
     }
-  })
-}
+  });
+};
 
-const sendOTP = (req,res) => {
-  try {   
-    authenticator.options = { 
+const sendOTP = (req, res) => {
+  try {
+    authenticator.options = {
       step: 900,
-      window: [1,0]
+      window: [1, 0],
     };
 
-    const secret = authenticator.generateSecret()
+    const secret = authenticator.generateSecret();
     const token = authenticator.generate(secret);
     const timeRemaining = authenticator.timeRemaining();
-    const { phoneNumber } = req.body
+    const { phoneNumber } = req.body;
 
     //send SMS
 
@@ -72,43 +72,41 @@ const sendOTP = (req,res) => {
     //   })
 
     // send email
-    sendMail(token)
+    sendMail(token);
 
     res.json({
       secret,
       timeRemaining,
-    })
+    });
   } catch (error) {
     res.status(INTERNAL_SERVER_ERROR).json(restError.INTERNAL_SERVER_ERROR);
   }
-}
+};
 
-const verifyOTP = (req,res) => {
+const verifyOTP = (req, res) => {
   try {
-    const { token, secret } = req.body
+    const { token, secret } = req.body;
     const isValid = authenticator.check(token, secret);
     res.json({
-      isValid
-    })
+      isValid,
+    });
   } catch (error) {
     res.status(INTERNAL_SERVER_ERROR).json(restError.INTERNAL_SERVER_ERROR);
   }
-}
+};
 
 const creatUser = async (req, res) => {
   try {
     const { data } = req.body;
     const status = USER_STATUS.INACTIVE;
     const password = hashPassword(data.password);
-    const user = await userService.createUserService(
-      {
-        email : data.email,
-        phoneNumber : data.phoneNumber,
-        password,
-        type : data.type,
-        status
-      },   
-    );
+    const user = await userService.createUserService({
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      password,
+      type: data.type,
+      status,
+    });
     res.json(user);
   } catch (err) {
     res.status(INTERNAL_SERVER_ERROR).json(restError.INTERNAL_SERVER_ERROR);
@@ -128,23 +126,23 @@ const login = async (req, res) => {
   }
 };
 
-const loginByFb = async (req,res) => {
+const loginByFb = async (req, res) => {
   const { access_token } = req.body;
   try {
     const fbRes = await axios.get(
-			`https://graph.facebook.com/me?access_token=${access_token}&fields=email,first_name,last_name`
-		);
-		const { id: fb_userId, email, first_name, last_name } = fbRes.data; 
-    const user = await userService.getOne({ oAuthId : fb_userId})
+      `https://graph.facebook.com/me?access_token=${access_token}&fields=email,first_name,last_name`
+    );
+    const { id: fb_userId, email, first_name, last_name } = fbRes.data;
+    const user = await userService.getOne({ oAuthId: fb_userId });
 
     if (!user) {
-      return res.json({ 
-        isNew : true,
-        user : {
+      return res.json({
+        isNew: true,
+        user: {
           email,
           first_name,
-          last_name
-        } 
+          last_name,
+        },
       });
     } else {
       const token = jwt.sign(
@@ -156,30 +154,35 @@ const loginByFb = async (req,res) => {
       return res.json({
         token,
       });
-    }		
-	} catch (err) {
-		return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
-	}
-}
+    }
+  } catch (err) {
+    return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
+  }
+};
 
-const loginByGoogle = async (req,res) => {
+const loginByGoogle = async (req, res) => {
   const { access_token } = req.body;
   try {
-    let googleRes = await axios('https://www.googleapis.com/userinfo/v2/me', {
+    let googleRes = await axios("https://www.googleapis.com/userinfo/v2/me", {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 
-		const { id: gog_userId, email, given_name: first_name,family_name: last_name } = googleRes.data; 
-    const user = await userService.getOne({ oAuthId : gog_userId})
+    const {
+      id: gog_userId,
+      email,
+      given_name: first_name,
+      family_name: last_name,
+    } = googleRes.data;
+    const user = await userService.getOne({ oAuthId: gog_userId });
 
     if (!user) {
-      return res.json({ 
-        isNew : true,
-        user : {
+      return res.json({
+        isNew: true,
+        user: {
           email,
           first_name,
-          last_name
-        } 
+          last_name,
+        },
       });
     } else {
       const token = jwt.sign(
@@ -191,13 +194,13 @@ const loginByGoogle = async (req,res) => {
       return res.json({
         token,
       });
-    }		
-	} catch (err) {
-		return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
-	}
-}
+    }
+  } catch (err) {
+    return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
+  }
+};
 
-const registerByFb = async (req,res) =>{
+const registerByFb = async (req, res) => {
   try {
     const { data } = req.body;
 
@@ -208,47 +211,43 @@ const registerByFb = async (req,res) =>{
     const profileUrl = fbRes.data.picture?.data?.url || "";
     const password = hashPassword(data.password);
     const status = USER_STATUS.INACTIVE;
-    const user = await userService.createUserService(
-      {
-        oAuthId : fb_userId,
-        email,
-        phoneNumber : data.phoneNumber,
-        password,
-        type : data.type,
-        status
-      }
-    );
-    return res.json({...excludePassword(user),profileUrl});
+    const user = await userService.createUserService({
+      oAuthId: fb_userId,
+      email,
+      phoneNumber: data.phoneNumber,
+      password,
+      type: data.type,
+      status,
+    });
+    return res.json({ ...excludePassword(user), profileUrl });
   } catch (error) {
     return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
   }
-}
+};
 
-const registerByGoogle = async (req,res) =>{
+const registerByGoogle = async (req, res) => {
   try {
     const { data } = req.body;
-    let googleRes = await axios('https://www.googleapis.com/userinfo/v2/me', {
+    let googleRes = await axios("https://www.googleapis.com/userinfo/v2/me", {
       headers: { Authorization: `Bearer ${data.access_token}` },
     });
 
-    const { id: google_userId,email,picture } = googleRes.data;
+    const { id: google_userId, email, picture } = googleRes.data;
     const password = hashPassword(data.password);
     const status = USER_STATUS.INACTIVE;
-    const user = await userService.createUserService(
-      {
-        oAuthId : google_userId,
-        email,
-        phoneNumber : data.phoneNumber,
-        password,
-        type : data.type,
-        status
-      }
-    );
-    return res.json({...excludePassword(user),profileUrl : picture});
+    const user = await userService.createUserService({
+      oAuthId: google_userId,
+      email,
+      phoneNumber: data.phoneNumber,
+      password,
+      type: data.type,
+      status,
+    });
+    return res.json({ ...excludePassword(user), profileUrl: picture });
   } catch (error) {
     return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
   }
-}
+};
 
 const getProfile = async (req, res) => {
   const user = req.user;
@@ -281,11 +280,25 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { 
-  creatUser, 
-  login, 
-  getProfile, 
-  deleteUser, 
+const checkEmail = async (req, res) => {
+  try {
+    const email = req.body;
+    const user = await userService.getOne(email);
+    if (user) {
+      res.json(excludePassword(user));
+    }
+  } catch (e) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+module.exports = {
+  creatUser,
+  login,
+  getProfile,
+  deleteUser,
   updateUser,
   sendOTP,
   verifyOTP,
@@ -293,4 +306,5 @@ module.exports = {
   loginByFb,
   loginByGoogle,
   registerByGoogle,
+  checkEmail,
 };
