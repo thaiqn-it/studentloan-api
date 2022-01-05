@@ -24,9 +24,18 @@ const deleteTransactionService = async (id) => {
   return await transaction.save();
 };
 
+const getTransactionsByWalletId = async (accountId) => {
+  const transactions = await Transaction.findAll({
+    where: { accountId },
+  });
+
+  return transactions;
+};
+
 module.exports = {
   createTransactionService,
   updateTransactionService,
   deleteTransactionService,
   getTransactionService,
+  getTransactionsByWalletId,
 };
