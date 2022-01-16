@@ -6,10 +6,6 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    // studentId: {
-    //   type: DataTypes.UUID,
-    //   allowNull: false,
-    // },
     investorId: {
       type: DataTypes.UUID,
       allowNull: true,
@@ -42,19 +38,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    // LoanAccountId: {
-    //   type: DataTypes.UUID,
-    //   allowNull: true,
-    //   references: {
-    //     model: "Investor",
-    //     key: "InvestorId",
-    //   },
-    // },
+    loanId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: "Loan",
+        key: "id",
+      },
+    },
   });
 
   Investment.associate = (models) => {
     Investment.belongsTo(models.Investor, {
       foreignKey: "investorId",
+    });
+    Investment.belongsTo(models.Loan, {
+      foreignKey: "loanId",
     });
   };
 

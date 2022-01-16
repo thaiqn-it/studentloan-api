@@ -1,9 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
     const SchoolMajor = sequelize.define("SchoolMajor", {
+      id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
       majorId: {
         type: DataTypes.UUID,
         allowNull: false,
-        primaryKey: true,
         references:{
             model:"Major",
             key:"id"
@@ -12,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       schoolId: {
         type: DataTypes.UUID,
         allowNull: false,
-        primaryKey: true,
         references:{
             model:"School",
             key:"id"
@@ -30,7 +34,10 @@ module.exports = (sequelize, DataTypes) => {
         });
         SchoolMajor.belongsTo(models.School, {
             foreignKey: "schoolId",
-          });
+        });
+        SchoolMajor.hasOne(models.Student, {
+            foreignKey: "schoolMajorId",
+        });
       };
 
     return SchoolMajor;

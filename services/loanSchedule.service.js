@@ -8,12 +8,12 @@ const findById = async (id) => {
   return await db.LoanSchedule.findByPk(id);
 };
 
-const create = async ({ ...data }) => {
-  return await db.LoanSchedule.create(data);
+const create = async (data) => {
+  return await db.LoanSchedule.bulkCreate(data, {returning: true})
 };
 
 const updateById = async (id,data) => {
-  return loan = await db.LoanSchedule.update(data, {
+  return await db.LoanSchedule.update(data, {
     where: {
       id : id
     }
