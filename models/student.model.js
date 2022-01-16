@@ -6,14 +6,19 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
+      userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: "User",
+          key: "id",
+        },
+      },
       firstName:{
         type: DataTypes.STRING(70)
       },
       lastName:{
         type: DataTypes.STRING(70)
-      },
-      major:{
-          type: DataTypes.STRING(70)
       },
       totalSemester:{
           type: DataTypes.INTEGER
@@ -30,7 +35,6 @@ module.exports = (sequelize, DataTypes) => {
       profileUrl : {
           type: DataTypes.STRING
       },
-      //
       frontCitizenCardImageUrl:{
         type: DataTypes.STRING,
       },
@@ -43,8 +47,6 @@ module.exports = (sequelize, DataTypes) => {
       backStudentCardImageUrl:{
         type: DataTypes.STRING,
       },
-      //
-
       citizenId:{
           type: DataTypes.STRING(20)
       },
@@ -62,6 +64,18 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     });
+
+    Student.associate = (models) => {
+      Student.hasMany(models.Loan, {
+        foreignKey: "studentId",
+      }),
+      Student.belongsTo(models.SchoolMajor, {
+        foreignKey: "schoolMajorId",
+      })
+      Student.belongsTo(models.Tutor, {
+        foreignKey: "tutorId",
+      });
+  };
 
     return Student;
   };

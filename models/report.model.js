@@ -10,9 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    imageId: {
-      type: DataTypes.UUID,
-    },
     description: {
       type: DataTypes.STRING,
     },

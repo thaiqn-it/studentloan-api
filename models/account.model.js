@@ -6,6 +6,14 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       allowNull: false,
     },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+          model: "User",
+          key: "id",
+      },
+    },
     money: {
       type: DataTypes.BIGINT,
       allowNull: false,
@@ -21,8 +29,11 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Account.associate = (models) => {
-    Account.hasOne(models.Transaction, {
+    Account.hasMany(models.Transaction, {
       foreignKey: "accountId",
+    });
+    Account.belongsTo(models.User, {
+      foreignKey: "userId",
     });
   };
 

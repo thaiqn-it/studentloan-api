@@ -6,14 +6,14 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    //  UserId: {
-    //   type: DataTypes.UUID,
-    //   allowNull: false,
-    //   references: {
-    //     model: "Users",
-    //     key: "UserId",
-    //   },
-    // },
+     userId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: "User",
+        key: "id",
+      },
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -25,34 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     job: {
       type: DataTypes.STRING,
       allowNull: true,
-    },
-    // OldSchool: {
-    //   type: DataTypes.UUID,
-    //   allowNull: true,
-    //   references: {
-    //     model: "Schools",
-    //     key: "SchoolId",
-    //   },
-    // },
-    citizenId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    frontCitizenCardImageId: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: "Image",
-        key: "id",
-      },
-    },
-    backCitizenCardImageId: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: "Image",
-        key: "id",
-      },
     },
     type: {
       type: DataTypes.STRING,
@@ -82,14 +54,8 @@ module.exports = (sequelize, DataTypes) => {
   //   };
 
   Investor.associate = (models) => {
-    Investor.belongsTo(models.Image, {
-      foreignKey: "backCitizenCardImageId",
-    });
     Investor.hasMany(models.Investment, {
       foreignKey: "investorId",
-    });
-    Investor.belongsTo(models.Image, {
-      foreignKey: "frontCitizenCardImageId",
     });
   };
 
