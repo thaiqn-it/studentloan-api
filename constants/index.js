@@ -8,3 +8,6 @@ exports.DB_HOST = process.env.DB_HOST || 'localhost';
 exports.DB_DIALECT = process.env.DB_DIALECT || 'mssql';
 exports.BCRYPT_SALT_ROUND = 12;
 exports.JWT_SECRET_KEY = "123456789";
+exports.CLOUD_NAME = "larrytran";
+exports.CLOUD_API_KEY = "837726378727576";
+exports.CLOUD_API_SECRET = "6qGibhwOSNu7fa1khfTxXiSpnlQ";
