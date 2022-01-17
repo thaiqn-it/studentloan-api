@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     loanId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "Loan",
         key: "id",

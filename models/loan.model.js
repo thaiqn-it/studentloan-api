@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       studentId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Student",
           key: "id",
