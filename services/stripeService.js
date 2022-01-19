@@ -2,7 +2,14 @@ const { STRIPE_SECRET_KEY } = require("../constants");
 
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
-const createAccount = ({ email, firstname, lastname }) => {
+const createAccount = ({
+  email,
+  firstname,
+  lastname,
+  country,
+  currency,
+  accountNumber,
+}) => {
   const account = {
     type: "custom",
     capabilities: {
@@ -16,7 +23,14 @@ const createAccount = ({ email, firstname, lastname }) => {
       date: Math.floor(Date.now() / 1000),
       ip: "178.166.15.32",
     },
-    external_account: "tok_visa_debit_us_transferSuccess",
+    // external_account: "tok_visa_debit_us_transferSuccess",
+    external_account: {
+      object: "bank_account",
+      country: country,
+      currency: currency,
+      account_number: accountNumber,
+      routing_number: "110000000",
+    },
     individual: {
       address: {
         city: "Lincoln",
@@ -55,4 +69,20 @@ const transfer = ({ amount, currency, destination, transfer_group }) => {
   });
 };
 
-module.exports = { getAccountBalance, transfer, createAccount };
+const topup = (amount, description) => {
+  return stripe.topups.create({
+    amount: amount,
+    currency: "usd",
+    description: description,
+  });
+};
+
+const charge = (amount, description, source) => {
+  return stripe.charges.create({
+    amount: amount,
+    currency: "usd",
+    description: description,
+    source: source,
+  });
+};
+module.exports = { getAccountBalance, transfer, createAccount, topup, charge };

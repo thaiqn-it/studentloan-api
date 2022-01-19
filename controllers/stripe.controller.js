@@ -45,4 +45,29 @@ const transfer = async (req, res, next) => {
   }
 };
 
-module.exports = { getAccountBalance, transfer, createAccount };
+const topup = async (req, res, next) => {
+  try {
+    const { amount, description } = req.body;
+    const topup = await stripeService.transfer(amount, description);
+    if (!topup) throw new Error();
+    res.json(topup);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
+const charge = async (req, res, next) => {
+  try {
+    const { amount, description, source } = req.body;
+    const charge = stripeService.reversal(amount, description, source);
+    if (!charge) throw new Error();
+    res.json(charge);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+module.exports = { getAccountBalance, transfer, createAccount, topup, charge };
