@@ -15,13 +15,12 @@ InvestorService.findOne = async (id) => {
 };
 
 InvestorService.updateOne = async (id, investorInfo) => {
-  const investor = await Investor.update(investorInfo, {
-    where: { id },
-    returning: true,
-    plain: true,
-  });
+  const invest = await Investor.update(
+    { investorInfo },
+    { where: { id }, returning: true, plain: true }
+  );
 
-  return investor[1];
+  return invest;
 };
 
 InvestorService.deleteOne = async (id) => {
