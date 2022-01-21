@@ -75,6 +75,9 @@ module.exports = (sequelize, DataTypes) => {
       Student.belongsTo(models.Tutor, {
         foreignKey: "tutorId",
       });
+      Student.hasMany(models.Archievement, {
+        foreignKey: "studentId",
+      })
   };
 
     return Student;

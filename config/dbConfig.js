@@ -16,9 +16,6 @@ module.exports = {
     logging : false,
     define: {
       freezeTableName: true
-    },
-    query: {
-      raw:true
     }
   },
   test: {
@@ -30,9 +27,6 @@ module.exports = {
     logging : false,
     define: {
       freezeTableName: true
-    },
-    query: {
-      raw:true
     }
   },
   production: {
@@ -44,9 +38,6 @@ module.exports = {
     logging : false,
     define: {
       freezeTableName: true
-    },
-    query: {
-      raw:true
     }
   },
 };

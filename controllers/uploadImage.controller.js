@@ -15,7 +15,7 @@ cloudinary.config({
 const uploadImage = async (req, res) => {
   try {
     const file = req.files.file;
-
+    
     cloudinary.v2.uploader.upload(
       file.tempFilePath,
       {

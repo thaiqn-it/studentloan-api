@@ -1,11 +1,21 @@
-const {Major} = require("../models")
+
+const db = require("../models/index");
 
 const findAllMajor = async() => {
-    return await Major.findAll();
+    return await db.Major.findAll({
+        where : {
+            parentId : null
+        },
+        include: [{
+            model: db.Major,
+            as : 'children'
+        }],
+        
+    });
 };
 
 const findOneMajor = async(id) => {
-    return await Major.findOne({
+    return await db.Major.findOne({
         where:{
             id : id
         }
@@ -13,15 +23,15 @@ const findOneMajor = async(id) => {
 };
 
 const createNewMajor = async(major) => {
-    return await Major.create(major);
+    return await db.Major.create(major);
 };
 
 const createSubMajor = async(data) =>{
-    return await Major.create(data);
+    return await db.Major.create(data);
 }
 
 const updateById = async (id,data) => {
-    return await Major.update(data, {
+    return await db.Major.update(data, {
         where : {
             id : id
         }

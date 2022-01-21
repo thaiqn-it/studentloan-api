@@ -55,24 +55,25 @@ const create = async (req, res, next) => {
         const totalMoneyAtStudying = timeStudy * 100000;
         const leftMoney = parseFloat(loan.totalMoney)  - totalMoneyAtStudying;
 
-        const timePaidGraduted = Math.ceil(moment(loan.loanEndAt).diff(moment(new Date()).add(1 * timeStudy,'month'),'months', true))
+        // const timePaidGraduted = Math.ceil(moment(loan.loanEndAt).diff(moment(new Date()).add(1 * timeStudy,'month'),'months', true))
         const moneyPaidGraduted = Math.round(leftMoney / loan.duration)
        
-        for (let i = 0; i < timePaidGraduted ; i++) {
-            const startAt = moment(new Date()).add(1 * (timeStudy + i),'month');
-            const endAt = moment(new Date()).add(1 * (timeStudy + i + 1 ),'month');
+        for (let i = 0; i < loan.duration ; i++) {
+            const startAt = moment(new Date(loan.expectedGraduationDay)).add(1 * i,'month');
+            const endAt = moment(new Date(loan.expectedGraduationDay)).add(1 * (i + 1),'month');
             const paidAtStudying = {
                 money : moneyPaidGraduted,
                 startAt : startAt,
                 endAt : endAt,
                 type : 'paidGraduted',
                 status : true,
-                loanId : id
+                loanId : id,
             }
+
             scheduleData.push(paidAtStudying)
         }
 
-    
+        console.log(scheduleData);
         // const loanSchedule = await loanScheduleService.create(scheduleData);
 
         return res.json({

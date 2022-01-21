@@ -76,18 +76,28 @@ const findById = async (id) => {
     include : [
       {
         model : db.Student,
-        attributes: ["firstname","lastname","profileUrl","currentSemester"],
+        attributes: ["id","firstname","lastname","profileUrl","currentSemester"],
         include : [
           {
             model : db.SchoolMajor,
             attributes: ["id"],
             include : [
               { model : db.Major, attributes: ["name"] },
-              { model : db.School, attributes: ["name"], }
+              { model : db.School, attributes: ["name"], },
             ]
+          },
+          {
+            model : db.Archievement,
           }
         ]
       },
+      {
+        required: false,
+        model : db.LoanMedia,
+        where : {
+          type : 'EVIDENCE'
+        }
+      }
     ],
     raw : true,
     nest : true
