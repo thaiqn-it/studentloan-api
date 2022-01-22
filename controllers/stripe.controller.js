@@ -70,4 +70,5 @@ const charge = async (req, res, next) => {
       .json(restError.INTERNAL_SERVER_ERROR.default());
   }
 };
-module.exports = { getAccountBalance, transfer, createAccount, topup, charge };
+
+module.exports = { getAccountBalance, transfer, createAccount, topup, charge};

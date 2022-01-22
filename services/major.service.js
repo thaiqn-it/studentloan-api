@@ -3,12 +3,15 @@ const db = require("../models/index");
 
 const findAllMajor = async() => {
     return await db.Major.findAll({
+        attributes: ["id","name"],
         where : {
-            parentId : null
+            parentId : null,
+            status : 'true'
         },
         include: [{
             model: db.Major,
-            as : 'children'
+            as : 'children',
+            attributes: ["id","name"],
         }],
         
     });

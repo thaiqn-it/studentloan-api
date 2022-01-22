@@ -12,6 +12,10 @@ exports.VERIFY_TOKEN = "123456789";
 exports.CLOUD_NAME = "larrytran";
 exports.CLOUD_API_KEY = "837726378727576";
 exports.CLOUD_API_SECRET = "6qGibhwOSNu7fa1khfTxXiSpnlQ";
+// exports.STRIPE_SECRET_KEY =
+//   process.env.STRIPE_SECRET_KEY ||
+//   "sk_test_51KGkbCCFy5YSbtlBvOa6caLy7DvUq5V6eLxQgfd1UVYp64nMEG0L45KMfU8tiE4O0pzXfjzKfqmRAdUBopDd2WlH00lHreNdnR";
+
 exports.STRIPE_SECRET_KEY =
   process.env.STRIPE_SECRET_KEY ||
-  "sk_test_51KGkbCCFy5YSbtlBvOa6caLy7DvUq5V6eLxQgfd1UVYp64nMEG0L45KMfU8tiE4O0pzXfjzKfqmRAdUBopDd2WlH00lHreNdnR";
+  "sk_test_51KGkNkKC61BS0ULt0C26yt9uBxpPlLNYFn7Oge48QZGzTtF6NazL9mDkwHWAtRvxKJFK9t6Uh0ajnftj2gbmTvY300QWHAmJmv";

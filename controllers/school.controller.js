@@ -9,7 +9,6 @@ const { schoolServices } = require("../services/school.service");
 const findAllSchool = async (req, res, next) => {
   try {
     const schools = await schoolServices.findAllSchool();
-    console.log(schools);
     return res.json(schools);
   } catch (error) {
     return res
@@ -21,7 +20,6 @@ const findOneSchool = async (req, res, next) => {
   const { id } = req.params;
   try {
     const school = await schoolServices.findOneSchool(id);
-    console.log(school);
     return res.json(school);
   } catch (error) {
     console.log(error);
@@ -37,7 +35,6 @@ const createNewSchool = async (req, res, next) => {
     const newSchool = await schoolServices.createNewSchool(data);
     return res.json(newSchool);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -51,7 +48,6 @@ const updateSchool = async (req, res, next) => {
     const newSchoolForUpdate = await schoolServices.updateById(id, data);
     return res.json(newSchoolForUpdate);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);

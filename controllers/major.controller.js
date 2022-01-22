@@ -9,10 +9,8 @@ const {majorService} = require('../services/major.service')
 const findAllMajor = async (req, res, next) => {
     try {
       const majors = await majorService.findAllMajor();
-      console.log(majors);
       return res.json(majors);
     } catch (error) {
-      console.log(error);
       return res
         .status(INTERNAL_SERVER_ERROR)
         .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -23,10 +21,8 @@ const findAllMajor = async (req, res, next) => {
     const {id} = req.params;
     try {
       const major = await majorService.findOneMajor(id);
-      console.log(major);
       return res.json(major);
     } catch (error) {
-      console.log(error);
       return res
         .status(INTERNAL_SERVER_ERROR)
         .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -39,7 +35,6 @@ const findAllMajor = async (req, res, next) => {
       const newMajor = await majorService.createNewMajor({ name });
       return res.json(newMajor);
     } catch (error) {
-      console.log(error)
       return res
         .status(INTERNAL_SERVER_ERROR)
         .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -52,7 +47,6 @@ const findAllMajor = async (req, res, next) => {
       const subMajor = await majorService.createNewMajor({data });
       return res.json(subMajor);
     } catch (error) {
-      console.log(error)
       return res
         .status(INTERNAL_SERVER_ERROR)
         .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -66,7 +60,6 @@ const findAllMajor = async (req, res, next) => {
       const newMajorForUpdate = await majorService.updateById( id , data );
       return res.json(newMajorForUpdate);
     } catch (error) {
-      console.log(error)
       return res
         .status(INTERNAL_SERVER_ERROR)
         .json(restError.INTERNAL_SERVER_ERROR.default);
