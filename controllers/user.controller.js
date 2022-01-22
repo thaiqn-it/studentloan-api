@@ -1,6 +1,12 @@
 const userService = require("../services/user.service");
+const accountService = require("../services/account.service");
+const transactionService = require("../services/transaction.service");
 const { USER_STATUS } = require("../models/enum/index");
-const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("http-status");
+const {
+  INTERNAL_SERVER_ERROR,
+  BAD_REQUEST,
+  NOT_FOUND,
+} = require("http-status");
 const { restError } = require("../errors/rest");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY, VERIFY_TOKEN } = require("../constants");
@@ -13,41 +19,38 @@ const nodemailer = require("nodemailer");
 const axios = require("axios");
 
 const sendMail = async (token) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: `${process.env.EMAIL_ADDRESS}`,
-      pass: `${process.env.EMAIL_PASSWORD}`,
-    },
-  });
-
-  const mailOptions = {
-    from: `${process.env.EMAIL_ADDRESS}`,
-    to: "qthai20102000@gmail.com",
-    subject: "Verify your account",
-    text: `OTP code is ${token}`,
-  };
-  const key = jwt.sign(
-    {
-      token,
-    },
-    VERIFY_TOKEN,
-    {
-      expiresIn: "1h",
-    }
-  );
-
-  await transporter.verify();
-
-  await transporter.sendMail(mailOptions, (err, res) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("success");
-    }
-  });
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: `${process.env.EMAIL_ADDRESS}`,
+  //     pass: `${process.env.EMAIL_PASSWORD}`,
+  //   },
+  // });
+  // const mailOptions = {
+  //   from: `${process.env.EMAIL_ADDRESS}`,
+  //   to: "qthai20102000@gmail.com",
+  //   subject: "Verify your account",
+  //   text: `OTP code is ${token}`,
+  // };
+  // const key = jwt.sign(
+  //   {
+  //     token,
+  //   },
+  //   VERIFY_TOKEN,
+  //   {
+  //     expiresIn: "1h",
+  //   }
+  // );
+  // await transporter.verify();
+  // await transporter.sendMail(mailOptions, (err, res) => {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     console.log("success");
+  //   }
+  // });
 };
 
 const sendOTP = (req, res) => {
@@ -97,8 +100,15 @@ const verifyOTP = (req, res) => {
 
 const creatUser = async (req, res) => {
   try {
-    const { data } = req.body;
-    const status = USER_STATUS.INACTIVE;
+    const data = req.body;
+
+    const checkExistsUser = await userService.getOne({
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+    });
+    if (checkExistsUser) return res.json(checkExistsUser);
+
+    const status = USER_STATUS.ACTIVE;
     const password = hashPassword(data.password);
     const user = await userService.createUserService({
       email: data.email,
@@ -122,7 +132,7 @@ const login = async (req, res) => {
   } catch (err) {
     res
       .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
+      .json(restError.INTERNAL_SERVER_ERROR.default());
   }
 };
 
@@ -264,7 +274,7 @@ const deleteUser = async (req, res) => {
   } catch (err) {
     res
       .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
+      .json(restError.INTERNAL_SERVER_ERROR.default());
   }
 };
 
@@ -276,7 +286,7 @@ const updateUser = async (req, res) => {
   } catch (err) {
     res
       .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
+      .json(restError.INTERNAL_SERVER_ERROR.default());
   }
 };
 
@@ -290,10 +300,38 @@ const checkEmail = async (req, res) => {
   } catch (e) {
     res
       .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
+      .json(restError.INTERNAL_SERVER_ERROR.default());
   }
 };
 
+const getWalletInfo = async (req, res) => {
+  try {
+    const user = req.user;
+    const wallet = await accountService.getWalletByUserId(user.id);
+
+    return res.json(wallet);
+  } catch (e) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
+const getTransactionsByAccountId = async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    const transactions = await transactionService.getTransactionsByWalletId(
+      accountId
+    );
+
+    return res.json(transactions);
+  } catch (e) {
+    console.log(e);
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
 module.exports = {
   creatUser,
   login,
@@ -307,4 +345,6 @@ module.exports = {
   loginByGoogle,
   registerByGoogle,
   checkEmail,
+  getWalletInfo,
+  getTransactionsByAccountId,
 };

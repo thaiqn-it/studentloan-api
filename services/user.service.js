@@ -1,24 +1,40 @@
 const db = require("../models");
-const { USER_STATUS } = require("../models/enum");
+const { USER_STATUS, ACCOUNT_TYPE, ACCOUNT_STATUS } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
+const Account = db.Account;
 
-const createUserService = async ({ ...user }) => {
-  return (await User.create(user)).get({plain:true})
+const createUserService = async (user) => {
+  return (
+    await User.create(
+      {
+        ...user,
+
+        Account: {
+          money: 0,
+          type: ACCOUNT_TYPE.LOAN_ACCOUNT,
+          status: ACCOUNT_STATUS.ACTIVE,
+        },
+      },
+      {
+        include: Account,
+      }
+    )
+  ).get({ plain: true });
 };
 
 const count = async (oAuthId) => {
   const result = await User.count({
-    where : {
-      oAuthId : oAuthId
-    }
-  })
+    where: {
+      oAuthId: oAuthId,
+    },
+  });
   if (result === null) {
     throw new Error();
   }
-  return result
-}
+  return result;
+};
 
 const loginService = async (email, password) => {
   const user = await User.findOne({
@@ -53,10 +69,10 @@ const updateUserService = async (data) => {
 
 const getOne = async ({ ...data }) => {
   return await User.findOne({
-    where : data,
-    raw : true
-  },)
-}
+    where: data,
+    raw: true,
+  });
+};
 
 module.exports = {
   createUserService,
@@ -64,5 +80,5 @@ module.exports = {
   deleteUserService,
   updateUserService,
   count,
-  getOne
+  getOne,
 };

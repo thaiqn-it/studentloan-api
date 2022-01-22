@@ -24,9 +24,17 @@ const deleteAccountService = async (id) => {
   return await account.save();
 };
 
+const getWalletByUserId = async (userId) => {
+  const wallet = await Account.findOne({ where: { userId: userId } });
+  if (wallet === null) throw new Error();
+
+  return wallet;
+};
+
 module.exports = {
   createAccountService,
   updateAccountService,
   getAccountService,
   deleteAccountService,
+  getWalletByUserId,
 };

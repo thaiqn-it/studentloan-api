@@ -10,6 +10,14 @@ const router = express.Router();
 
 router.post("/", userController.creatUser);
 
+router.post("/me/wallet", userAuth, userController.getWalletInfo);
+
+router.post(
+  "/me/transactions",
+  userAuth,
+  userController.getTransactionsByAccountId
+);
+
 router.post("/registerByFb", userController.registerByFb);
 
 router.post("/checkEmail", userController.checkEmail);
