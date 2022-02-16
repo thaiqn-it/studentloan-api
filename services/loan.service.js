@@ -99,8 +99,7 @@ const findById = async (id) => {
         }
       }
     ],
-    raw : true,
-    nest : true
+   
   });
 };
 

@@ -25,7 +25,7 @@ InvestmentController.createInvestment = async (req, res, next) => {
     total,
     studentId,
     investorId,
-    loanAccountId,
+    loanId,
   } = req.body;
   try {
     const investment = await InvestmentService.createOne({
@@ -37,7 +37,7 @@ InvestmentController.createInvestment = async (req, res, next) => {
       total,
       studentId,
       investorId,
-      loanAccountId,
+      loanId,
     });
     // const Investment = await create(req.body);
     return res.json(investment);

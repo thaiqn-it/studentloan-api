@@ -62,6 +62,10 @@ module.exports = (sequelize, DataTypes) => {
           model: "Student",
           key: "id"
         }
+      },
+      status : {
+        type: DataTypes.STRING,
+        allowNull: false
       }
     });
 

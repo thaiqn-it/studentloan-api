@@ -66,16 +66,15 @@ const sendOTP = (req, res) => {
     const { phoneNumber } = req.body;
 
     //send SMS
-
-    // client.messages
-    //   .create({
-    //     body: `OTP code is : ${token}. Your code will expired in 90 seconds. Please don't share your code with anymore!`,
-    //     from: '+15076153483',
-    //     to: `${phoneNumber}`
-    //   })
+    client.messages
+      .create({
+        body: `OTP code is : ${token}. Your code will expired in 90 seconds. Please don't share your code with anymore!`,
+        from: '+19362431819',
+        to: `${phoneNumber}`
+      })
 
     // send email
-    sendMail(token);
+    // sendMail(token);
 
     res.json({
       secret,

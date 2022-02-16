@@ -28,16 +28,42 @@ module.exports = (sequelize, DataTypes) => {
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+    profileUrl : {
+      type: DataTypes.STRING
+    },
+    citizenId:{
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    citizenCardCreatedDate:{
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    citizenCardCreatedPlace:{
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    frontCitizenCardImageUrl:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    backCitizenCardImageUrl:{
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
-      value: "active",
+      allowNull: false
     },
     parentId: {
       type: DataTypes.UUID,
       allowNull: true,
+      references : {
+        model: "Investor",
+        key: "id"
+      }
     },
   });
 
@@ -56,6 +82,9 @@ module.exports = (sequelize, DataTypes) => {
   Investor.associate = (models) => {
     Investor.hasMany(models.Investment, {
       foreignKey: "investorId",
+    });
+    Investor.belongsTo(models.User, {
+      foreignKey:"userId",
     });
   };
 

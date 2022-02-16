@@ -29,30 +29,10 @@ InvestorController.getInvestor = async (req, res, next) => {
 
 InvestorController.createInvestor = async (req, res, next) => {
   const {
-    lastName,
-    firstName,
-    job,
-    citizenId,
-    frontCitizenCardImageId,
-    backCitizenCardImageId,
-    type,
-    status,
-    parentId,
-    role,
+    data
   } = req.body;
   try {
-    const investor = await InvestorService.createOne({
-      lastName,
-      firstName,
-      job,
-      citizenId,
-      frontCitizenCardImageId,
-      backCitizenCardImageId,
-      type,
-      status,
-      parentId,
-      role,
-    });
+    const investor = await InvestorService.createOne(data);
     // const investor = await create(req.body);
     return res.json(investor);
   } catch (error) {
