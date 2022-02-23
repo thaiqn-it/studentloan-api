@@ -119,5 +119,5 @@ exports.loanService = {
     findAll, 
     findById,
     create,
-    updateById,
+    updateById
 };

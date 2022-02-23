@@ -6,7 +6,8 @@ const InvestmentController = {};
 
 InvestmentController.getAllInvestment = async (req, res, next) => {
   try {
-    const investments = await InvestmentService.getAll();
+    const { id } = req.params
+    const investments = await InvestmentService.getAll(id);
     return res.json(investments);
   } catch (error) {
     return res

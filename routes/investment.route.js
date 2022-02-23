@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/", investmentController.createInvestment);
 
-router.get("/", investmentController.getAllInvestment);
+router.get("/:id", investmentController.getAllInvestment);
 
 // router.get("/:id", InvestmentController.getInvestment);
 

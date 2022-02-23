@@ -1,9 +1,24 @@
 const { Investment } = require("../models");
+const db = require("../models/index");
 
 const InvestmentService = {};
 
-InvestmentService.getAll = async () => {
-  return await Investment.findAll();
+InvestmentService.getAll = async (id) => {
+  return await Investment.findAll({
+    where : {
+      investorId : id
+    },
+    include : [
+      {
+        model : db.Loan,
+        include : [
+          {
+            model : db.LoanSchedule
+          }
+        ]
+      }
+    ]
+  });
 };
 
 InvestmentService.createOne = async (InvestmentInfo) => {

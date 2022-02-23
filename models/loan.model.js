@@ -24,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
-      expectedGraduationDay : {
-          type : DataTypes.DATE,
-          allowNull : false,
+      expectedGraduationTime : {
+        type : DataTypes.INTEGER,
+        allowNull : false,
       },
       title : {
         type : DataTypes.TEXT,
