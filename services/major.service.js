@@ -1,55 +1,72 @@
 
 const db = require("../models/index");
 
-const findAllMajor = async() => {
+const findAllMajor = async (id) => {
     return await db.Major.findAll({
-        attributes: ["id","name"],
-        where : {
-            parentId : null,
-            status : 'true'
+        attributes: ["id", "name", "parentId", "status"],
+        where: {
+            status: 'ACTIVE',
         },
-        include: [{
-            model: db.Major,
-            as : 'children',
-            attributes: ["id","name"],
-        }],
-        
+        include: [
+            {
+                model: db.SchoolMajor,
+                attributes: [],
+                where: {
+                    schoolId: id
+                }
+            }
+        ],
     });
 };
 
-const findOneMajor = async(id) => {
-    return await db.Major.findOne({
-        where:{
-            id : id
+const createNewMajor = async (data) => {
+    var schoolMajor = {};
+    var major = {};
+    data.map(async (item)=>{
+        schoolMajor = {
+            majorId:item.id,
+            schoolId:item.schoolId,
+            status:item.status,
+        };
+        major ={
+            id: item.id,
+            name:item.name,
+            parentId:item.parentId,
+            status:item.status,
         }
-    });
-};
-
-const createNewMajor = async(major) => {
-    return await db.Major.create(major);
-};
-
-const createSubMajor = async(data) =>{
-    return await db.Major.create(data);
-}
-
-const updateById = async (id,data) => {
-    return await db.Major.update(data, {
-        where : {
-            id : id
-        }
+        await db.Major.create(major).then(await db.SchoolMajor.create(schoolMajor))
     })
 };
 
-exports.majorService = {findAllMajor, createNewMajor, updateById, findOneMajor, createSubMajor}
+const update = async (data) => {
+    data.map(async (items) => {
+        await db.Major.update(
+            {
+                parentId: items.parent,
+                name: items.text,
+                status: items.status
+            }
+            , {
+                where: {
+                    id: items.id
+                }
+            }
+        )
+        await db.SchoolMajor.update(
+            {
+                status:items.status
+            }, {
+                where: {
+                    majorid: items.id
+                }
+            }
+        )
+    })
+};
 
-
-
-// const deleteById = async (id) => {
-//     return await Major.destroy({
-//         where : {
-//             MajorId : id
-//         }
-//     })
-// };
+exports.majorService = {
+    findAllMajor,
+    createNewMajor,
+    update,
+}
 
