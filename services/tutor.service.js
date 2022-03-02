@@ -1,16 +1,18 @@
 const db = require("../models");
+const { TUTOR_STATUS } = require("../models/enum");
 
 const Tutor = db.Tutor;
 
 const create = async (data) => {
-  return await Tutor.create(data);
+  const tutor = { ...data, status: TUTOR_STATUS.UNVERIFIED };
+  return await Tutor.create(tutor);
 };
 
-const update= async (data) => {
+const update = async (data) => {
   let tutor = await Tutor.findByPk(data.id);
   if (tutor === null) throw new Error();
-  tutor = { ...tutor, ...data };
-  return tutor.save();
+  await tutor.update({ ...data });
+  return tutor;
 };
 
 const getById = async (id) => {
@@ -21,17 +23,18 @@ const deleteById = async (id) => {
   const tutor = await Tutor.findByPk(id);
   if (tutor === null) throw new Error();
   //change status
-  return await tutor.save();
+
+  return await tutor.update({ status: 'delete' });
 };
 
 const getByUserId = async (userId) => {
-  const tutor = await Tutor.findOne({ 
-    where:{ 
-        userId: userId
-    } 
+  const tutor = await Tutor.findOne({
+    where: {
+      userId: userId,
+    },
   });
   if (tutor === null) throw new Error();
-  return tutor;    
+  return tutor;
 };
 
 module.exports = {
@@ -39,5 +42,5 @@ module.exports = {
   update,
   deleteById,
   getById,
-  getByUserId
+  getByUserId,
 };
