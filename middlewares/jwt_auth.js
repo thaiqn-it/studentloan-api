@@ -48,7 +48,7 @@ const investorAuth = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const data = jwt.verify(token, JWT_SECRET_KEY);
     const user = await User.findOne({
-      where: { id: data.id },
+      where: { id: data.userId },
       include : Investor,
       raw : true,
       nest : true,

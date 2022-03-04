@@ -5,8 +5,8 @@ const { mapErrorArrayExpressValidator } = require("../utils");
 const { validationResult } = require("express-validator");
   
 const findAll = async (req, res, next) => {
-    try {
-        const data = req.body;
+    const data = req.query;
+    try {     
         const loans = await loanService.findAll(data);
         return res.json(loans);
     } catch (error) {

@@ -3,21 +3,38 @@ const db = require("../models/index");
 
 const InvestmentService = {};
 
-InvestmentService.getAll = async (id) => {
+InvestmentService.getAllByInvestorId = async (id) => {
   return await Investment.findAll({
     where : {
       investorId : id
     },
+    attributes: ["id","total"],
     include : [
       {
         model : db.Loan,
+        attributes: {
+          include: [
+            [db.sequelize.literal('(SELECT ISNULL(SUM(money),0) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND LoanSchedule.status ='+ "'COMPLETED'" +')'), 'PaidMoney']
+          ]
+        },
         include : [
           {
-            model : db.LoanSchedule
+            model : db.Student,
+            attributes: ["id","firstname","lastname","profileUrl"],
+            include : [
+              {
+                model : db.SchoolMajor,
+                attributes: ["id"],
+                include : [
+                  { model : db.Major, attributes: ["name"] },
+                  { model : db.School, attributes: ["name"], },
+                ]
+              }
+            ]
           }
-        ]
+        ],
       }
-    ]
+    ],
   });
 };
 

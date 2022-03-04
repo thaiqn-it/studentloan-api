@@ -6,11 +6,14 @@ const createAccountService = async (account) => {
   return await Account.create(account);
 };
 
-const updateAccountService = async (data) => {
-  let account = await Account.findByPk(data.id);
-  if (account === null) throw new Error();
-  account = { ...account, ...data };
-  return account.save();
+const updateAccountService = async (id,data) => {
+  return await Account.update(data, {
+    where: {
+      id : id
+    },
+    returning: true,
+    plain: true
+  })
 };
 
 const getAccountService = async (id) => {
