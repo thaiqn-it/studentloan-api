@@ -28,15 +28,20 @@ const findById = async (req, res, next) => {
     }
 };
 
+const findByUserId = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const student = await studentService.findByUserId(id);
+        if (student === null) throw new Error();
+		return res.json({
+			student,
+		});
+    } catch (error) {
+        return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+    }
+};
+
 const create = async (req, res, next) => {
-    // const errors = validationResult(req); 
-	// 	if (!errors.isEmpty()) {
-	// 		return res.status(BAD_REQUEST).json(
-	// 			restError.BAD_REQUEST.extra({
-	// 				errorParams: mapErrorArrayExpressValidator(errors.array()),
-	// 			})
-	// 		);
-	// 	}
     const { data } = req.body
 
     try {      
@@ -70,4 +75,5 @@ exports.studentController = {
     findById,
     create,
     updateById,
+    findByUserId,
 };

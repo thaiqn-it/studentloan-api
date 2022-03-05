@@ -66,7 +66,10 @@ module.exports = (sequelize, DataTypes) => {
       status : {
         type: DataTypes.STRING,
         allowNull: false
-      }
+      },
+      address : {
+        type: DataTypes.STRING,
+      },
     });
 
     Student.associate = (models) => {
