@@ -1,6 +1,7 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
+const { LOAN_STATUS } = require('../models/enum')
 
 const findAll = async (data) => {
   const PAGE_LIMIT = 5;
@@ -10,7 +11,9 @@ const findAll = async (data) => {
   const YESTERDAY = moment().subtract(1,"day").format("YYYY-MM-DD HH:mm:ss.mmm +00:00")
 
   var s = []
-  var q = {}
+  var q = {
+    status : LOAN_STATUS.FUNDING
+  }
   var a = {
     include: [
       [db.sequelize.literal('(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)'), 'AccumulatedMoney']
@@ -56,9 +59,7 @@ const findAll = async (data) => {
           }
         ]
       },
-    ],
-    raw : true,
-    nest : true
+    ]
   })
 };
 

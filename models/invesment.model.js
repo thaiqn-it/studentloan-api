@@ -8,35 +8,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     investorId: {
       type: DataTypes.UUID,
-      allowNull: true,
+      allowNull: false,
       references: {
         model: "Investor",
         key: "id",
       },
     },
-    isDonate: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-    },
-    startDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    endDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
     interest: {
       type: DataTypes.FLOAT,
-      allowNull: true,
+      allowNull: false,
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     total: {
       type: DataTypes.BIGINT,
-      allowNull: true,
+      allowNull: false,
     },
     loanId: {
       type: DataTypes.UUID,

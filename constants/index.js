@@ -15,6 +15,8 @@ exports.CLOUD_API_SECRET = "6qGibhwOSNu7fa1khfTxXiSpnlQ";
 // exports.STRIPE_SECRET_KEY =
 //   process.env.STRIPE_SECRET_KEY ||
 //   "sk_test_51KGkbCCFy5YSbtlBvOa6caLy7DvUq5V6eLxQgfd1UVYp64nMEG0L45KMfU8tiE4O0pzXfjzKfqmRAdUBopDd2WlH00lHreNdnR";
+exports.PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || "AX_lyXzg2GC8Gmc1Bm_XyNhbHuTKyBI1y2fHwiJ9TIjb98scF-hriTxED5CIT-_JPxglh5e7GmLzmiGm";
+exports.PAYPAL_SECRET = process.env.PAYPAL_SECRET || "EC_4R5OD-7REtKjQYzbqUnpt6sPaaxZiIaU1ND_Vs0bMSNHDbT0wisQPqtnUgfCOfkDOgZQLlN2rlkRp"
 
 exports.STRIPE_SECRET_KEY =
   process.env.STRIPE_SECRET_KEY ||

@@ -51,6 +51,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
     });
+    models.Investor.belongsTo(User, {
+      foreignKey: {
+        name: "userId",
+        allowNull: false,
+      },
+    });
   };
   return User;
 };

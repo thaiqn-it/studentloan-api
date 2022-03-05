@@ -17,11 +17,10 @@ const createAccount = async (req, res) => {
 
 const updateAccount = async (req, res) => {
   try {
-    const id = req.params;
-    const { userId, money, type, status } = req.body;
-    const data = { id, userId, money, type, status };
-
-    const account = await accountService.updateAccountService(data);
+    const { id }= req.params;
+    const data = req.body;
+    
+    const account = await accountService.updateAccountService(id,data);
     res.json(account);
   } catch (err) {
     res

@@ -8,26 +8,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     money: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: false, 
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false,  
     },
     description: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    methodId: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    from: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    to: {
-      type: DataTypes.UUID,
+    targetId : {
+      type: DataTypes.TEXT, 
       allowNull: false,
     },
     status: {
