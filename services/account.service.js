@@ -9,7 +9,7 @@ const createAccountService = async (account) => {
 const updateAccountService = async (id,data) => {
   return await Account.update(data, {
     where: {
-      id : id
+      id
     },
     returning: true,
     plain: true
