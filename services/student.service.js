@@ -8,6 +8,14 @@ const findById = async (id) => {
   return await db.Student.findByPk(id);
 };
 
+const findByUserId = async (id) => {
+  return await db.Student.findOne({
+    where:{
+      userId:id
+    }
+  });
+};
+
 const create = async ({ ...data }) => {
   return await db.Student.create(data);
 };
@@ -25,4 +33,5 @@ exports.studentService = {
     findById,
     create,
     updateById,
+    findByUserId,
 };
