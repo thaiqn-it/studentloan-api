@@ -8,6 +8,8 @@ const {
 
 const router = express.Router();
 
+router.get("/",userController.getAll);
+
 router.post("/", userController.creatUser);
 
 router.post("/me/wallet", userAuth, userController.getWalletInfo);
