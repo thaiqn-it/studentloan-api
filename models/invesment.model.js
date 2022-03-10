@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    studentId:{
+      type: DataTypes.UUID,
+    },
     investorId: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -13,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
         model: "Investor",
         key: "id",
       },
-    },
-    interest: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
     },
     status: {
       type: DataTypes.STRING,

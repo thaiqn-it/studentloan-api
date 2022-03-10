@@ -27,10 +27,21 @@ module.exports = (sequelize, DataTypes) => {
       status : {
         type : DataTypes.STRING,
         allowNull : false
-      }
-
-      //penanty money
+      },
+      loanId:{
+        type: DataTypes.UUID,
+        allowNull:false
+      },
+      penaltyMoney:{
+        type:DataTypes.BIGINT,
+      },
     });
+
+    LoanSchedule.associate = (models) => {
+      LoanSchedule.belongsTo(models.Loan,{
+        foreignKey: "loanId",
+      })
+    };
    
     return LoanSchedule;
 };

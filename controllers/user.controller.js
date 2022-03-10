@@ -316,6 +316,17 @@ const getWalletInfo = async (req, res) => {
   }
 };
 
+const getAll = async (req,res,next) =>{
+  try {
+    const roleOfUser = await userService.getAll();
+    return res.json(roleOfUser);
+  } catch (e) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+}
+
 const getTransactionsByAccountId = async (req, res) => {
   try {
     const { accountId } = req.body;
@@ -346,4 +357,5 @@ module.exports = {
   checkEmail,
   getWalletInfo,
   getTransactionsByAccountId,
+  getAll,
 };
