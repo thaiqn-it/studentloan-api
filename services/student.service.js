@@ -12,7 +12,13 @@ const findByUserId = async (id) => {
   return await db.Student.findOne({
     where:{
       userId:id
-    }
+    },
+    include:[{
+      model: db.Archievement,
+      // where:{
+      //   status:"ACTIVE"
+      // }
+    }]
   });
 };
 
