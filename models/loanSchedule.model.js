@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       penaltyMoney:{
         type:DataTypes.BIGINT,
-      }
+      },
     });
 
     LoanSchedule.associate = (models) => {
