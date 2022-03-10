@@ -18,12 +18,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    userId: {
+    accountId: {
       type: DataTypes.UUID,
       allowNull: false,
+      references: {
+        model: "Account",
+        key: "id",
+      },
     },
     targetId : {
       type: DataTypes.TEXT, 
+      allowNull: false,
+    },
+    transactionFee : {
+      type: DataTypes.BIGINT, 
       allowNull: false,
     },
     status: {
