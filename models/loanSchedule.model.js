@@ -32,11 +32,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         allowNull:false
       },
-      TransactionId:{
-        type:DataTypes.UUID,
+      penaltyMoney:{
+        type:DataTypes.BIGINT,
       }
-
-      //penanty money
     });
 
     LoanSchedule.associate = (models) => {
