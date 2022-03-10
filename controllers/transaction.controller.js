@@ -4,18 +4,7 @@ const { restError } = require("../errors/rest");
 
 const createTransaction = async (req, res) => {
   try {
-    const { money, type, description, methodId, from, to, walletId, status } =
-      req.body;
-    const data = {
-      money,
-      type,
-      description,
-      methodId,
-      from,
-      to,
-      walletId,
-      status,
-    };
+    const data = req.body
     const transaction = await transactionService.createTransactionService(data);
     res.json(transaction);
   } catch (err) {

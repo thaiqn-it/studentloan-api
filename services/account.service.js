@@ -7,13 +7,20 @@ const createAccountService = async (account) => {
 };
 
 const updateAccountService = async (id,data) => {
-  return await Account.update(data, {
-    where: {
-      id
-    },
-    returning: true,
-    plain: true
-  })
+  return await Account.increment(
+    { money: -5 }, 
+    { where: 
+      { 
+        id
+      } 
+    })
+  // return await Account.update(data, {
+  //   where: {
+  //     id
+  //   },
+  //   returning: true,
+  //   plain: true
+  // })
 };
 
 const getAccountService = async (id) => {

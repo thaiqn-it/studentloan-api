@@ -1,6 +1,7 @@
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
 const { PAYPAL_CLIENT_ID,PAYPAL_SECRET } = require("../constants");
+const CC = require('currency-converter-lt')
 
 const paypal = require('paypal-rest-sdk')
 
@@ -13,6 +14,8 @@ paypal.configure({
 const topup = async (req, res, next) => {
     const { money } = req.body
     const now = new Date().getTime()
+    let currencyConverter = new CC({ isDecimalComma:true })
+    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
     try {   
         var create_payment_json = {
             "intent": "sale",
@@ -20,22 +23,22 @@ const topup = async (req, res, next) => {
                 "payment_method": "paypal"
             },
             "redirect_urls": {
-                "return_url": "http://192.168.1.19:3000/api/paypal/success",
-                "cancel_url": "http://192.168.1.19:3000/api/paypal/cancel"
+                "return_url": "https://studentloanfpt.ddns.net/payment/success",
+                "cancel_url": "https://studentloanfpt.ddns.net/payment/cancel"
             },
             "transactions": [{
                 "item_list": {
                     "items": [{
                         "name": "Top-up money",
                         "sku": "item",
-                        "price": `${money}`,
+                        "price": `${cvrtMoney}`,
                         "currency": "USD",
                         "quantity": 1
                     }]
                 },
                 "amount": {
                     "currency": "USD",
-                    "total": `${money}`
+                    "total": `${cvrtMoney}`
                 },
                 "description": `Top-up money at ${now}`
             }]
