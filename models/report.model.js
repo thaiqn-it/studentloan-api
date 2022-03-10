@@ -16,7 +16,20 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.STRING,
     },
+    investorId:{
+      type: DataTypes.UUID,
+    }
   });
+
+  Report.associate = (models) => {
+    Report.belongsTo(models.Investor, {
+      foreignKey: "investorId",
+    });
+
+    Report.belongsTo(models.Loan,{
+      foreignKey: "loanId",
+    })
+  };
 
   return Report;
 };

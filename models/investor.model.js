@@ -65,6 +65,9 @@ module.exports = (sequelize, DataTypes) => {
         key: "id"
       }
     },
+    oldSchoolId:{
+      type:DataTypes.UUID,
+    }
   });
 
   //   Investor.associate = (models) => {

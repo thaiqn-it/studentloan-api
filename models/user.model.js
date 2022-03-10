@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     oAuthId: {
       type: DataTypes.STRING,
     },
+    banReason:{
+      type: DataTypes.STRING,
+    }
   });
 
   User.associate = (models) => {
