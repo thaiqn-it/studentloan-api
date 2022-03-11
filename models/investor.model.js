@@ -22,14 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    job: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     profileUrl : {
       type: DataTypes.STRING
     },
@@ -64,23 +56,8 @@ module.exports = (sequelize, DataTypes) => {
         model: "Investor",
         key: "id"
       }
-    },
-    oldSchoolId:{
-      type:DataTypes.UUID,
     }
   });
-
-  //   Investor.associate = (models) => {
-  //     Investor.belongsTo(models.User, {
-  // foreignKey:"UserId",
-  //     });
-  //   };
-
-  // Investor.associate = (models) => {
-  //     Investor.belongsTo(models.School, {
-  //       foreignKey: "SchoolId"
-  //     });
-  //   };
 
   Investor.associate = (models) => {
     Investor.hasMany(models.Investment, {
