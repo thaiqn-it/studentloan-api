@@ -20,11 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       lastName:{
         type: DataTypes.STRING(70)
       },
-      totalSemester:{
+      semester:{
           type: DataTypes.INTEGER
-      },
-      currentSemester:{
-        type: DataTypes.INTEGER
       },
       birthDate:{
         type: DataTypes.DATE
