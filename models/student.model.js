@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       semester:{
           type: DataTypes.INTEGER
       },
+      
       birthDate:{
         type: DataTypes.DATE
       },
