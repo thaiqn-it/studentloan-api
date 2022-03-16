@@ -10,7 +10,7 @@ const {
 const { restError } = require("../errors/rest");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY, VERIFY_TOKEN } = require("../constants");
-const { excludePassword, hashPassword } = require("../utils");
+const { excludePassword, hashPassword, comparePassword } = require("../utils");
 const { authenticator } = require("otplib");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -66,12 +66,11 @@ const sendOTP = (req, res) => {
     const { phoneNumber } = req.body;
 
     //send SMS
-    client.messages
-      .create({
-        body: `OTP code is : ${token}. Your code will expired in 90 seconds. Please don't share your code with anymore!`,
-        from: '+19362431819',
-        to: `${phoneNumber}`
-      })
+    client.messages.create({
+      body: `OTP code is : ${token}. Your code will expired in 90 seconds. Please don't share your code with anymore!`,
+      from: "+19362431819",
+      to: `${phoneNumber}`,
+    });
 
     // send email
     // sendMail(token);
@@ -125,7 +124,16 @@ const creatUser = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await userService.loginService(email, password);
+    const user = await userService.getUserByEmailService(email);
+    if (!user)
+      return res
+        .status(BAD_REQUEST)
+        .json(restError.BAD_REQUEST.extra({ msg: "user not found" }));
+
+    if (!comparePassword(password, user.password))
+      return res
+        .status(BAD_REQUEST)
+        .json(restError.BAD_REQUEST.extra({ msg: "password is wrong" }));
     const token = jwt.sign({ id: user.id }, JWT_SECRET_KEY);
     res.json({ token });
   } catch (err) {
@@ -260,7 +268,6 @@ const registerByGoogle = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const user = req.user;
-
   res.json(excludePassword(user));
 };
 
@@ -316,7 +323,7 @@ const getWalletInfo = async (req, res) => {
   }
 };
 
-const getAll = async (req,res,next) =>{
+const getAll = async (req, res, next) => {
   try {
     const roleOfUser = await userService.getAll();
     return res.json(roleOfUser);
@@ -325,7 +332,7 @@ const getAll = async (req,res,next) =>{
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
   }
-}
+};
 
 const getTransactionsByAccountId = async (req, res) => {
   try {
