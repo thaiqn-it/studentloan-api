@@ -53,6 +53,11 @@ const loginService = async (email, password) => {
   }
 };
 
+const getUserByEmailService = async (email) => {
+  const user = await User.findOne({ where: { email: email.trim() } });
+  return user;
+};
+
 const deleteUserService = async (id) => {
   const user = await User.findByPk(id);
   if (user === null) throw new Error();
@@ -76,11 +81,10 @@ const getOne = async ({ ...data }) => {
 
 const getAll = async () => {
   return await User.findAll({
-    attributes: ["id", "phoneNumber", "type","email", "status"],
-    include:
-    {model:db.Student, attributes:["firstName","lastName"]}
+    attributes: ["id", "phoneNumber", "type", "email", "status"],
+    include: { model: db.Student, attributes: ["firstName", "lastName"] },
   });
-}
+};
 
 module.exports = {
   createUserService,
@@ -90,4 +94,5 @@ module.exports = {
   count,
   getOne,
   getAll,
+  getUserByEmailService,
 };
