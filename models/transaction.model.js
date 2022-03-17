@@ -26,13 +26,25 @@ module.exports = (sequelize, DataTypes) => {
         key: "id",
       },
     },
-    target : {
+    recipientId : {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    recipientName : {
       type: DataTypes.TEXT, 
       allowNull: false,
     },
-    targetName : {
+    senderId : {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    senderName : {
       type: DataTypes.TEXT, 
       allowNull: false,
+    },
+    paypalTransaction : {
+      type: DataTypes.TEXT, 
+      allowNull: true,
     },
     transactionFee : {
       type: DataTypes.BIGINT, 
