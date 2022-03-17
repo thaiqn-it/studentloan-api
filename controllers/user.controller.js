@@ -126,7 +126,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userService.loginService(email, password);
-    const token = jwt.sign({ id: user.id }, JWT_SECRET_KEY);
+    const token = jwt.sign({ userId : user.id }, JWT_SECRET_KEY);
     res.json({ token });
   } catch (err) {
     res

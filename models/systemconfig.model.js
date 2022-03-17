@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
         },
         status: {
-            type: DataTypes.STRING,
+            type: DataTypes.BOOLEAN,
         },
     });
     return SystemConfig;

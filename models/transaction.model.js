@@ -10,9 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: false, 
     },
-    date:{
-      type: DataTypes.DATE,
-    },
     type: {
       type: DataTypes.STRING,
       allowNull: false,  
@@ -29,7 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         key: "id",
       },
     },
-    targetId : {
+    target : {
+      type: DataTypes.TEXT, 
+      allowNull: false,
+    },
+    targetName : {
       type: DataTypes.TEXT, 
       allowNull: false,
     },

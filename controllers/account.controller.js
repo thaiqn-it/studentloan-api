@@ -18,21 +18,9 @@ const createAccount = async (req, res) => {
 const updateAccount = async (req, res) => {
   try {
     const { id }= req.params;
-    const data = req.body;
+    const { money } = req.body;
     
-    const account = await accountService.updateAccountService(id,data);
-    res.json(account);
-  } catch (err) {
-    res
-      .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
-  }
-};
-
-const getAccount = async (req, res) => {
-  try {
-    const id = req.params;
-    const account = await accountService.getAccountServie(id);
+    const account = await accountService.updateAccountService(id,money);
     res.json(account);
   } catch (err) {
     res
@@ -44,7 +32,19 @@ const getAccount = async (req, res) => {
 const deleteAccount = async (req, res) => {
   try {
     const id = req.params;
-    const account = await accountService.deleteAccountService(id);
+    const account = await accountService.getByUserId(id);
+    res.json(account);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+const getByUserId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const account = await accountService.getWalletByUserId(id);
     res.json(account);
   } catch (err) {
     res
@@ -57,5 +57,5 @@ exports.accountController = {
   createAccount,
   updateAccount,
   deleteAccount,
-  getAccount,
+  getByUserId
 };

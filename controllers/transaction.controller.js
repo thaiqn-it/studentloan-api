@@ -1,6 +1,7 @@
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const transactionService = require("../services/transaction.service");
 const { restError } = require("../errors/rest");
+const _ = require("lodash");
 
 const createTransaction = async (req, res) => {
   try {
@@ -41,7 +42,7 @@ const updateTransaction = async (req, res) => {
 
 const getTransaction = async (req, res) => {
   try {
-    const id = req.params;
+    const { id } = req.params;
     const transaction = await transactionService.getTransactionService(id);
     res.json(transaction);
   } catch (err) {
@@ -63,9 +64,36 @@ const deleteTransaction = async (req, res) => {
   }
 };
 
+const getByAccountId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const transactions = await transactionService.getTransactionsByWalletId(id);
+    // var result = _.chain(transactions)  
+    //       .groupBy("year")  
+    //       .mapValues(transactions => _.chain(transactions)
+    //         .groupBy('month')
+    //         .map((key, values) => ({ month : values , transaction : key }))
+    //         .value())
+    //       .value()
+
+    var result = _.chain(transactions)  
+          .groupBy('date')
+          .map((key, values) => ({ date : values , transaction : key }))
+          .value()
+         
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 exports.transactionController = {
   createTransaction,
   updateTransaction,
   deleteTransaction,
   getTransaction,
+  getByAccountId
 };
