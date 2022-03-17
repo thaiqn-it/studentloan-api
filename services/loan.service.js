@@ -12,7 +12,10 @@ const findAll = async (data) => {
 
   var s = []
   var q = {
-    status : LOAN_STATUS.FUNDING
+    status : LOAN_STATUS.FUNDING,
+    postExpireAt : {
+      [Op.gt] : new Date(),
+    } 
   }
   var a = {
     include: [
@@ -24,11 +27,6 @@ const findAll = async (data) => {
     s.push(['postCreatedAt', 'DESC'])    
   } else if (sort === 'endingSoon') {
     s.push(['postExpireAt', 'ASC'])  
-    Object.assign(q,{
-      postExpireAt : {
-        [Op.gt] : new Date(),
-      } 
-    })
   } else if (sort === 'popular') {
     s.push([[db.sequelize.literal('PopularCount'), 'DESC']]) 
     Object.assign(a,{
@@ -77,7 +75,7 @@ const findById = async (id) => {
     include : [
       {
         model : db.Student,
-        attributes: ["id","firstname","lastname","profileUrl","currentSemester"],
+        attributes: ["id","firstname","lastname","profileUrl","semester"],
         include : [
           {
             model : db.SchoolMajor,

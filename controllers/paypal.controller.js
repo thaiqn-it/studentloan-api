@@ -29,7 +29,7 @@ const topup = async (req, res, next) => {
             "transactions": [{
                 "item_list": {
                     "items": [{
-                        "name": "Top-up money",
+                        "name": "Nạp tiền vào Student Loan",
                         "sku": "item",
                         "price": `${cvrtMoney}`,
                         "currency": "USD",
@@ -40,7 +40,7 @@ const topup = async (req, res, next) => {
                     "currency": "USD",
                     "total": `${cvrtMoney}`
                 },
-                "description": `Top-up money at ${now}`
+                "description": `Nạp ${cvrtMoney} vào Student Loan vào lúc ${now}`
             }]
         };
 
@@ -61,29 +61,31 @@ const topup = async (req, res, next) => {
 const transfer = async (req, res, next) => {
     const { money,email } = req.body
     const now = new Date().getTime()
+    let currencyConverter = new CC({ isDecimalComma:true })
+    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
     try {   
         let requestBody = {
             "sender_batch_header": {
-              "email_message": "SDK payouts test txn",
-              "note": "Enjoy your Payout!!",
-              "email_subject": "This is a test transaction from SDK"
+              "email_message": `Chuyển tiền đến tài khoản ${email}`,
+              "note": `Số tiền ${cvrtMoney} đã được chuyển`,
+              "email_subject": "Chuyển tiền Paypal"
             },
             "items": [{
               "recipient_type": "EMAIL",
-              "note": `Transfer ${money} to ${email}`,
+              "note": `Chuyển ${cvrtMoney} đến tài khoản ${email}`,
               "amount": {
                 "currency": "USD",
-                "value": `${money}`
+                "value": `${cvrtMoney}`
               },
               "receiver": `${email}`,
-              "sender_item_id": "Test_txn_1"
+              "sender_item_id": `${now}`
             }]
         }
         paypal.payout.create(requestBody,function (error, payment){
             if (error) {
                 throw error;
             } else {
-                console.log(payment);
+                res.json({payoutId : payment.batch_header.payout_batch_id})
             }
         } )
     } catch (err) {
@@ -99,7 +101,6 @@ const success = async (req, res, next) => {
    
     paypal.payment.get(paymentId, function (error, payment) {
         if (error) {
-            console.log(error);
             throw error;
         } else {
             var execute_payment_json = {
@@ -113,7 +114,6 @@ const success = async (req, res, next) => {
             };
             paypal.payment.execute(paymentId, execute_payment_json, function (error) {
                 if (error) {
-                    console.log(error.response);
                     throw error;
                 } else {
                     res.send("Success")

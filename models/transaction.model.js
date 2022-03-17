@@ -10,9 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: false, 
     },
-    date:{
-      type: DataTypes.DATE,
-    },
     type: {
       type: DataTypes.STRING,
       allowNull: false,  
@@ -29,9 +26,25 @@ module.exports = (sequelize, DataTypes) => {
         key: "id",
       },
     },
-    targetId : {
+    recipientId : {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    recipientName : {
       type: DataTypes.TEXT, 
       allowNull: false,
+    },
+    senderId : {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    senderName : {
+      type: DataTypes.TEXT, 
+      allowNull: false,
+    },
+    paypalTransaction : {
+      type: DataTypes.TEXT, 
+      allowNull: true,
     },
     transactionFee : {
       type: DataTypes.BIGINT, 

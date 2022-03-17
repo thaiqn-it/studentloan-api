@@ -26,7 +26,17 @@ const deleteTransactionService = async (id) => {
 
 const getTransactionsByWalletId = async (accountId) => {
   const transactions = await Transaction.findAll({
+    attributes: {
+      include: [
+        // [ db.Sequelize.fn('MONTH', db.Sequelize.col('createdAt')), 'month'],
+        [ db.Sequelize.fn('FORMAT', db.Sequelize.col('createdAt'), 'dd-MM-yyyy'), 'date']
+      ]
+    },
+    raw : true,
     where: { accountId },
+    order : [
+      ['createdAt', 'DESC']
+    ]
   });
 
   return transactions;

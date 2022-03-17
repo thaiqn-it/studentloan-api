@@ -6,9 +6,9 @@ const createAccountService = async (account) => {
   return await Account.create(account);
 };
 
-const updateAccountService = async (id,data) => {
+const updateAccountService = async (id,money) => {
   return await Account.increment(
-    { money: -5 }, 
+    { money }, 
     { where: 
       { 
         id
@@ -35,7 +35,7 @@ const deleteAccountService = async (id) => {
 };
 
 const getWalletByUserId = async (userId) => {
-  const wallet = await Account.findOne({ where: { userId: userId } });
+  const wallet = await Account.findOne({ where: { userId } });
   if (wallet === null) throw new Error();
 
   return wallet;

@@ -128,13 +128,13 @@ const login = async (req, res) => {
     if (!user)
       return res
         .status(BAD_REQUEST)
-        .json(restError.BAD_REQUEST.extra({ msg: "user not found" }));
+        .json(restError.BAD_REQUEST.extra({ msg: "User is not found" }));
 
     if (!comparePassword(password, user.password))
       return res
         .status(BAD_REQUEST)
-        .json(restError.BAD_REQUEST.extra({ msg: "password is wrong" }));
-    const token = jwt.sign({ id: user.id }, JWT_SECRET_KEY);
+        .json(restError.BAD_REQUEST.extra({ msg: "Password is wrong" }));
+    const token = jwt.sign({ userId : user.id }, JWT_SECRET_KEY);
     res.json({ token });
   } catch (err) {
     res
