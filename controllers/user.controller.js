@@ -268,6 +268,7 @@ const registerByGoogle = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const user = req.user;
+  
   res.json(excludePassword(user));
 };
 
@@ -275,7 +276,7 @@ const deleteUser = async (req, res) => {
   try {
     const { id } = req.user;
     const user = await userService.deleteUserService(id);
-
+    
     res.json(user);
   } catch (err) {
     res
