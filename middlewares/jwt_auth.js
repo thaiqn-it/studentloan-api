@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const db = require("../models/index");
 const { JWT_SECRET_KEY } = require("../constants");
 const { restError } = require("../errors/rest");
+const { USER_TYPE } = require("../models/enum/")
 
 const User = db.User;
 const Student = db.Student;
@@ -31,7 +32,10 @@ const studentAuth = async (req, res, next) => {
     const data = jwt.verify(token, JWT_SECRET_KEY);
 
     const user = await User.findOne({
-      where: { id: data.userId },
+      where: { 
+        id: data.userId,
+        type : USER_TYPE.STUDENT
+      },
       include : Student,
       raw : true,
       nest : true,
@@ -53,7 +57,10 @@ const investorAuth = async (req, res, next) => {
     const data = jwt.verify(token, JWT_SECRET_KEY);
     
     const user = await User.findOne({
-      where: { id: data.userId },
+      where: { 
+        id: data.userId,
+        type : USER_TYPE.INVESTOR
+      },
       include : Investor,
       raw : true,
       nest : true,

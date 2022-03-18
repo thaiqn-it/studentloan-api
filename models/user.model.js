@@ -15,18 +15,12 @@ module.exports = (sequelize, DataTypes) => {
     type: {
       type: DataTypes.STRING,
     },
-    status: {
-      type: DataTypes.STRING,
-    },
     email: {
       type: DataTypes.STRING,
     },
     oAuthId: {
       type: DataTypes.STRING,
     },
-    banReason:{
-      type: DataTypes.STRING,
-    }
   });
 
   User.associate = (models) => {
@@ -43,6 +37,12 @@ module.exports = (sequelize, DataTypes) => {
       },
     });
     User.hasOne(models.Account, {
+      foreignKey: {
+        name: "userId",
+        allowNull: false,
+      },
+    });
+    User.hasMany(models.UserStatus, {
       foreignKey: {
         name: "userId",
         allowNull: false,

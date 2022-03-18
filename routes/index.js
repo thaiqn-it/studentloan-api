@@ -18,6 +18,7 @@ const { stripeRoute } = require("./stripe.route");
 const { tutorRouter } = require("./tutor.route");
 const { paypalRoute } = require("./paypal.route")
 const { systemConfigRouter } = require("./systemconfig.route")
+const { userStatusRouter } = require("./userStatus.route")
 
 const router = express.Router();
 
@@ -39,5 +40,6 @@ router.use("/stripe", stripeRoute);
 router.use("/tutor", tutorRouter);
 router.use("/paypal", paypalRoute);
 router.use("/config", systemConfigRouter);
+router.use("/userStatus", userStatusRouter);
 
 module.exports = { apiRouter: router };
