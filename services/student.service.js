@@ -15,10 +15,36 @@ const findByUserId = async (id) => {
     },
     include:[{
       model: db.Archievement,
-      // where:{
-      //   status:"ACTIVE"
-      // }
-    }]
+      where:{
+        status:"ACTIVE"
+      }
+    },
+    {
+      model: db.SchoolMajor,
+      include:[
+        {
+        model:db.School,
+        attributes:["name"],
+      },
+      {
+        model:db.Major,
+        attributes:["name"],
+      },
+    ]
+    },
+    {
+      model: db.Tutor,
+      where:{
+        status:"ACTIVE"
+      }
+    },
+    {
+      model: db.User,
+      where:{
+        status:"ACTIVE"
+      }
+    },
+  ]
   });
 };
 

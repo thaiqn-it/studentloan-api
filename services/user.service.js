@@ -81,8 +81,10 @@ const getOne = async ({ ...data }) => {
 
 const getAll = async () => {
   return await User.findAll({
-    attributes: ["id", "phoneNumber", "type", "email", "status"],
-    include: { model: db.Student, attributes: ["firstName", "lastName"] },
+    attributes: ["id", "phoneNumber", "type","email", "status"],
+    where:{
+      type:["STUDENT","INVESTOR"]
+    }
   });
 };
 
