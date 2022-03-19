@@ -6,8 +6,13 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    studentId:{
+    transactionId: {
       type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+          model: "Transaction",
+          key: "id",
+      },
     },
     investorId: {
       type: DataTypes.UUID,

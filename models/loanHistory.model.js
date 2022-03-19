@@ -1,34 +1,39 @@
 module.exports = (sequelize, DataTypes) => {
-    const Notification = sequelize.define("Notification", {
+    const LoanHistory = sequelize.define("LoanHistory", {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
       },
-      userId: {
+      loanId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: "User",
+            model: "Loan",
+            key: "id",
+        },
+      },
+      adminId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: "Admin",
             key: "id",
         },
       },
       type: {
         type: DataTypes.STRING,
       },
-      status: {
-        type: DataTypes.STRING,
+      isActive: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-      },
-      redirectUrl:{
-        type: DataTypes.STRING,
       },
       description:{
         type: DataTypes.STRING,
       }
     });
   
-    return Notification;
+    return LoanHistory;
   };
   

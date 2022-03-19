@@ -32,6 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         allowNull:false
       },
+      transactionId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: "Transaction",
+            key: "id",
+        },
+      },
       penaltyMoney:{
         type:DataTypes.BIGINT,
       },
