@@ -14,7 +14,6 @@ const { investmentRoute } = require("../routes/investment.route");
 const { investorRoute } = require("../routes/investor.route");
 const { studentRouter } = require("../routes/student.route");
 const { uploadImageRouter } = require("../routes/uploadImag.route");
-const { stripeRoute } = require("./stripe.route");
 const { tutorRouter } = require("./tutor.route");
 const { paypalRoute } = require("./paypal.route")
 const { systemConfigRouter } = require("./systemconfig.route")
@@ -36,7 +35,6 @@ router.use("/report", reportRouter);
 router.use("/transaction", transactionRouter);
 router.use("/student", studentRouter);
 router.use("/image", uploadImageRouter);
-router.use("/stripe", stripeRoute);
 router.use("/tutor", tutorRouter);
 router.use("/paypal", paypalRoute);
 router.use("/config", systemConfigRouter);

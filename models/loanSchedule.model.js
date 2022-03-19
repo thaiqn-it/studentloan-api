@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       transactionId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: "Transaction",
             key: "id",
