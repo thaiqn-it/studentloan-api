@@ -1,6 +1,7 @@
-const { INTERNAL_SERVER_ERROR } = require("http-status");
+const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("http-status");
 const { restError } = require("../errors/rest");
 const { PAYPAL_CLIENT_ID,PAYPAL_SECRET } = require("../constants");
+const accountService = require("../services/account.service");
 const CC = require('currency-converter-lt')
 
 const paypal = require('paypal-rest-sdk')
@@ -59,11 +60,18 @@ const topup = async (req, res, next) => {
 };
 
 const transfer = async (req, res, next) => {
-    const { money,email } = req.body
+    const { money,email,accountId } = req.body
     const now = new Date().getTime()
     let currencyConverter = new CC({ isDecimalComma:true })
     const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
     try {   
+        const balance = await accountService.getBalanceByAccountId(accountId)
+        
+        if (balance.money < parseInt(money)) {
+            return res
+            .status(BAD_REQUEST)
+            .json(restError.BAD_REQUEST.extra({ error: "Số dư ví không đủ" }));
+        }
         let requestBody = {
             "sender_batch_header": {
               "email_message": `Chuyển tiền đến tài khoản ${email}`,
@@ -83,7 +91,9 @@ const transfer = async (req, res, next) => {
         }
         paypal.payout.create(requestBody,function (error, payment){
             if (error) {
-                throw error;
+                return res
+                .status(BAD_REQUEST)
+                .json(restError.BAD_REQUEST.extra({ error: "Giao dịch không thể thực hiện" }));
             } else {
                 res.json({payoutId : payment.batch_header.payout_batch_id})
             }

@@ -67,7 +67,7 @@ const updateById = async (req,res,next) => {
 const search = async (req,res,next) => {
     const data = req.query;
     try {     
-        const loans = await loanService.findAll(data);
+        const loans = await loanService.search(data);
         return res.json(loans);
     } catch (error) {
         return res

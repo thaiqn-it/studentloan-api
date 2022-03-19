@@ -14,14 +14,16 @@ const updateAccountService = async (id,money) => {
         id
       } 
     })
-  // return await Account.update(data, {
-  //   where: {
-  //     id
-  //   },
-  //   returning: true,
-  //   plain: true
-  // })
 };
+
+const getBalanceByAccountId = async (id) => {
+  return await Account.findOne({
+    where : {
+      id
+    },
+    attributes: ["money"]
+  })
+}
 
 const getAccountService = async (id) => {
   return await Account.findByPk(id);
@@ -47,4 +49,5 @@ module.exports = {
   getAccountService,
   deleteAccountService,
   getWalletByUserId,
+  getBalanceByAccountId
 };

@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post("/", investmentController.createInvestment);
 
+//check exsist by loanId and investorId
 router.get("/",investorAuth, investmentController.getAllByInvestorID);
 
 router.get("/:id",investorAuth, investmentController.checkExistInvestmentByInvestorId);

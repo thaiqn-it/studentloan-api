@@ -1,4 +1,4 @@
-const { INTERNAL_SERVER_ERROR } = require("http-status");
+const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("http-status");
 const accountService = require("../services/account.service");
 const { restError } = require("../errors/rest");
 
@@ -19,7 +19,14 @@ const updateByAccountId = async (req, res) => {
   try {
     const { id }= req.params;
     const { money } = req.body;
-    
+    if (money < 0) {
+      const balance = await accountService.getBalanceByAccountId(id)
+      if (balance.money < Math.abs(money)) {
+        return res
+          .status(BAD_REQUEST)
+          .json(restError.BAD_REQUEST.extra({ error: "Số dư ví không đủ" }));
+      }
+    }
     const account = await accountService.updateAccountService(id,money);
     res.json(account);
   } catch (err) {
