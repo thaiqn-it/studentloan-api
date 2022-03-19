@@ -15,7 +15,7 @@ const createAccount = async (req, res) => {
   }
 };
 
-const updateAccount = async (req, res) => {
+const updateByAccountId = async (req, res) => {
   try {
     const { id }= req.params;
     const { money } = req.body;
@@ -43,8 +43,8 @@ const deleteAccount = async (req, res) => {
 
 const getByUserId = async (req, res) => {
   try {
-    const { id } = req.params;
-    const account = await accountService.getWalletByUserId(id);
+    const user = req.user;
+    const account = await accountService.getWalletByUserId(user.id);
     res.json(account);
   } catch (err) {
     res
@@ -55,7 +55,7 @@ const getByUserId = async (req, res) => {
 
 exports.accountController = {
   createAccount,
-  updateAccount,
+  updateByAccountId,
   deleteAccount,
   getByUserId
 };

@@ -5,10 +5,10 @@ const { INVESTMENT_STATUS } = require('../models/enum')
 
 const InvestmentController = {};
 
-InvestmentController.getAllInvestment = async (req, res, next) => {
+InvestmentController.getAllByInvestorID = async (req, res, next) => {
   try {
-    const { id } = req.params
-    const investments = await InvestmentService.getAllByInvestorId(id);
+    const investor = req.user.Investor
+    const investments = await InvestmentService.getAllByInvestorId(investor.id);
     return res.json(investments);
   } catch (error) {
     return res
@@ -72,6 +72,20 @@ InvestmentController.deleteInvestment = async (req, res, next) => {
     const investment = await InvestmentService.deleteOne(id);
     // const Investment = await create(req.body);
     return res.json(investment);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+InvestmentController.checkExistInvestmentByInvestorId = async (req, res, next) => {
+  const investor = req.user.Investor;
+  const { id : loanId } = req.params
+  try {
+    const check = await InvestmentService.count(loanId,investor.id);
+    return res.json(check);
   } catch (error) {
     console.log(error);
     return res

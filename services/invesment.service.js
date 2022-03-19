@@ -42,6 +42,16 @@ InvestmentService.createOne = async (InvestmentInfo) => {
   return await Investment.create(InvestmentInfo);
 };
 
+InvestmentService.count = async (loanId,investorId) => {
+  return Investment.count({ where: { loanId, investorId } })
+  .then(count => {
+    if (count != 0) {
+      return true;
+    }
+    return false;
+  });
+};
+
 InvestmentService.findOne = async (id, investorId) => {
   return await Investment.findOne({ where: { id, investorId } });
 };
