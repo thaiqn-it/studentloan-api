@@ -10,41 +10,46 @@ const findById = async (id) => {
 
 const findByUserId = async (id) => {
   return await db.Student.findOne({
-    where:{
-      userId:id
-    },
-    include:[{
+    where: {
+      userId: id
+    }
+    ,
+    include: [
+      {
       model: db.Archievement,
-      where:{
-        status:"ACTIVE"
+      where: {
+        status: "ACTIVE"
       }
     },
     {
       model: db.SchoolMajor,
-      include:[
+      include: [
         {
-        model:db.School,
-        attributes:["name"],
-      },
-      {
-        model:db.Major,
-        attributes:["name"],
-      },
-    ]
+          model: db.School,
+          attributes: ["name"],
+        },
+        {
+          model: db.Major,
+          attributes: ["name"],
+        },
+      ]
     },
     {
       model: db.Tutor,
-      where:{
-        status:"ACTIVE"
+      where: {
+        status: "ACTIVE"
       }
     },
     {
       model: db.User,
-      where:{
-        status:"ACTIVE"
+      include:{
+        model: db.UserStatus,
+        where:{
+          isActive: true
+        }
       }
     },
-  ]
+    ]
   });
 };
 
@@ -52,18 +57,18 @@ const create = async ({ ...data }) => {
   return await db.Student.create(data);
 };
 
-const updateById = async (id,data) => {
+const updateById = async (id, data) => {
   return await db.Student.update(data, {
     where: {
-      id : id
+      id: id
     }
   })
 };
 
-exports.studentService = { 
-    findAll, 
-    findById,
-    create,
-    updateById,
-    findByUserId,
+exports.studentService = {
+  findAll,
+  findById,
+  create,
+  updateById,
+  findByUserId,
 };
