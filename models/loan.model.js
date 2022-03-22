@@ -8,6 +8,14 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
+      studentId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: "Student",
+          key: "id",
+        },
+      }, 
       totalMoney: {
         type: DataTypes.BIGINT,
         allowNull: false,
@@ -16,9 +24,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
-      expectedGraduationDay : {
-          type : DataTypes.DATE,
-          allowNull : false,
+      expectedGraduationTime : {
+        type : DataTypes.INTEGER,
+        allowNull : false,
+      },
+      title : {
+        type : DataTypes.TEXT,
+        allowNull : true
       },
       description : {
           type : DataTypes.TEXT,
@@ -48,12 +60,30 @@ module.exports = (sequelize, DataTypes) => {
       status : {
         type : DataTypes.STRING,
         allowNull : false
+      },
+      expectedMoney:{
+        type:DataTypes.BIGINT,
       }
     }, { timestamps : false});
   
     Loan.associate = (models) => {
         Loan.hasMany(models.LoanSchedule, {
-            foreignKey: "loanId",
+          foreignKey: "loanId",
+        })
+        Loan.hasMany(models.Report,{
+          foreignKey : "loanId"
+        })
+        Loan.belongsTo(models.Student, {
+          foreignKey: "studentId",
+        });
+        Loan.hasMany(models.Investment,{
+          foreignKey : "loanId"
+        })
+        models.Investment.belongsTo(models.Loan,{
+          foreignKey : "loanId"
+        })
+        Loan.hasMany(models.LoanMedia,{
+          foreignKey : "loanId"
         })
     };
     

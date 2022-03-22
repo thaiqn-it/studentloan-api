@@ -31,4 +31,9 @@ InvestorService.deleteOne = async (id) => {
   return investor[1];
 };
 
+InvestorService.getOne = async (id) => {
+  const investor = await Investor.findByPk(id);
+  return investor;
+};
+
 module.exports = InvestorService;

@@ -6,14 +6,14 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    //  UserId: {
-    //   type: DataTypes.UUID,
-    //   allowNull: false,
-    //   references: {
-    //     model: "Users",
-    //     key: "UserId",
-    //   },
-    // },
+     userId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: "User",
+        key: "id",
+      },
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -22,74 +22,49 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    job: {
+    profileUrl : {
+      type: DataTypes.STRING
+    },
+    citizenId:{
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    citizenCardCreatedDate:{
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    citizenCardCreatedPlace:{
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    frontCitizenCardImageUrl:{
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // OldSchool: {
-    //   type: DataTypes.UUID,
-    //   allowNull: true,
-    //   references: {
-    //     model: "Schools",
-    //     key: "SchoolId",
-    //   },
-    // },
-    citizenId: {
+    backCitizenCardImageUrl:{
       type: DataTypes.STRING,
       allowNull: true,
-    },
-    frontCitizenCardImageId: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: "Images",
-        key: "id",
-      },
-    },
-    backCitizenCardImageId: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: "Images",
-        key: "id",
-      },
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
-      value: "active",
+      allowNull: false
     },
     parentId: {
       type: DataTypes.UUID,
       allowNull: true,
-    },
+      references : {
+        model: "Investor",
+        key: "id"
+      }
+    }
   });
 
-  //   Investor.associate = (models) => {
-  //     Investor.belongsTo(models.User, {
-  // foreignKey:"UserId",
-  //     });
-  //   };
-
-  // Investor.associate = (models) => {
-  //     Investor.belongsTo(models.School, {
-  //       foreignKey: "SchoolId"
-  //     });
-  //   };
-
   Investor.associate = (models) => {
-    Investor.belongsTo(models.Image, {
-      foreignKey: "backCitizenCardImageId",
-    });
     Investor.hasMany(models.Investment, {
       foreignKey: "investorId",
     });
-    Investor.belongsTo(models.Image, {
-      foreignKey: "frontCitizenCardImageId",
+    Investor.belongsTo(models.User, {
+      foreignKey:"userId",
     });
   };
 

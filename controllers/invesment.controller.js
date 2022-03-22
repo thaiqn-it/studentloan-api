@@ -1,12 +1,14 @@
-const InvestmentService = require("../services/Investment.service");
+const InvestmentService = require("../services/invesment.service");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
+const { INVESTMENT_STATUS } = require('../models/enum')
 
 const InvestmentController = {};
 
-InvestmentController.getAllInvestment = async (req, res, next) => {
+InvestmentController.getAllByInvestorID = async (req, res, next) => {
   try {
-    const investments = await InvestmentService.getAll();
+    const investor = req.user.Investor
+    const investments = await InvestmentService.getAllByInvestorId(investor.id);
     return res.json(investments);
   } catch (error) {
     return res
@@ -17,28 +19,20 @@ InvestmentController.getAllInvestment = async (req, res, next) => {
 
 InvestmentController.createInvestment = async (req, res, next) => {
   const {
-    isDonate,
-    startDay,
-    endDay,
     interest,
-    status,
     total,
-    studentId,
     investorId,
-    loanAccountId,
+    loanId,
   } = req.body;
   try {
-    const investment = await InvestmentService.createOne({
-      isDonate,
-      startDay,
-      endDay,
+    const data = {
+      status : INVESTMENT_STATUS.PENDING,
       interest,
-      status,
       total,
-      studentId,
       investorId,
-      loanAccountId,
-    });
+      loanId,
+    }
+    const investment = await InvestmentService.createOne(data);
     // const Investment = await create(req.body);
     return res.json(investment);
   } catch (error) {
@@ -78,6 +72,20 @@ InvestmentController.deleteInvestment = async (req, res, next) => {
     const investment = await InvestmentService.deleteOne(id);
     // const Investment = await create(req.body);
     return res.json(investment);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+InvestmentController.checkExistInvestmentByInvestorId = async (req, res, next) => {
+  const investor = req.user.Investor;
+  const { id : loanId } = req.params
+  try {
+    const check = await InvestmentService.count(loanId,investor.id);
+    return res.json(check);
   } catch (error) {
     console.log(error);
     return res

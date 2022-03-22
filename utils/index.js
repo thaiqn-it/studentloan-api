@@ -26,3 +26,8 @@ exports.mapErrorArrayExpressValidator = (errorArr) => {
 	}
 	return errorParams;
 };
+
+exports.excludePassword = (user) => {
+  const { password, ...data } = user;
+  return data;
+};

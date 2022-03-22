@@ -1,25 +1,76 @@
-const { Invesment } = require("../models");
+const { Investment } = require("../models");
+const db = require("../models/index");
 
-const InvesmentService = {};
+const InvestmentService = {};
 
-InvesmentService.getAll = async (investorId) => {
-  return await Invesment.findAll({ where: { investorId } });
+InvestmentService.getAllByInvestorId = async (id) => {
+  return await Investment.findAll({
+    where : {
+      investorId : id
+    },
+    attributes: ["id","total"],
+    include : [
+      {
+        model : db.Loan,
+        attributes: {
+          include: [
+            [db.sequelize.literal('(SELECT ISNULL(SUM(money),0) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND LoanSchedule.status ='+ "'COMPLETED'" +')'), 'PaidMoney']
+          ]
+        },
+        include : [
+          {
+            model : db.Student,
+            attributes: ["id","firstname","lastname","profileUrl"],
+            include : [
+              {
+                model : db.SchoolMajor,
+                attributes: ["id"],
+                include : [
+                  { model : db.Major, attributes: ["name"] },
+                  { model : db.School, attributes: ["name"], },
+                ]
+              }
+            ]
+          }
+        ],
+      }
+    ],
+  });
 };
 
-InvesmentService.createOne = async (InvesmentInfo) => {
-  return await Invesment.create(InvesmentInfo);
+InvestmentService.createOne = async (InvestmentInfo) => {
+  return await Investment.create(InvestmentInfo);
 };
 
-InvesmentService.findOne = async (id, investorId) => {
-  return await Invesment.findOne({ where: { id, investorId } });
+InvestmentService.count = async (loanId,investorId) => {
+  return Investment.count({ where: { loanId, investorId } })
+  .then(count => {
+    if (count != 0) {
+      return true;
+    }
+    return false;
+  });
 };
 
-InvesmentService.updateOne = async (InvesmentInfo) => {
-  return await Invesment.update(InvesmentInfo);
+InvestmentService.findOne = async (id, investorId) => {
+  return await Investment.findOne({ where: { id, investorId } });
 };
 
-InvesmentService.deleteOne = async (id) => {
-  return await Invesment.update({ status: "inactive" }, { where: { id } });
+InvestmentService.updateOne = async (id,investmentInfo) => {
+  const investment = await Investment.update(investmentInfo, {
+    where: { id },
+    returning: true,
+    plain: true,
+  });
+  return investment[1];
 };
 
-module.exports = InvesmentService;
+InvestmentService.deleteOne = async (id) => {
+  const investment = await Investment.update(
+    { status: "inactive" },
+    { where: { id }, returning: true, plain: true }
+  );
+  return investment[1];
+};
+
+module.exports = InvestmentService;

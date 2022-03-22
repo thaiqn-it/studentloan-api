@@ -5,7 +5,7 @@ const { mapErrorArrayExpressValidator } = require("../utils");
 const { validationResult } = require("express-validator");
   
 const findAll = async (req, res, next) => {
-    try {
+    try {     
         const loans = await loanService.findAll();
         return res.json(loans);
     } catch (error) {
@@ -64,9 +64,22 @@ const updateById = async (req,res,next) => {
     }
 }
 
+const search = async (req,res,next) => {
+    const data = req.query;
+    try {     
+        const loans = await loanService.search(data);
+        return res.json(loans);
+    } catch (error) {
+        return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+}
+
 exports.loanController = { 
     findAll,
     findById,
     create,
     updateById,
+    search
 };

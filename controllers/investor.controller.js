@@ -4,7 +4,7 @@ const { restError } = require("../errors/rest");
 
 const InvestorController = {};
 
-InvestorController.getAllInvestor = async (req, res, next) => {
+InvestorController.getAllInvestors = async (req, res, next) => {
   try {
     const investors = await InvestorService.getAll();
     return res.json(investors);
@@ -15,32 +15,24 @@ InvestorController.getAllInvestor = async (req, res, next) => {
   }
 };
 
+InvestorController.getInvestor = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const investor = await InvestorService.getOne(id);
+    return res.json(investor);
+  } catch (error) {
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 InvestorController.createInvestor = async (req, res, next) => {
   const {
-    lastName,
-    firstName,
-    job,
-    citizenId,
-    frontCitizenCardImageId,
-    backCitizenCardImageId,
-    type,
-    status,
-    parentId,
-    role,
+    data
   } = req.body;
   try {
-    const investor = await InvestorService.createOne({
-      lastName,
-      firstName,
-      job,
-      citizenId,
-      frontCitizenCardImageId,
-      backCitizenCardImageId,
-      type,
-      status,
-      parentId,
-      role,
-    });
+    const investor = await InvestorService.createOne(data);
     // const investor = await create(req.body);
     return res.json(investor);
   } catch (error) {
@@ -62,10 +54,10 @@ InvestorController.updateInvestor = async (req, res, next) => {
     type,
     status,
     parentId,
-    role,
   } = req.body;
 
   const { id } = req.params;
+
   try {
     const investor = await InvestorService.updateOne(id, {
       lastName,

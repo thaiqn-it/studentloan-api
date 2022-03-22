@@ -6,55 +6,46 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    // studentId: {
-    //   type: DataTypes.UUID,
-    //   allowNull: false,
-    // },
-    investorId: {
+    transactionId: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {
-        model: "Investors",
+          model: "Transaction",
+          key: "id",
+      },
+    },
+    investorId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: "Investor",
         key: "id",
       },
     },
-    isDonate: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-    },
-    startDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    endDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    interest: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
     status: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     total: {
       type: DataTypes.BIGINT,
-      allowNull: true,
+      allowNull: false,
     },
-    // LoanAccountId: {
-    //   type: DataTypes.UUID,
-    //   allowNull: true,
-    //   references: {
-    //     model: "Investor",
-    //     key: "InvestorId",
-    //   },
-    // },
+    loanId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: "Loan",
+        key: "id",
+      },
+    },
   });
 
   Investment.associate = (models) => {
     Investment.belongsTo(models.Investor, {
       foreignKey: "investorId",
+    });
+    Investment.belongsTo(models.Loan, {
+      foreignKey: "loanId",
     });
   };
 

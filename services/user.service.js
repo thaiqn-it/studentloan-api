@@ -1,21 +1,48 @@
 const db = require("../models");
-const { hashPassword, comparePassword } = require("../utils");
+const { USER_STATUS, ACCOUNT_TYPE, ACCOUNT_STATUS } = require("../models/enum");
+
+const { comparePassword } = require("../utils");
 const User = db.User;
+const Account = db.Account;
 
-const createUserService = async (userInfo, password) => {
-  const hashedPassword = hashPassword(password);
+const createUserService = async (user) => {
+  return (
+    await User.create(
+      {
+        ...user,
 
-  const user = { ...userInfo, password: hashedPassword };
-  return await User.create(user);
+        Account: {
+          money: 0,
+          type: ACCOUNT_TYPE.LOAN_ACCOUNT,
+          status: ACCOUNT_STATUS.ACTIVE,
+        },
+      },
+      {
+        include: Account,
+      }
+    )
+  ).get({ plain: true });
 };
 
-const loginService = async (phoneNumber, password) => {
-  const user = await User.findOne({
+const count = async (oAuthId) => {
+  const result = await User.count({
     where: {
-      phoneNumber: "0123456789",
+      oAuthId: oAuthId,
     },
   });
+  if (result === null) {
+    throw new Error();
+  }
+  return result;
+};
 
+const loginService = async (email, password) => {
+  const user = await User.findOne({
+    where: {
+      email: email.trim(),
+    },
+    raw: true,
+  });
   if (user === null) {
     throw new Error();
   }
@@ -26,4 +53,46 @@ const loginService = async (phoneNumber, password) => {
   }
 };
 
-module.exports = { createUserService, loginService };
+const getUserByEmailService = async (email) => {
+  const user = await User.findOne({ where: { email: email.trim() } });
+  return user;
+};
+
+const deleteUserService = async (id) => {
+  const user = await User.findByPk(id);
+  if (user === null) throw new Error();
+  user.status = USER_STATUS.INACTIVE;
+  return await user.save();
+};
+
+const updateUserService = async (data) => {
+  let user = await User.findByPk(data.id);
+  if (user === null) throw new Error();
+  user = { ...user, ...data };
+  return await user.save();
+};
+
+const getOne = async ({ ...data }) => {
+  return await User.findOne({
+    where: data,
+    raw: true,
+  });
+};
+
+const getAll = async () => {
+  return await User.findAll({
+    attributes: ["id", "phoneNumber", "type", "email", "status"],
+    include: { model: db.Student, attributes: ["firstName", "lastName"] },
+  });
+};
+
+module.exports = {
+  createUserService,
+  loginService,
+  deleteUserService,
+  updateUserService,
+  count,
+  getOne,
+  getAll,
+  getUserByEmailService,
+};

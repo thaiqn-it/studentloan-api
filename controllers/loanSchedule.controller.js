@@ -1,8 +1,11 @@
 const { loanScheduleService } = require("../services/loanSchedule.service");
+const { loanService } = require("../services/loan.service");
 const { INTERNAL_SERVER_ERROR, NOT_FOUND,BAD_REQUEST } = require("http-status");
 const { restError } = require("../errors/rest");
 const { mapErrorArrayExpressValidator } = require("../utils");
-const { validationResult } = require("express-validator");
+const { validationResult, body } = require("express-validator");
+const moment = require('moment');
+const { LOAN_SCHEDULE_STATUS, LOAN_SCHEDULE_TYPE } = require("../models/enum")
   
 const findAll = async (req, res, next) => {
     try {
@@ -29,18 +32,49 @@ const findById = async (req, res, next) => {
 };
 
 const create = async (req, res, next) => {
-    const errors = validationResult(req); 
-		if (!errors.isEmpty()) {
-			return res.status(BAD_REQUEST).json(
-				restError.BAD_REQUEST.extra({
-					errorParams: mapErrorArrayExpressValidator(errors.array()),
-				})
-			);
-		}
-    const data = req.body
-    try {      
-        const loanSchedule = await loanScheduleService.create(data);
-        return res.json(loanSchedule);
+    const { id } = req.params;
+    var scheduleData = [];
+    try {     
+        const loan = await loanService.findById(id)
+
+        for (let i = 0; i < loan.expectedGraduationTime ; i++) {
+            const startAt = moment(new Date()).add(1 * i,'month');
+            const endAt = moment(new Date()).add(1 * ( i + 1 ),'month');
+            const paidAtStudying = {
+                money : '200000',
+                startAt : startAt,
+                endAt : endAt,
+                type : LOAN_SCHEDULE_TYPE.STP,
+                status : LOAN_SCHEDULE_STATUS.ONGOING,
+                loanId : id
+            }
+            scheduleData.push(paidAtStudying)
+        }
+
+        const leftMoney = parseFloat(loan.totalMoney) - loan.expectedGraduationTime * 100000;
+
+        const moneyPaidGraduted = Math.round(leftMoney / loan.duration)
+
+        const expectedGraduationDay = moment().add(loan.expectedGraduationTime, 'month')
+       
+        for (let i = 0; i < loan.duration ; i++) {
+            const startAt = moment(new Date(expectedGraduationDay)).add(1 * i,'month');
+            const endAt = moment(new Date(expectedGraduationDay)).add(1 * (i + 1),'month');
+            const paidAtStudying = {
+                money : moneyPaidGraduted,
+                startAt : startAt,
+                endAt : endAt,
+                type : LOAN_SCHEDULE_TYPE.GP,
+                status : LOAN_SCHEDULE_STATUS.ONGOING,
+                loanId : id,
+            }
+
+            scheduleData.push(paidAtStudying)
+        }
+        const loanSchedule = await loanScheduleService.create(scheduleData);
+        return res.json({
+			loanSchedule
+		});
     } catch (error) {
         return res
             .status(INTERNAL_SERVER_ERROR)
