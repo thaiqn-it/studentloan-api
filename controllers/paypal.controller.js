@@ -1,7 +1,7 @@
 const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("http-status");
 const { restError } = require("../errors/rest");
 const { PAYPAL_CLIENT_ID,PAYPAL_SECRET } = require("../constants");
-const accountService = require("../services/account.service");
+const walletService = require("../services/wallet.service");
 const CC = require('currency-converter-lt')
 
 const paypal = require('paypal-rest-sdk')
@@ -65,7 +65,7 @@ const transfer = async (req, res, next) => {
     let currencyConverter = new CC({ isDecimalComma:true })
     const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
     try {   
-        const balance = await accountService.getBalanceByAccountId(accountId)
+        const balance = await walletService.getBalanceById(accountId)
         
         if (balance.money < parseInt(money)) {
             return res

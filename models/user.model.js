@@ -21,6 +21,21 @@ module.exports = (sequelize, DataTypes) => {
     oAuthId: {
       type: DataTypes.STRING,
     },
+    reason: {
+      type: DataTypes.STRING,
+    },
+    firstName:{
+      type: DataTypes.STRING(70)
+    },
+    lastName:{
+      type: DataTypes.STRING(70)
+    },
+    status: {
+      type: DataTypes.STRING,
+    },
+    profileUrl : {
+      type: DataTypes.STRING
+    },
   });
 
   User.associate = (models) => {
@@ -36,13 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
     });
-    User.hasOne(models.Account, {
-      foreignKey: {
-        name: "userId",
-        allowNull: false,
-      },
-    });
-    User.hasMany(models.UserStatus, {
+    User.hasOne(models.Wallet, {
       foreignKey: {
         name: "userId",
         allowNull: false,

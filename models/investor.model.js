@@ -14,17 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         key: "id",
       },
     },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    profileUrl : {
-      type: DataTypes.STRING
-    },
     citizenId:{
       type: DataTypes.STRING(20),
       allowNull: true,

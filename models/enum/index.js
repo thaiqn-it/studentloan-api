@@ -32,10 +32,11 @@ exports.USERSTATUS_TYPE = {
   BAN : "BAN"
 };
 
-exports.ACCOUNT_STATUS = {
+exports.WALLET_STATUS = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
 };
+
 exports.TRANSACTION_STATUS = {
   SUCCESS: "SUCCESS",
   FAIL: "FAIL",

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Admin = sequelize.define("Admin", {
+    const Wallet = sequelize.define("Wallet", {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -14,12 +14,8 @@ module.exports = (sequelize, DataTypes) => {
             key: "id",
         },
       },
-      firstName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      lastName: {
-        type: DataTypes.STRING,
+      money: {
+        type: DataTypes.BIGINT,
         allowNull: false,
       },
       status: {
@@ -28,12 +24,15 @@ module.exports = (sequelize, DataTypes) => {
       },
     });
   
-    Admin.associate = (models) => {
-        Admin.belongsTo(models.User, {
+    Wallet.associate = (models) => {
+        Wallet.hasMany(models.Transaction, {
+        foreignKey: "walletId",
+      });
+      Wallet.belongsTo(models.User, {
         foreignKey: "userId",
       });
     };
   
-    return Admin;
+    return Wallet;
   };
   

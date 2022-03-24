@@ -1,12 +1,16 @@
-const { Investment } = require("../models");
+const { Investment, Sequelize } = require("../models");
 const db = require("../models/index");
-
+const { INVESTMENT_STATUS } = require('../models/enum')
+const Op = Sequelize.Op;
 const InvestmentService = {};
 
 InvestmentService.getAllByInvestorId = async (id) => {
   return await Investment.findAll({
     where : {
-      investorId : id
+      investorId : id,
+      [Op.not] : {
+        status : [INVESTMENT_STATUS.CANCEL,INVESTMENT_STATUS.FAIL]
+      } 
     },
     attributes: ["id","total"],
     include : [
@@ -52,9 +56,39 @@ InvestmentService.count = async (loanId,investorId) => {
   });
 };
 
-InvestmentService.findOne = async (id, investorId) => {
-  return await Investment.findOne({ where: { id, investorId } });
+InvestmentService.findOneByLoanIdAndInvestorId = async (loanId, investorId) => {
+  return await Investment.findOne({ 
+    where: { 
+      loanId, investorId 
+      ,
+      [Op.not] : {
+        status : [INVESTMENT_STATUS.CANCEL,INVESTMENT_STATUS.FAIL]
+      } 
+    } ,
+    attributes : ['id']
+  });
 };
+
+InvestmentService.findOneById = async (id) => {
+  return await Investment.findOne({
+    where : {
+      id,
+      [Op.not] : {
+        status : [INVESTMENT_STATUS.CANCEL,INVESTMENT_STATUS.FAIL]
+      }  
+    },
+    include : 
+    [
+      {
+        model : db.Loan
+      },
+      {
+        model : db.Transaction,
+        require : false
+      }
+    ]
+  })
+}
 
 InvestmentService.updateOne = async (id,investmentInfo) => {
   const investment = await Investment.update(investmentInfo, {

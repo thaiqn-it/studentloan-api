@@ -1,5 +1,5 @@
 const userService = require("../services/user.service");
-const accountService = require("../services/account.service");
+const walletService = require("../services/wallet.service");
 const transactionService = require("../services/transaction.service");
 const { USER_STATUS } = require("../models/enum/index");
 const {
@@ -314,7 +314,7 @@ const checkEmail = async (req, res) => {
 const getWalletInfo = async (req, res) => {
   try {
     const user = req.user;
-    const wallet = await accountService.getWalletByUserId(user.id);
+    const wallet = await walletService.getOneById(user.id);
 
     return res.json(wallet);
   } catch (e) {

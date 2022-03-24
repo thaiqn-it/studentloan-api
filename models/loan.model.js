@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
         allowNull: false,
       },
+      fixedMoney: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+      },
       interest: {
         type: DataTypes.FLOAT,
         allowNull: false,

@@ -14,24 +14,11 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      firstName:{
-        type: DataTypes.STRING(70)
-      },
-      lastName:{
-        type: DataTypes.STRING(70)
-      },
-      semester:{
-          type: DataTypes.INTEGER
-      },
-      
       birthDate:{
         type: DataTypes.DATE
       },
       studentCardId:{
           type: DataTypes.STRING(50)
-      },
-      profileUrl : {
-          type: DataTypes.STRING
       },
       frontCitizenCardImageUrl:{
         type: DataTypes.STRING,

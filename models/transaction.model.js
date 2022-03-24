@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    accountId: {
+    walletId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: "Account",
+        model: "Wallet",
         key: "id",
       },
     },
@@ -55,6 +55,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   });
+
+  
+  Transaction.associate = (models) => {
+    Transaction.hasOne(models.Investment, {
+      foreignKey: "transactionId",
+    });
+  };
 
   return Transaction;
 };

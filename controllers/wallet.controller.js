@@ -1,12 +1,12 @@
 const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("http-status");
-const accountService = require("../services/account.service");
+const walletService = require("../services/wallet.service");
 const { restError } = require("../errors/rest");
 
-const createAccount = async (req, res) => {
+const create = async (req, res) => {
   try {
     const { userId, money, type, status } = req.body;
     const data = { userId, money, type, status };
-    const account = await accountService.createAccountService(data);
+    const account = await walletService.create(data);
     res.json(account);
   } catch (err) {
     res
@@ -15,19 +15,19 @@ const createAccount = async (req, res) => {
   }
 };
 
-const updateByAccountId = async (req, res) => {
+const updateMoneyById = async (req, res) => {
   try {
     const { id }= req.params;
     const { money } = req.body;
     if (money < 0) {
-      const balance = await accountService.getBalanceByAccountId(id)
+      const balance = await walletService.getBalanceById(id)
       if (balance.money < Math.abs(money)) {
         return res
           .status(BAD_REQUEST)
           .json(restError.BAD_REQUEST.extra({ error: "Số dư ví không đủ" }));
       }
     }
-    const account = await accountService.updateAccountService(id,money);
+    const account = await walletService.updateMoneyById(id,money);
     res.json(account);
   } catch (err) {
     res
@@ -36,10 +36,10 @@ const updateByAccountId = async (req, res) => {
   }
 };
 
-const deleteAccount = async (req, res) => {
+const deleteById = async (req, res) => {
   try {
     const id = req.params;
-    const account = await accountService.getByUserId(id);
+    const account = await walletService.getOneById(id);
     res.json(account);
   } catch (err) {
     res
@@ -51,7 +51,7 @@ const deleteAccount = async (req, res) => {
 const getByUserId = async (req, res) => {
   try {
     const user = req.user;
-    const account = await accountService.getWalletByUserId(user.id);
+    const account = await walletService.getWalletByUserId(user.id);
     res.json(account);
   } catch (err) {
     res
@@ -60,9 +60,9 @@ const getByUserId = async (req, res) => {
   }
 };
 
-exports.accountController = {
-  createAccount,
-  updateByAccountId,
-  deleteAccount,
+exports.walletController = {
+  create,
+  updateMoneyById,
+  deleteById,
   getByUserId
 };

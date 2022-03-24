@@ -84,8 +84,32 @@ InvestmentController.checkExistInvestmentByInvestorId = async (req, res, next) =
   const investor = req.user.Investor;
   const { id : loanId } = req.params
   try {
-    const check = await InvestmentService.count(loanId,investor.id);
-    return res.json(check);
+    const investment = await InvestmentService.findOneByLoanIdAndInvestorId(loanId,investor.id);
+    let result = {}
+    if (!investment) {
+      result = {
+        isInvest : false
+      }
+    } else {
+      result = {
+        isInvest : true,
+        investmentId : investment.id
+      }
+    }
+    return res.json(result);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+InvestmentController.findOneById = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const investment = await InvestmentService.findOneById(id);
+    return res.json(investment);
   } catch (error) {
     console.log(error);
     return res
