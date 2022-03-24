@@ -6,15 +6,36 @@ const getAll = async () => {
     return await SystemConfig.findAll();
 };
 
-const getByType = async (type) => {
+const getInterest = async () => {
     return await SystemConfig.findOne({
         where : {
-            type
-        }
+            status : true
+        },
+        attributes: ['interest']
+    });
+};
+
+const getTransactionFee = async () => {
+    return await SystemConfig.findOne({
+        where : {
+            status : true
+        },
+        attributes: ['transactionFee']
+    });
+};
+
+const getFixedMoney = async () => {
+    return await SystemConfig.findOne({
+        where : {
+            status : true
+        },
+        attributes: ['fixedMoney']
     });
 };
 
 exports.systemConfigService = {
   getAll,
-  getByType,
+  getInterest,
+  getFixedMoney,
+  getTransactionFee
 };

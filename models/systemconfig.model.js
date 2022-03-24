@@ -6,11 +6,14 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
-        type: {
-            type: DataTypes.STRING,
+        interest: {
+            type: DataTypes.FLOAT,
         },
-        value: {
+        fixedMoney: {
             type: DataTypes.INTEGER,
+        },
+        transactionFee: {
+            type: DataTypes.FLOAT,
         },
         status: {
             type: DataTypes.BOOLEAN,

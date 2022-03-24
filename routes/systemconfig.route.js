@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get("/",systemConfigController.findAll);
 
-router.get("/:type", systemConfigController.findByType);
+router.get("/interest", systemConfigController.findInterest);
+router.get("/transaction-fee", systemConfigController.findTransactionFee);
+router.get("/fixed-money", systemConfigController.findFixedMoney);
 
 module.exports = { systemConfigRouter : router };

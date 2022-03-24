@@ -15,14 +15,36 @@ const findAll = async (req, res, next) => {
     }
 };
 
-const findByType = async (req, res, next) => {
-    const { type } = req.params;
+const findInterest = async (req, res, next) => {
     try {
-        const config = await systemConfigService.getByType(type);
-        if (config === null) throw new Error();
-        const value = config.value
+        const { interest } = await systemConfigService.getInterest();
+        if (interest === null) throw new Error();
 		return res.json({
-			value
+			interest
+		});
+    } catch (error) {
+        return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+    }
+};
+
+const findTransactionFee = async (req, res, next) => {
+    try {
+        const { transactionFee } = await systemConfigService.getTransactionFee();
+        if (transactionFee === null) throw new Error();
+		return res.json({
+			transactionFee
+		});
+    } catch (error) {
+        return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+    }
+};
+
+const findFixedMoney = async (req, res, next) => {
+    try {
+        const { fixedMoney } = await systemConfigService.getFixedMoney();
+        if (fixedMoney === null) throw new Error();
+		return res.json({
+			fixedMoney
 		});
     } catch (error) {
         return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
@@ -31,5 +53,7 @@ const findByType = async (req, res, next) => {
 
 exports.systemConfigController = { 
     findAll,
-    findByType
+    findInterest,
+    findFixedMoney,
+    findTransactionFee
 };
