@@ -35,12 +35,6 @@ const findByUserId = async (id) => {
       ]
     },
     {
-      model: db.Tutor,
-      where: {
-        status: "ACTIVE"
-      }
-    },
-    {
       model: db.User,
       include:{
         model: db.UserStatus,

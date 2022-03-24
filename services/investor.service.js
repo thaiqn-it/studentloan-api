@@ -6,19 +6,22 @@ InvestorService.getAll = async () => {
   return await Investor.findAll();
 };
 
-InvestorService.getUserById = async (id) =>{
+InvestorService.getUserById = async (id) => {
   return await Investor.findOne({
-    where:{
-      userId:id
+    where: {
+      userId: id
     },
-    include:[
-    {
-      model: db.User,
-      where:{
-        status:"ACTIVE"
-      }
-    },
-  ]
+    include: [
+      {
+        model: db.User,
+        include: {
+          model: db.UserStatus,
+          where: {
+            isActive: true
+          }
+        }
+      },
+    ]
   });
 }
 
