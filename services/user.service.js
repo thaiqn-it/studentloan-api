@@ -3,6 +3,7 @@ const { USER_STATUS, ACCOUNT_TYPE, ACCOUNT_STATUS } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
+const UserStatus = db.UserStatus;
 const Account = db.Account;
 
 const createUserService = async (user) => {
@@ -81,8 +82,20 @@ const getOne = async ({ ...data }) => {
 
 const getAll = async () => {
   return await User.findAll({
-    attributes: ["id", "phoneNumber", "type", "email", "status"],
-    include: { model: db.Student, attributes: ["firstName", "lastName"] },
+    attributes: ["id", "phoneNumber", "type", "email"],
+    where: {
+      type: ["STUDENT", "INVESTOR"],
+    },
+    order:[
+      ["createdAt","ASC"],
+    ],
+    include:{
+      model: UserStatus,
+      attributes: ["type"],
+      where: {
+        isActive: true
+      }
+    }
   });
 };
 

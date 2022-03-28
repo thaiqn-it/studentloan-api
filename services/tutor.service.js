@@ -19,6 +19,16 @@ const getById = async (id) => {
   return await Tutor.findByPk(id);
 };
 
+const getListTutorByStudentId = async (id) => {
+  return await Tutor.findAll({
+    where:{
+      studentId: id
+    }}
+  );
+};
+
+
+
 const deleteById = async (id) => {
   const tutor = await Tutor.findByPk(id);
   if (tutor === null) throw new Error();
@@ -43,4 +53,5 @@ module.exports = {
   deleteById,
   getById,
   getByUserId,
+  getListTutorByStudentId
 };

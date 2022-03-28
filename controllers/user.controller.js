@@ -326,8 +326,8 @@ const getWalletInfo = async (req, res) => {
 
 const getAll = async (req, res, next) => {
   try {
-    const roleOfUser = await userService.getAll();
-    return res.json(roleOfUser);
+    const userList = await userService.getAll();
+    return res.json(userList);
   } catch (e) {
     res
       .status(INTERNAL_SERVER_ERROR)

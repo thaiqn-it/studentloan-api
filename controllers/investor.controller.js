@@ -27,6 +27,19 @@ InvestorController.getInvestor = async (req, res, next) => {
   }
 };
 
+
+InvestorController.getInvestorById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const investor = await InvestorService.getUserById(id);
+    return res.json(investor);
+  } catch (error) {
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 InvestorController.createInvestor = async (req, res, next) => {
   const {
     data
