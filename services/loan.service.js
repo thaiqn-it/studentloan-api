@@ -38,7 +38,7 @@ const findById = async (id) => {
     include : [
       {
         model : db.Student,
-        attributes: ["id","firstname","lastname","profileUrl","semester"],
+        // attributes: ["id","firstname","lastname","profileUrl","semester"],
         include : [
           {
             model : db.SchoolMajor,
@@ -50,6 +50,10 @@ const findById = async (id) => {
           },
           {
             model : db.Archievement,
+          },
+          {
+            model:db.User,
+            attributes: ["firstName","lastName","phoneNumber","email"]
           }
         ]
       },
@@ -57,7 +61,7 @@ const findById = async (id) => {
         required: false,
         model : db.LoanMedia,
         where : {
-          type : 'EVIDENCE'
+          status : 'active'
         }
       }
     ],

@@ -21,24 +21,24 @@ router.post(
         body("interest")
             .notEmpty()
             .withMessage("Interest should not be empty"),
-        body("description")
-            .notEmpty()
-            .trim()
-            .withMessage("Description should not be empty"),
-        body("loanStartAt")
-            .notEmpty()
-            .withMessage("Start day should not be empty")
-            .bail()
-            .isISO8601().toDate().withMessage("Start day wrong format"),
-        body("loanEndAt")
-            .notEmpty()
-            .withMessage("End day should not be empty")
-            .bail(),
+        // body("description")
+        //     .notEmpty()
+        //     .trim()
+        //     .withMessage("Description should not be empty"),
+        // body("loanStartAt")
+        //     .notEmpty()
+        //     .withMessage("Start day should not be empty")
+        //     .bail()
+        //     .isISO8601().toDate().withMessage("Start day wrong format"),
+        // body("loanEndAt")
+        //     .notEmpty()
+        //     .withMessage("End day should not be empty")
+        //     .bail(),
         body("postExpireAt")
             .notEmpty()
             .withMessage("Expire at should not be empty")
             .bail(),
-        body("expectedGraduationDay")
+        body("expectedGraduationTime")
             .notEmpty()
             .withMessage("Expected graduation day should not be empty")
             .bail(),
