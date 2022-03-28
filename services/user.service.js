@@ -66,11 +66,25 @@ const deleteUserService = async (id) => {
   return await user.save();
 };
 
+// const updateUserService = async (data) => {
+
+//   let user = await User.findByPk(data.id);
+//   if (user === null) throw new Error();
+//   user = { ...user, ...data };
+//   return await user.save();
+// };
+
 const updateUserService = async (data) => {
+
   let user = await User.findByPk(data.id);
   if (user === null) throw new Error();
-  user = { ...user, ...data };
-  return await user.save();
+  return await User.update(data,
+    {
+      where: {
+        id: data.id
+      }
+    }
+  )
 };
 
 const getOne = async ({ ...data }) => {
@@ -82,20 +96,12 @@ const getOne = async ({ ...data }) => {
 
 const getAll = async () => {
   return await User.findAll({
-    attributes: ["id", "phoneNumber", "type", "email"],
     where: {
       type: ["STUDENT", "INVESTOR"],
     },
-    order:[
-      ["createdAt","ASC"],
+    order: [
+      ["createdAt", "ASC"],
     ],
-    include:{
-      model: UserStatus,
-      attributes: ["type"],
-      where: {
-        isActive: true
-      }
-    }
   });
 };
 

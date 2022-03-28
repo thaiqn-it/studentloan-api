@@ -14,12 +14,6 @@ InvestorService.getUserById = async (id) => {
     include: [
       {
         model: db.User,
-        include: {
-          model: db.UserStatus,
-          where: {
-            isActive: true
-          }
-        }
       },
     ]
   });
