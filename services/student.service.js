@@ -36,12 +36,6 @@ const findByUserId = async (id) => {
     },
     {
       model: db.User,
-      include:{
-        model: db.UserStatus,
-        where:{
-          isActive: true
-        }
-      }
     },
     ]
   });

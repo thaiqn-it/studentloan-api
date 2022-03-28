@@ -291,6 +291,7 @@ const updateUser = async (req, res) => {
     const user = await userService.updateUserService(data);
     res.json(user);
   } catch (err) {
+    console.log(err)
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());

@@ -40,7 +40,9 @@ router.get("/student/me", studentAuth, userController.getProfile);
 
 router.get("/investor/me", investorAuth, userController.getProfile);
 
-router.put("/", userAuth, userController.updateUser);
+router.put("/",
+//  userAuth, 
+ userController.updateUser);
 
 router.delete("/", userController.deleteUser);
 
