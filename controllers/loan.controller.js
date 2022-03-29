@@ -15,10 +15,36 @@ const findAll = async (req, res, next) => {
     }
 };
 
+const findAllWaiting = async (req, res, next) => {
+    const data = req.body
+    try {     
+        const loans = await loanService.findAllWaiting(data);
+        return res.json(loans);
+    } catch (error) {
+        console.log(error)
+        return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+};
+
 const findById = async (req, res, next) => {
     const { id } = req.params;
     try {
         const loan = await loanService.findById(id);
+        if (loan === null) throw new Error();
+		return res.json({
+			loan,
+		});
+    } catch (error) {
+        return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+    }
+};
+
+const getOne = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const loan = await loanService.getOne(id);
         if (loan === null) throw new Error();
 		return res.json({
 			loan,
@@ -81,5 +107,7 @@ exports.loanController = {
     findById,
     create,
     updateById,
-    search
+    search,
+    findAllWaiting,
+    getOne
 };

@@ -24,6 +24,75 @@ const findAll = async () => {
   })
 };
 
+const findAllWaiting = async (data) => {
+  return await db.Loan.findAndCountAll({
+    attributes:["totalMoney", "id","title","postCreatedAt"],
+    order:[['postCreatedAt',data.order]],
+    limit: data.limit,
+    offset: data.offset,
+    include : [
+      {
+        model : db.Student,
+        attributes:["id"],
+        include : [
+          {
+            model : db.SchoolMajor,
+            attributes: ["id"],
+            include : [
+              { model : db.Major, attributes: ["name"] },
+              { model : db.School, attributes: ["name"], }
+            ]
+          },
+          {
+            model: db.User,
+            attributes: ["firstName", "lastName", "profileUrl","id"]
+          }
+        ]
+      },
+      {
+        model: db.LoanHistory,
+        attributes:["id"],
+        where:{
+          isActive:true,
+          type:LOAN_STATUS.WAITING
+        }
+      }
+    ]
+  })
+};
+
+const getOne = async (id) => {
+  return await db.Loan.findOne({
+    where:{
+      id:id,
+      status:LOAN_STATUS.WAITING
+    },
+    include : [
+      {
+        model : db.Student,
+        attributes:["id"],
+        include : [
+          {
+            model : db.SchoolMajor,
+            attributes: ["id"],
+            include : [
+              { model : db.Major, attributes: ["name"] },
+              { model : db.School, attributes: ["name"], }
+            ]
+          },
+          {
+            model: db.Archievement,
+          },
+          {
+            model: db.User,
+            attributes: ["firstName", "lastName", "profileUrl","id"]
+          }
+        ]
+      },
+    ]
+  })
+};
+
 const findById = async (id) => {
   return await db.Loan.findOne({
     where : {
@@ -140,5 +209,7 @@ exports.loanService = {
     findById,
     create,
     updateById,
-    search
+    search,
+    findAllWaiting,
+    getOne
 };
