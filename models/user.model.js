@@ -51,6 +51,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
     });
+    User.hasOne(models.LoanHistory, {
+      foreignKey: {
+        name: "adminId",
+      },
+    });
     User.hasOne(models.Wallet, {
       foreignKey: {
         name: "userId",

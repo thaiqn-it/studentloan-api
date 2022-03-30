@@ -1,7 +1,7 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { LOAN_STATUS } = require('../models/enum')
+const { LOAN_STATUS, LOANMEDIA_STATUS } = require('../models/enum')
 
 const findAll = async () => {
   return await db.Loan.findAll({
@@ -65,7 +65,6 @@ const getOne = async (id) => {
   return await db.Loan.findOne({
     where:{
       id:id,
-      status:LOAN_STATUS.WAITING
     },
     include : [
       {
@@ -74,21 +73,34 @@ const getOne = async (id) => {
         include : [
           {
             model : db.SchoolMajor,
-            attributes: ["id"],
+            attributes:["id"],
             include : [
               { model : db.Major, attributes: ["name"] },
               { model : db.School, attributes: ["name"], }
             ]
           },
           {
-            model: db.Archievement,
-          },
-          {
             model: db.User,
             attributes: ["firstName", "lastName", "profileUrl","id"]
+          },
+          {
+            model:db.Archievement,
           }
         ]
       },
+      {
+        model: db.LoanHistory,
+        where:{
+          isActive:true,
+          type:LOAN_STATUS.WAITING
+        }
+      },
+      {
+        model:db.LoanMedia,
+        where:{
+          status:LOANMEDIA_STATUS.ACTIVE
+        }
+      }
     ]
   })
 };
