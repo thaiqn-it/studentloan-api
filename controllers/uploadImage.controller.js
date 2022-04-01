@@ -13,7 +13,7 @@ cloudinary.config({
 });
 
 const option = {
-  folder: "image",
+  folder: "file",
 };
 const uploadImage = async (req, res) => {
   try {

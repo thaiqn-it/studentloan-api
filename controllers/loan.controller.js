@@ -20,8 +20,9 @@ const findAll = async (req, res, next) => {
 };
 
 const getLoanStudent = async (req, res, next) => {
+  const user = req.user
   try {
-    const loans = await loanService.getLoanStudent("a27026a0-c317-416d-bcde-93472072dcc1");
+    const loans = await loanService.getLoanStudent(user.Student.id);
     return res.json(loans);
   } catch (error) {
     return res

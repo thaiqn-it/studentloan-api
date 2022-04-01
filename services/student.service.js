@@ -81,7 +81,7 @@ const getStudentProfile = async (id) => {
     },
     {
       model: db.User,
-      attributes: ["firstName","lastName","phoneNumber","email"]
+      attributes: ["firstName","lastName","phoneNumber","email","profileUrl"]
     },
     ]
   });

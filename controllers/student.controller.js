@@ -77,9 +77,9 @@ const updateById = async (req, res, next) => {
 };
 
 const getStudentProfile = async (req, res, next) => {
-  const id = "a27026a0-c317-416d-bcde-93472072dcc1";
+  const user = req.user
   try {
-    const student = await studentService.getStudentProfile(id);
+    const student = await studentService.getStudentProfile(user.Student.id);
     if (student === null) throw new Error();
     const tutor = await tutorService.getListTutorByStudentId(student.parentId);
     return res.json({

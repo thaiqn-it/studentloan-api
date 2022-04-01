@@ -125,14 +125,7 @@ const findById = async (id) => {
 
 const create = async ({ ...data }) => {
   const loan = await db.Loan.create(data);
-  const LoanHistory = await db.LoanHistory.create({
-    loanId: loan.id,
-    type: LOAN_STATUS.DRAFT,
-    isActive: LOANHISTORY_ISACTIVE.TRUE,
-  });
-
-  var newLoan = { ...loan, LoanHistory: LoanHistory };
-  return newLoan;
+  return loan;
 };
 
 const updateById = async (id, data) => {
