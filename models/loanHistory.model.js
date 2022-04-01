@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       adminId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: "User",
             key: "id",

@@ -8,12 +8,12 @@ const uploadImage = async (req, res, next) => {
 
     const file = req.files.file;
 
-    if (file.size > 1024 * 1024) {
+    if (file.size > 5 * 1024 * 1024 || file.size === 0) {
       removeTmp(file.tempFilePath);
-      return res.status(400).json({ msg: "Size too large." });
+      return res.status(400).json({ msg: "Size too large or no file" });
     } // 1mb
 
-    if (file.mimetype !== "image/jpeg" && file.mimetype !== "image/png") {
+    if (file.mimetype !== "image/jpeg" && file.mimetype !== "image/png" && file.mimetype !== "application/pdf") {
       removeTmp(file.tempFilePath);
       return res.status(400).json({ msg: "File format is incorrect." });
     }

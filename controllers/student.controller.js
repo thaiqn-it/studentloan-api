@@ -71,10 +71,28 @@ const updateById = async (req,res,next) => {
     }
 }
 
+const getStudentProfile = async (req,res,next) => {
+    const id = "a27026a0-c317-416d-bcde-93472072dcc1"
+    try {
+        console.log(id)
+        const student = await studentService.getStudentProfile(id)
+        if (student === null) throw new Error();
+		return res.json({
+			student,
+		});
+    } catch (error) {
+        console.log(error)
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default());
+    }
+}
+
 exports.studentController = { 
     findAll,
     findById,
     create,
     updateById,
     findByUserId,
+    getStudentProfile
 };

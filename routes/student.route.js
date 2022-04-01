@@ -13,4 +13,6 @@ router.post("/",studentController.create);
 
 router.put("/:id" , studentController.updateById)
 
+router.get("/profile", studentController.getStudentProfile)
+
 module.exports = { studentRouter : router };

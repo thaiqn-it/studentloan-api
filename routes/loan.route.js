@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.get("/",loanController.findAll);
 
+router.get("/student",loanController.getLoanStudent);
+
 router.get("/search",loanController.search);
 
 router.get("/:id", loanController.findById);

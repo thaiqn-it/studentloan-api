@@ -68,6 +68,11 @@ exports.LOANMEDIA_STATUS = {
   INACTIVE : "INACTIVE"
 };
 
+exports.LOANHISTORY_ISACTIVE = {
+  TRUE: "true",
+  FALSE : "false"
+};
+
 exports.TUTOR_STATUS = {
   VERIFIED: "VERIFIED",
   UNVERIFIED: "UNVERIFIED"
