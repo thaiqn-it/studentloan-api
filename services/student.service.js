@@ -26,7 +26,8 @@ const findByUserId = async (id) => {
       model: db.Archievement,
       where: {
         status: "ACTIVE"
-      }
+      },
+      required : false
     },
     {
       model: db.SchoolMajor,
@@ -39,7 +40,8 @@ const findByUserId = async (id) => {
           model: db.Major,
           attributes: ["name"],
         },
-      ]
+      ],
+      required : false
     },
     {
       model: db.User,
