@@ -6,6 +6,18 @@ const getAll = async () => {
     return await SystemConfig.findAll();
 };
 
+const getOne = async () => {
+    return await SystemConfig.findOne({
+        where:{
+            status:true
+        }
+    });
+};
+
+const create = async(data) => {
+    return await SystemConfig.create(data);
+}
+
 const getInterest = async () => {
     return await SystemConfig.findOne({
         where : {
@@ -33,9 +45,20 @@ const getFixedMoney = async () => {
     });
 };
 
+const update = async (id,data) => {
+    return await SystemConfig.update(data, {
+        where : {
+            id : id
+        }
+    })
+}
+
 exports.systemConfigService = {
   getAll,
   getInterest,
   getFixedMoney,
-  getTransactionFee
+  getTransactionFee,
+  getOne,
+  create,
+  update
 };

@@ -1,7 +1,7 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { LOAN_STATUS } = require('../models/enum')
+const { LOAN_STATUS, LOANMEDIA_STATUS } = require('../models/enum')
 
 const findAll = async () => {
   return await db.Loan.findAll({
@@ -20,6 +20,86 @@ const findAll = async () => {
           }
         ]
       },
+    ]
+  })
+};
+
+const findAllWaiting = async (data) => {
+  return await db.Loan.findAndCountAll({
+    attributes:["totalMoney", "id","title","postCreatedAt"],
+    order:[['postCreatedAt',data.order]],
+    limit: data.limit,
+    offset: data.offset,
+    include : [
+      {
+        model : db.Student,
+        attributes:["id"],
+        include : [
+          {
+            model : db.SchoolMajor,
+            attributes: ["id"],
+            include : [
+              { model : db.Major, attributes: ["name"] },
+              { model : db.School, attributes: ["name"], }
+            ]
+          },
+          {
+            model: db.User,
+            attributes: ["firstName", "lastName", "profileUrl","id"]
+          }
+        ]
+      },
+      {
+        model: db.LoanHistory,
+        attributes:["id","type"],
+        where:{
+          isActive:true,
+          type:data.type
+        }
+      }
+    ]
+  })
+};
+
+const getOne = async (id) => {
+  return await db.Loan.findOne({
+    where:{
+      id:id,
+    },
+    include : [
+      {
+        model : db.Student,
+        attributes:["id"],
+        include : [
+          {
+            model : db.SchoolMajor,
+            attributes:["id"],
+            include : [
+              { model : db.Major, attributes: ["name"] },
+              { model : db.School, attributes: ["name"], }
+            ]
+          },
+          {
+            model: db.User,
+            attributes: ["firstName", "lastName", "profileUrl","id"]
+          },
+          {
+            model:db.Archievement,
+          }
+        ]
+      },
+      {
+        model: db.LoanHistory,
+        where:{
+          isActive:true,
+        }
+      },
+      {
+        model:db.LoanMedia,
+        where:{
+          status:LOANMEDIA_STATUS.ACTIVE
+        }
+      }
     ]
   })
 };
@@ -86,7 +166,6 @@ const search = async (data) => {
 
   var s = []
   var q = {
-    status : LOAN_STATUS.FUNDING,
     postExpireAt : {
       [Op.gt] : new Date(),
     } 
@@ -140,5 +219,7 @@ exports.loanService = {
     findById,
     create,
     updateById,
-    search
+    search,
+    findAllWaiting,
+    getOne
 };

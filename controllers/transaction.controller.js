@@ -52,6 +52,17 @@ const getTransaction = async (req, res) => {
   }
 };
 
+const getAllTransaction = async (req, res) => {
+  try {
+    const transactions = await transactionService.getAll();
+    res.json(transactions);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 const deleteTransaction = async (req, res) => {
   try {
     const id = req.params;
@@ -95,5 +106,6 @@ exports.transactionController = {
   updateTransaction,
   deleteTransaction,
   getTransaction,
-  getByAccountId
+  getByAccountId,
+  getAllTransaction
 };

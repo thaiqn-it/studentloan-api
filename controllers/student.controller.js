@@ -37,13 +37,13 @@ const findByUserId = async (req, res, next) => {
 			student,
 		});
     } catch (error) {
+        console.log(error)
         return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
     }
 };
 
 const create = async (req, res, next) => {
     const { data } = req.body
-
     try {      
         const student = await studentService.create(data)
         return res.json(student);
