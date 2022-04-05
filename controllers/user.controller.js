@@ -291,6 +291,7 @@ const updateUser = async (req, res) => {
     const user = await userService.updateUserService(data);
     res.json(user);
   } catch (err) {
+    console.log(err)
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
@@ -326,8 +327,8 @@ const getWalletInfo = async (req, res) => {
 
 const getAll = async (req, res, next) => {
   try {
-    const roleOfUser = await userService.getAll();
-    return res.json(roleOfUser);
+    const userList = await userService.getAll();
+    return res.json(userList);
   } catch (e) {
     res
       .status(INTERNAL_SERVER_ERROR)

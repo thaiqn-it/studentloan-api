@@ -45,14 +45,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         relation:{
             type: DataTypes.STRING,
+        },
+        studentId:{
+            type: DataTypes.UUID,
+            references : {
+                model: "Student",
+                key: "id"
+              }
         }
     });
-  
-    Tutor.associate = (models) => {
-        Tutor.hasOne(models.Student, {
-            foreignKey: "tutorId",
-        });
-    };
   
     return Tutor;
   };

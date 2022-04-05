@@ -3,6 +3,7 @@ const { USER_STATUS, ACCOUNT_TYPE, ACCOUNT_STATUS } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
+const UserStatus = db.UserStatus;
 const Account = db.Account;
 
 const createUserService = async (user) => {
@@ -65,11 +66,25 @@ const deleteUserService = async (id) => {
   return await user.save();
 };
 
+// const updateUserService = async (data) => {
+
+//   let user = await User.findByPk(data.id);
+//   if (user === null) throw new Error();
+//   user = { ...user, ...data };
+//   return await user.save();
+// };
+
 const updateUserService = async (data) => {
+
   let user = await User.findByPk(data.id);
   if (user === null) throw new Error();
-  user = { ...user, ...data };
-  return await user.save();
+  return await User.update(data,
+    {
+      where: {
+        id: data.id
+      }
+    }
+  )
 };
 
 const getOne = async ({ ...data }) => {
@@ -81,8 +96,12 @@ const getOne = async ({ ...data }) => {
 
 const getAll = async () => {
   return await User.findAll({
-    attributes: ["id", "phoneNumber", "type", "email", "status"],
-    include: { model: db.Student, attributes: ["firstName", "lastName"] },
+    where: {
+      type: ["STUDENT", "INVESTOR"],
+    },
+    order: [
+      ["createdAt", "ASC"],
+    ],
   });
 };
 

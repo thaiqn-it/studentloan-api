@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     birthDate:{
       type: DataTypes.DATE
     },
+
   });
 
   User.associate = (models) => {
@@ -55,6 +56,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: {
         name: "userId",
         allowNull: false,
+      },
+    });
+    User.hasOne(models.LoanHistory, {
+      foreignKey: {
+        name: "adminId",
       },
     });
     User.hasOne(models.Wallet, {

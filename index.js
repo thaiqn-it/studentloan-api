@@ -15,8 +15,6 @@ app.use(cors());
 app.use(helmet());
 app.use(responseTime());
 app.use(express.json());
-app.use(fileUpload({ useTempFiles: true }));
-
 app.use("/api", apiRouter);
 
 const server = require("http").createServer(app);

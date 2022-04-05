@@ -45,8 +45,9 @@ const findAllMajor = async (req, res, next) => {
 
   const updateMajor = async (req, res, next) => {
     const data = req.body;
+    const { id } = req.params
     try {
-      const majorUpdated = await majorService.update(data);
+      const majorUpdated = await majorService.update(id,data);
       return res.json(majorUpdated);
     } catch (error) {
       return res

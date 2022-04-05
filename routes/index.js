@@ -17,6 +17,8 @@ const { paypalRoute } = require("./paypal.route")
 const { systemConfigRouter } = require("./systemconfig.route")
 const { walletRouter } = require("./wallet.route");
 const { contractRoute } = require("./contract.route");
+const { loanHistoryRouter } = require("./loanhistory.route");
+const { loanHistoryImageRouter } = require("./loanhistoryimage.route");
 
 const router = express.Router();
 
@@ -24,6 +26,8 @@ router.use("/major", majorRoute);
 router.use("/school", schoolRoute);
 router.use("/schoolmajor", schoolMajorRoute);
 router.use("/loan", loanRouter);
+router.use("/loanHistory", loanHistoryRouter);
+router.use("/loanHistoryImage", loanHistoryImageRouter);
 router.use("/loanSchedule", loanScheduleRouter);
 router.use("/user", userRoute);
 router.use("/investor", investorRoute);

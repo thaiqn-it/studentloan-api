@@ -59,5 +59,21 @@ const deleteById = async (req, res) => {
   }
 };
 
-const tutorController = { createTutor, update, getById, deleteById }
+const getListTutorByStudentId = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const tutor = await tutorService.getListTutorByStudentId(id);
+    if (tutor === null)
+      return res
+        .status(BAD_REQUEST)
+        .json(restError.BAD_REQUEST.extra({ msg: "Tutor not exist" }));
+    res.json(tutor);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
+const tutorController = { createTutor, update, getById, deleteById, getListTutorByStudentId }
 module.exports = {tutorController} ;

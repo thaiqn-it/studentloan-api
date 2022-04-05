@@ -7,6 +7,10 @@ const router = express.Router();
 
 router.get("/",loanController.findAll);
 
+router.post("/waiting",loanController.findAllWaiting);
+
+router.get("/waiting/:id",loanController.getOne);
+
 router.get("/search",loanController.search);
 
 router.get("/:id", loanController.findById);
