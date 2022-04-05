@@ -8,4 +8,6 @@ router.get("/investment/:id", contractController.findByInvestmentId);
 
 router.get("/investor", investorAuth ,contractController.findAllByInvestorId);
 
+router.get("/loan/:id", contractController.getOne)
+
 module.exports = { contractRoute: router };
