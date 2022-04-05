@@ -24,7 +24,7 @@ InvestmentService.getAllByInvestorId = async (id) => {
         include : [
           {
             model : db.Student,
-            attributes: ["id","firstname","lastname","profileUrl"],
+            attributes: ["id"],
             include : [
               {
                 model : db.SchoolMajor,
@@ -33,6 +33,10 @@ InvestmentService.getAllByInvestorId = async (id) => {
                   { model : db.Major, attributes: ["name"] },
                   { model : db.School, attributes: ["name"], },
                 ]
+              },
+              {
+                model : db.User,
+                attributes: ["firstname","lastname","profileUrl"],
               }
             ]
           }
@@ -97,6 +101,14 @@ InvestmentService.updateOne = async (id,investmentInfo) => {
     plain: true,
   });
   return investment[1];
+};
+
+InvestmentService.updateByLoanId = async (loanId,investmentInfo) => {
+  const investment = await Investment.update(investmentInfo, {
+    where: { loanId },
+    returning : true
+  });
+  return investment;
 };
 
 InvestmentService.deleteOne = async (id) => {

@@ -1,7 +1,8 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { LOAN_STATUS } = require('../models/enum')
+const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS } = require('../models/enum')
+const Investment = db.Investment
 
 const findAll = async () => {
   return await db.Loan.findAll({
@@ -38,7 +39,7 @@ const findById = async (id) => {
     include : [
       {
         model : db.Student,
-        attributes: ["id","firstname","lastname","profileUrl","semester"],
+        attributes: ["id"],
         include : [
           {
             model : db.SchoolMajor,
@@ -50,6 +51,10 @@ const findById = async (id) => {
           },
           {
             model : db.Archievement,
+          },
+          {
+            model : db.User,
+            attributes: ["firstname","lastname","profileUrl"],
           }
         ]
       },
@@ -69,10 +74,92 @@ const create = async ({ ...data }) => {
   return await db.Loan.create(data);
 };
 
+const getMatchingLoan = async () => {
+  return await db.Loan.findAll({
+    attributes: {
+      include: [
+        [db.sequelize.literal("(SELECT ISNULL(SUM(total),0) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"), 'AccumulatedMoney']
+      ]
+    },
+    where : {
+      status : LOAN_STATUS.FUNDING,
+      [Op.or] : [
+      {
+        postExpireAt : {
+          [Op.lte] : new Date()
+        }
+      },
+      {
+        totalMoney : {
+          [Op.eq] : db.sequelize.literal("(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')")
+        }
+      }
+      ]    
+    },
+    include : [
+      {
+        model : db.Investment,
+        where : {
+          [Op.not] : {
+            status : [INVESTMENT_STATUS.CANCEL,INVESTMENT_STATUS.FAIL]
+          } 
+        },
+        include : [
+          {
+            model : db.Investor,
+            attributes: ["id"],
+            where : {
+              status : INVESTOR_STATUS.ACTIVE,
+            },
+            include : [
+              {
+                model : db.User,
+                attributes: ["firstName","lastName","email","phoneNumber","address"]
+              },
+              {
+                model : db.Investor,
+                as : 'Information',
+                attributes: ["citizenId","citizenCardCreatedDate","citizenCardCreatedPlace"],
+                where : {
+                  status : INVESTOR_STATUS.ACTIVE,
+                  parentId : {
+                    [Op.not] : null
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        require : false
+      },
+      {
+        model : db.Student,
+        attributes: ["userId"],
+        include :[
+        {
+          model : db.User,
+          attributes: ["firstName","lastName","email","phoneNumber","address","birthDate"]
+        },
+        {      
+          model : db.Student,
+          as : 'Information',
+          attributes: ["citizenId","citizenCardCreatedDate","citizenCardCreatedPlace"],
+          where : {
+            status : STUDENT_STATUS.ACTIVE,
+            parentId : {
+              [Op.not] : null
+            }
+          }   
+        }]
+      }
+    ],
+  });
+};
+
 const updateById = async (id,data) => {
   return await db.Loan.update(data, {
     where: {
-      id : id
+      id
     }
   })
 };
@@ -81,8 +168,8 @@ const search = async (data) => {
   const PAGE_LIMIT = 5;
   const sort = data.sort;
 
-  const TODAY = moment().format("YYYY-MM-DD HH:mm:ss.mmm +00:00")
-  const YESTERDAY = moment().subtract(1,"day").format("YYYY-MM-DD HH:mm:ss.mmm +00:00")
+  const TODAY = moment().format("YYYY-MM-DD HH:mm:ss.mmm +07:00")
+  const YESTERDAY = moment().subtract(1,"day").format("YYYY-MM-DD HH:mm:ss.mmm +07:00")
 
   var s = []
   var q = {
@@ -95,6 +182,13 @@ const search = async (data) => {
     include: [
       [db.sequelize.literal('(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)'), 'AccumulatedMoney']
     ]
+  }
+
+  var qSchool = {}
+  if (data.schoolMajorId) {
+    Object.assign(qSchool,{
+      schoolMajorId : data.schoolMajorId
+    })
   }
 
   if (sort === 'lastest') {
@@ -119,7 +213,8 @@ const search = async (data) => {
     include : [
       {
         model : db.Student,
-        attributes: ["firstname","lastname","profileUrl"],
+        attributes: ["id"],
+        where : qSchool,
         include : [
           {
             model : db.SchoolMajor,
@@ -128,6 +223,10 @@ const search = async (data) => {
               { model : db.Major, attributes: ["name"] },
               { model : db.School, attributes: ["name"], }
             ]
+          },
+          {
+            model : db.User,
+            attributes: ["firstname","lastname","profileUrl"],
           }
         ]
       },
@@ -140,5 +239,6 @@ exports.loanService = {
     findById,
     create,
     updateById,
-    search
+    search,
+    getMatchingLoan
 };

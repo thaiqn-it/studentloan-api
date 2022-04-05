@@ -38,10 +38,10 @@ const create = async (req, res, next) => {
         const loan = await loanService.findById(id)
 
         for (let i = 0; i < loan.expectedGraduationTime ; i++) {
-            const startAt = moment(new Date()).add(1 * i,'month');
-            const endAt = moment(new Date()).add(1 * ( i + 1 ),'month');
+            const startAt = moment(new Date()).add(i,'month');
+            const endAt = moment(new Date()).add(i + 1,'month');
             const paidAtStudying = {
-                money : '200000',
+                money : loan.fixedMoney,
                 startAt : startAt,
                 endAt : endAt,
                 type : LOAN_SCHEDULE_TYPE.STP,
@@ -51,15 +51,15 @@ const create = async (req, res, next) => {
             scheduleData.push(paidAtStudying)
         }
 
-        const leftMoney = parseFloat(loan.totalMoney) - loan.expectedGraduationTime * 100000;
+        const leftMoney = parseFloat(loan.totalMoney) - loan.expectedGraduationTime * parseInt(loan.fixedMoney);
 
         const moneyPaidGraduted = Math.round(leftMoney / loan.duration)
 
         const expectedGraduationDay = moment().add(loan.expectedGraduationTime, 'month')
        
         for (let i = 0; i < loan.duration ; i++) {
-            const startAt = moment(new Date(expectedGraduationDay)).add(1 * i,'month');
-            const endAt = moment(new Date(expectedGraduationDay)).add(1 * (i + 1),'month');
+            const startAt = moment(new Date(expectedGraduationDay)).add(i,'month');
+            const endAt = moment(new Date(expectedGraduationDay)).add(i + 1,'month');
             const paidAtStudying = {
                 money : moneyPaidGraduted,
                 startAt : startAt,

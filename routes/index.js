@@ -15,7 +15,8 @@ const { uploadImageRouter } = require("../routes/uploadImag.route");
 const { tutorRouter } = require("./tutor.route");
 const { paypalRoute } = require("./paypal.route")
 const { systemConfigRouter } = require("./systemconfig.route")
-const { walletRouter } = require("./wallet.route")
+const { walletRouter } = require("./wallet.route");
+const { contractRoute } = require("./contract.route");
 
 const router = express.Router();
 
@@ -35,5 +36,6 @@ router.use("/tutor", tutorRouter);
 router.use("/paypal", paypalRoute);
 router.use("/config", systemConfigRouter);
 router.use("/wallet", walletRouter);
+router.use("/contract", contractRoute);
 
 module.exports = { apiRouter: router };

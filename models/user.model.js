@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     reason: {
       type: DataTypes.STRING,
     },
+    address: {
+      type: DataTypes.STRING,
+    },
     firstName:{
       type: DataTypes.STRING(70)
     },
@@ -35,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     profileUrl : {
       type: DataTypes.STRING
+    },
+    birthDate:{
+      type: DataTypes.DATE
     },
   });
 

@@ -17,23 +17,17 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.STRING,
         },
-        startDate: {
-            type: DataTypes.DATE
-        },
-        endDate: {
-            type: DataTypes.DATE
-        },
-        parentId: {
-            type: DataTypes.UUID,
-            references: {
-                model: "Contract",
-                key: "id"
-            }
-        },
-        contractNote: {
+        contractUrl : {
             type: DataTypes.STRING,
+            allowNull : false
         }
     });
+
+    Contract.associate = (models) => {
+        Contract.belongsTo(models.Loan, {
+          foreignKey: "loanId",
+        });
+      };
 
     return Contract;
 };

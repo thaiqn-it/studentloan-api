@@ -55,6 +55,10 @@ module.exports = (sequelize, DataTypes) => {
     Investor.belongsTo(models.User, {
       foreignKey:"userId",
     });
+    Investor.hasOne(models.Investor, {
+      foreignKey: 'parentId',
+      as: 'Information'
+    });
   };
 
 

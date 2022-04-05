@@ -89,6 +89,9 @@ module.exports = (sequelize, DataTypes) => {
         Loan.hasMany(models.LoanMedia,{
           foreignKey : "loanId"
         })
+        Loan.hasOne(models.Contract,{
+          foreignKey : "loanId"
+        })
     };
     
     return Loan;

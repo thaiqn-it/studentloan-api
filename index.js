@@ -6,6 +6,8 @@ const db = require("./models");
 const { APP_PORT } = require("./constants/index");
 const { apiRouter } = require("./routes");
 const fileUpload = require("express-fileupload");
+const scheduler = require("./schedulers/index")
+const cronConfig = require("./config/cronConfig")
 
 const app = express();
 
@@ -40,3 +42,5 @@ server.listen(APP_PORT, () => {
     `⚡️ [server]: Server is running at http://localhost:${APP_PORT}`
   );
 });
+
+scheduler.initCron(cronConfig)
