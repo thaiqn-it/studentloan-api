@@ -5,16 +5,30 @@ const create = async (data) => {
   return await db.Contract.create(data)
 };
 
-const getByLoanId = async (loanId) => {
+const getByInvestmentId = async (investmentId) => {
     return await db.Contract.findOne({
         where : {
-            loanId,
-            status : CONTRACT_STATUS
+            investmentId,
+            status : CONTRACT_STATUS.ACTIVE
         }
+    })
+}
+
+const getAllByInvestorId = async (investorId) => {
+    return await db.Contract.findAll({
+        include : [
+            {
+              model : db.Investment,
+              where : {
+                investorId
+              },
+            },
+          ]
     })
 }
 
 exports.contractService = { 
     create,
-    getByLoanId
+    getByInvestmentId,
+    getAllByInvestorId
 };

@@ -6,11 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
-        loanId: {
+        investmentId: {
             type: DataTypes.UUID,
             allowNull: true,
             references: {
-                model: "Loan",
+                model: "Investment",
                 key: "id",
             },
         },
@@ -19,13 +19,17 @@ module.exports = (sequelize, DataTypes) => {
         },
         contractUrl : {
             type: DataTypes.STRING,
-            allowNull : false
+            allowNull : true
+        },
+        contractCode : {
+            type: DataTypes.STRING(8),
+            allowNull : true
         }
     });
 
     Contract.associate = (models) => {
-        Contract.belongsTo(models.Loan, {
-          foreignKey: "loanId",
+        Contract.belongsTo(models.Investment, {
+          foreignKey: "investmentId",
         });
       };
 

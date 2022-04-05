@@ -11,8 +11,6 @@ router.get("/wallet/:id", transactionController.getByWalletId);
 
 router.get("/", transactionController.getAllTransaction);
 
-router.get("/account/:id", transactionController.getByAccountId);
-
 router.post("/", transactionController.createTransaction);
 
 router.delete("/", transactionController.deleteTransaction);

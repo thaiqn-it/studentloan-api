@@ -100,5 +100,5 @@ exports.transactionController = {
   deleteTransaction,
   getTransaction,
   getByWalletId,
-  getAllTransaction
+  getAllTransaction,
 };

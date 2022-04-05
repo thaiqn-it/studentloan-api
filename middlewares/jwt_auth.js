@@ -4,7 +4,8 @@ const db = require("../models/index");
 const { JWT_SECRET_KEY } = require("../constants");
 const { restError } = require("../errors/rest");
 const { USER_TYPE } = require("../models/enum/")
-const userService = require('../services/user.service')
+const userService = require('../services/user.service');
+const op = db.Sequelize.Op;
 
 const User = db.User;
 const Student = db.Student;
@@ -36,7 +37,14 @@ const studentAuth = async (req, res, next) => {
         id: data.userId,
         type : USER_TYPE.STUDENT
       },
-      include : Student,
+      include : {
+        model : db.Student,
+        where : {
+          parentId : {
+            [op.is] : null
+          }
+        }      
+      },
       raw : true,
       nest : true,
     });
@@ -61,7 +69,14 @@ const investorAuth = async (req, res, next) => {
         id: data.userId,
         type : USER_TYPE.INVESTOR
       },
-      include : Investor,
+      include : {
+        model : db.Investor,
+        where : {
+          parentId : {
+            [op.is] : null
+          }
+        }    
+      },
       raw : true,
       nest : true,
     });

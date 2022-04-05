@@ -50,13 +50,10 @@ module.exports = (sequelize, DataTypes) => {
     Investment.belongsTo(models.Transaction, {
       foreignKey: "transactionId",
     });
+    Investment.hasOne(models.Contract,{
+      foreignKey : "investmentId"
+    })
   };
-
-  //   Investment.associate = (models) => {
-  //     Investment.belongsTo(models.LoanAccount, {
-  //       foreignKey: "LoanAccountId",
-  //     });
-  //   };
-
+  
   return Investment;
 };
