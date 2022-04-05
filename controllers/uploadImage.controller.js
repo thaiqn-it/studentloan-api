@@ -1,5 +1,5 @@
 const cloudinary = require("cloudinary");
-const fs = require("fs");
+
 const {
   CLOUD_NAME,
   CLOUD_API_KEY,
@@ -12,35 +12,40 @@ cloudinary.config({
   api_secret: CLOUD_API_SECRET,
 });
 
+const option = {
+  folder: "file",
+  use_filename: true,
+  unique_filename: false,
+};
 const uploadImage = async (req, res) => {
   try {
-    const file = req.files.file;
-    
-    cloudinary.v2.uploader.upload(
-      file.tempFilePath,
-      {
-        folder: "image",
-        // width: 1920,
-        // height: 1080,
-        crop: "fill",
-      },
-      async (err, result) => {
-        if (err) throw err;
-
-        removeTmp(file.tempFilePath);
-
-        res.json({ url: result.secure_url });
-      }
+    let uploadFiles = req.files;
+    //Check if files exist
+    if (!uploadFiles)
+      return res.status(400).json({ message: "No picture attached!" });
+    //map through images and create a promise array using cloudinary upload function
+    let multiplePicturePromise = uploadFiles.map((file) =>
+      cloudinary.v2.uploader.upload(file.path, option)
     );
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
-  }
-};
+    // await all the cloudinary upload functions in promise.all, exactly where the magic happens
+    let fileResponses = await Promise.all(multiplePicturePromise);
+    let shortResponses = [];
+    let shortResponseOne = {};
+    if (fileResponses.length > 1) {
+      fileResponses.map((file) => {
+        shortResponses.push({ url: file.url });
+      });
+      res.status(200).json(shortResponses);
+    } else {
+      fileResponses.map((file) => {
+        shortResponseOne = { ...shortResponseOne, url: file.url };
+      });
+      res.status(200).json(shortResponseOne);
+    }
+  } catch (error) {
 
-const removeTmp = (path) => {
-  fs.unlink(path, (err) => {
-    if (err) throw err;
-  });
+    return res.status(500).json({ msg: error.message });
+  }
 };
 
 exports.uploadController = {

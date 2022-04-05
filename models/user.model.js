@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     profileUrl : {
       type: DataTypes.STRING
-    },
+    }
   });
 
   User.associate = (models) => {

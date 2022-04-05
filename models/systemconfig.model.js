@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         transactionFee: {
             type: DataTypes.FLOAT,
         },
+        penaltyFee:{
+            type: DataTypes.FLOAT,
+        },
         status: {
             type: DataTypes.BOOLEAN,
         },

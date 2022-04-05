@@ -51,10 +51,10 @@ const findAllWaiting = async (data) => {
       },
       {
         model: db.LoanHistory,
-        attributes:["id"],
+        attributes:["id","type"],
         where:{
           isActive:true,
-          type:LOAN_STATUS.WAITING
+          type:data.type
         }
       }
     ]
@@ -92,7 +92,6 @@ const getOne = async (id) => {
         model: db.LoanHistory,
         where:{
           isActive:true,
-          type:LOAN_STATUS.WAITING
         }
       },
       {
@@ -167,7 +166,6 @@ const search = async (data) => {
 
   var s = []
   var q = {
-    status : LOAN_STATUS.FUNDING,
     postExpireAt : {
       [Op.gt] : new Date(),
     } 

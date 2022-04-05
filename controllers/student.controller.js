@@ -44,7 +44,6 @@ const findByUserId = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     const { data } = req.body
-
     try {      
         const student = await studentService.create(data)
         return res.json(student);
