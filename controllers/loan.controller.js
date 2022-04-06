@@ -43,6 +43,19 @@ const findAllWaiting = async (req, res, next) => {
     }
 };
 
+const countLoan = async (req, res, next) => {
+    const {type} = req.params
+    try {     
+        const numberLoan = await loanService.countLoan(type);
+        return res.json(numberLoan);
+    } catch (error) {
+        console.log(error)
+        return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+};
+
 const findById = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -126,5 +139,6 @@ exports.loanController = {
     search,
     findAllWaiting,
     getLoanStudent,
-    getOne
+    getOne,
+    countLoan
 };

@@ -3,7 +3,6 @@ const { USER_STATUS, ACCOUNT_TYPE, ACCOUNT_STATUS } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
-const UserStatus = db.UserStatus;
 const Account = db.Account;
 
 const createUserService = async (user) => {
@@ -29,6 +28,19 @@ const count = async (oAuthId) => {
   const result = await User.count({
     where: {
       oAuthId: oAuthId,
+    },
+  });
+  if (result === null) {
+    throw new Error();
+  }
+  return result;
+};
+
+const countBaseTypeAndStatus = async (data) => {
+  const result = await User.count({
+    where: {
+      type: data.type,
+      status: data.status
     },
   });
   if (result === null) {
@@ -65,14 +77,6 @@ const deleteUserService = async (id) => {
   user.status = USER_STATUS.INACTIVE;
   return await user.save();
 };
-
-// const updateUserService = async (data) => {
-
-//   let user = await User.findByPk(data.id);
-//   if (user === null) throw new Error();
-//   user = { ...user, ...data };
-//   return await user.save();
-// };
 
 const updateUserService = async (data) => {
 
@@ -114,4 +118,5 @@ module.exports = {
   getOne,
   getAll,
   getUserByEmailService,
+  countBaseTypeAndStatus
 };

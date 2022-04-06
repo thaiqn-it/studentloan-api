@@ -107,6 +107,20 @@ const findAllWaiting = async (data) => {
   })
 };
 
+const countLoan = async (type) => {
+  return await db.Loan.count({
+    include : [
+      {
+        model: db.LoanHistory,
+        where:{
+          type: type,
+          isActive:true,
+        }
+      }
+    ]
+  })
+};
+
 const getOne = async (id) => {
   return await db.Loan.findOne({
     where:{
@@ -509,5 +523,6 @@ exports.loanService = {
     search,
     getMatchingLoan,
     findAllWaiting,
-    getOne
+    getOne,
+    countLoan,
 };
