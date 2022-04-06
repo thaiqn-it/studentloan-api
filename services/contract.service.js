@@ -56,17 +56,8 @@ const getAllByInvestorId = async (investorId) => {
     })
 }
 
-const getOne = async(id) => {
-    return await db.Contract.findOne({
-        where:{
-            loanId : id
-        }
-    });
-};
-
 exports.contractService = { 
     create,
     getByInvestmentId,
     getAllByInvestorId,
-    getOne
 };

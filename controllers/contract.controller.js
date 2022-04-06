@@ -30,21 +30,7 @@ const findAllByInvestorId = async (req, res, next) => {
     }
 };
 
-const getOne = async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const school = await contractService.getOne(id);
-    return res.json(school);
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
-  }
-};
-
 exports.contractController = { 
     findByInvestmentId,
     findAllByInvestorId,
-    getOne
 };
