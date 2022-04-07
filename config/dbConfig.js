@@ -16,7 +16,8 @@ module.exports = {
     logging : false,
     define: {
       freezeTableName: true
-    }
+    },
+    timezone: '+07:00'
   },
   test: {
     username: DB_USERNAME,
@@ -27,7 +28,8 @@ module.exports = {
     logging : false,
     define: {
       freezeTableName: true
-    }
+    },
+    timezone: '+07:00'
   },
   production: {
     username: DB_USERNAME,
@@ -38,6 +40,7 @@ module.exports = {
     logging : false,
     define: {
       freezeTableName: true
-    }
+    },
+    timezone: '+07:00'
   },
 };

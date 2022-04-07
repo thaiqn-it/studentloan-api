@@ -61,10 +61,6 @@ module.exports = (sequelize, DataTypes) => {
         type : DataTypes.DATE,
         allowNull : false,
       },
-      status : {
-        type : DataTypes.STRING,
-        allowNull : false
-      },
       expectedMoney:{
         type:DataTypes.BIGINT,
       }
@@ -72,6 +68,9 @@ module.exports = (sequelize, DataTypes) => {
   
     Loan.associate = (models) => {
         Loan.hasMany(models.LoanSchedule, {
+          foreignKey: "loanId",
+        })
+        Loan.hasMany(models.LoanHistory, {
           foreignKey: "loanId",
         })
         Loan.hasMany(models.Report,{
@@ -88,6 +87,12 @@ module.exports = (sequelize, DataTypes) => {
         })
         Loan.hasMany(models.LoanMedia,{
           foreignKey : "loanId"
+        })
+        Loan.hasMany(models.LoanHistory, {
+          foreignKey: "loanId",
+        })
+        Loan.hasMany(models.Contract, {
+          foreignKey: "loanId",
         })
     };
     

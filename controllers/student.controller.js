@@ -1,4 +1,5 @@
 const { studentService } = require("../services/student.service");
+const tutorService = require("../services/tutor.service");
 const {
   INTERNAL_SERVER_ERROR,
   NOT_FOUND,
@@ -46,27 +47,43 @@ const findByUserId = async (req, res, next) => {
 };
 
 const create = async (req, res, next) => {
-  const data = req.body;
+    const { data } = req.body
+    try {      
+        const student = await studentService.create(data)
+        return res.json(student);
+    } catch (error) {
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+};
 
+const updateById = async (req, res, next) => {
+  const { id } = req.params;
+  const data = req.body;
   try {
-    const student = await studentService.createNewStudent(data);
-    return res.json(student);
+    const student = await studentService.updateById(id, data);
+    if (student === null) throw new Error();
+    return res.json({
+      student,
+    });
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
   }
 };
 
-const updateById = async (req, res, next) => {
-  const { id } = req.params;
-  const data = req.body;
-  console.log(data);
+const getStudentProfile = async (req, res, next) => {
+  const user = req.user
   try {
-    const student = await studentService.updateNewStudentById(id, data);
+    const student = await studentService.getStudentProfile(user.Student.id);
     if (student === null) throw new Error();
-    return res.json(student);
+    const tutor = await tutorService.getListTutorByStudentId(student.parentId);
+    return res.json({
+      student,
+      tutor,
+    });
   } catch (error) {
     console.log(error);
     return res
@@ -81,4 +98,5 @@ exports.studentController = {
   create,
   updateById,
   findByUserId,
+  getStudentProfile,
 };

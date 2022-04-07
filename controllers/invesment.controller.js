@@ -118,4 +118,28 @@ InvestmentController.findOneById = async (req, res, next) => {
   }
 };
 
+InvestmentController.countByInvestorId = async (req, res, next) => {
+  const investor = req.user.Investor;
+  try {
+    const countTotal = await InvestmentService.countTotalByInvestorId(investor.id);
+    const countPending = await InvestmentService.countPendingByInvestorId(investor.id);
+    const countLoanFinish = await InvestmentService.countLoanFinishByInvestorId(investor.id);
+    const countLoanOngoing = await InvestmentService.countLoanOngoingByInvestorId(investor.id);
+    const totalInvestment = await InvestmentService.sumTotalInvestmentByInvetorId(investor.id);
+
+    return res.json({
+      total : countTotal,
+      pending : countPending,
+      loanFinish : countLoanFinish,
+      loanOngoing : countLoanOngoing,
+      totalInvestment : totalInvestment
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 module.exports = InvestmentController;

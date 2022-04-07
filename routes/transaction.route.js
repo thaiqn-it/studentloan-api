@@ -7,7 +7,9 @@ const router = express.Router();
 
 router.get("/:id", transactionController.getTransaction);
 
-router.get("/account/:id", transactionController.getByAccountId);
+router.get("/wallet/:id", transactionController.getByWalletId);
+
+router.get("/", transactionController.getAllTransaction);
 
 router.post("/", transactionController.createTransaction);
 

@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
+    percent : {
+      type : DataTypes.FLOAT,
+      allowNull : false
+    },
     loanId: {
       type: DataTypes.UUID,
       allowNull: true,
@@ -50,13 +54,10 @@ module.exports = (sequelize, DataTypes) => {
     Investment.belongsTo(models.Transaction, {
       foreignKey: "transactionId",
     });
+    Investment.hasOne(models.Contract,{
+      foreignKey : "investmentId"
+    })
   };
-
-  //   Investment.associate = (models) => {
-  //     Investment.belongsTo(models.LoanAccount, {
-  //       foreignKey: "LoanAccountId",
-  //     });
-  //   };
-
+  
   return Investment;
 };

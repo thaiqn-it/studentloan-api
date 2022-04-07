@@ -52,6 +52,17 @@ const getTransaction = async (req, res) => {
   }
 };
 
+const getAllTransaction = async (req, res) => {
+  try {
+    const transactions = await transactionService.getAll();
+    res.json(transactions);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 const deleteTransaction = async (req, res) => {
   try {
     const id = req.params;
@@ -64,17 +75,10 @@ const deleteTransaction = async (req, res) => {
   }
 };
 
-const getByAccountId = async (req, res) => {
+const getByWalletId = async (req, res) => {
   try {
     const { id } = req.params;
     const transactions = await transactionService.getTransactionsByWalletId(id);
-    // var result = _.chain(transactions)  
-    //       .groupBy("year")  
-    //       .mapValues(transactions => _.chain(transactions)
-    //         .groupBy('month')
-    //         .map((key, values) => ({ month : values , transaction : key }))
-    //         .value())
-    //       .value()
 
     var result = _.chain(transactions)  
           .groupBy('date')
@@ -95,5 +99,6 @@ exports.transactionController = {
   updateTransaction,
   deleteTransaction,
   getTransaction,
-  getByAccountId
+  getByWalletId,
+  getAllTransaction,
 };

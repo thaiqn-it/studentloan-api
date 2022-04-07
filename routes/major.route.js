@@ -3,10 +3,12 @@ const {majorController} = require("../controllers/major.controller");
 
 const router = express.Router();
 
-router.get("/:id", majorController.findAllMajor)
+router.get("/school/:id", majorController.findAllMajor)
+
+router.get("/", majorController.getAll)
 
 router.post("/", majorController.createNewMajor)
 
-router.put("/updateMajors", majorController.updateMajor)
+router.put("/updateMajors/:id", majorController.updateMajor)
 
 module.exports = { majorRoute: router }

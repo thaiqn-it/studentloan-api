@@ -11,6 +11,8 @@ router.get("/",investorAuth, investmentController.getAllByInvestorID);
 //check exsist by loanId and investorId
 router.get("/loan/:id",investorAuth, investmentController.checkExistInvestmentByInvestorId);
 
+router.get("/count",investorAuth, investmentController.countByInvestorId);
+
 router.get("/:id", investmentController.findOneById);
 
 router.put("/:id", investmentController.updateInvestment);

@@ -1,6 +1,7 @@
 const db = require("../models");
 const { TRANSACTION_STATUS } = require("../models/enum");
 const Transaction = db.Transaction;
+const User = db.User;
 
 const createTransactionService = async (transaction) => {
   return await Transaction.create(transaction);
@@ -24,7 +25,7 @@ const deleteTransactionService = async (id) => {
   return await transaction.save();
 };
 
-const getTransactionsByWalletId = async (accountId) => {
+const getTransactionsByWalletId = async (walletId) => {
   const transactions = await Transaction.findAll({
     attributes: {
       include: [
@@ -33,7 +34,7 @@ const getTransactionsByWalletId = async (accountId) => {
       ]
     },
     raw : true,
-    where: { accountId },
+    where: { walletId },
     order : [
       ['createdAt', 'DESC']
     ]
@@ -42,10 +43,20 @@ const getTransactionsByWalletId = async (accountId) => {
   return transactions;
 };
 
+const getAll = async () => {
+  return await Transaction.findAll({
+    include:[{
+      model:User,
+      
+    }]
+  });
+};
+
 module.exports = {
   createTransactionService,
   updateTransactionService,
   deleteTransactionService,
   getTransactionService,
   getTransactionsByWalletId,
+  getAll,
 };

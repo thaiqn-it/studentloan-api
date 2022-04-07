@@ -1,7 +1,12 @@
 const {School} = require("../models")
+const {SCHOOL_STATUS} = require("../models/enum")
 
 const findAllSchool = async() => {
-    return await School.findAll();
+    return await School.findAll({
+        where : {
+            status : SCHOOL_STATUS.ACTIVE 
+        }
+    });
 }
 
 const findOneSchool = async(id) => {

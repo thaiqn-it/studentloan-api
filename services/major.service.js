@@ -1,72 +1,65 @@
 
+const { MAJOR_STATUS } = require("../models/enum");
 const db = require("../models/index");
 
 const findAllMajor = async (id) => {
     return await db.Major.findAll({
-        attributes: ["id", "name", "parentId", "status"],
+        attributes: ["id", "name", "status"],
         where: {
             status: 'ACTIVE',
         },
-        include: [
-            {
-                model: db.SchoolMajor,
-                attributes: [],
-                where: {
-                    schoolId: id
-                }
-            }
-        ],
+        include:{
+            model: db.SchoolMajor,
+            where: {
+                schoolId: id
+            },
+        },
+    });
+};
+
+const getAll = async () => {
+    return await db.Major.findAll({
+        attributes: ["id", "name"],
+        where: {
+            status: MAJOR_STATUS.ACTIVE,
+        }
     });
 };
 
 const createNewMajor = async (data) => {
-    var schoolMajor = {};
-    var major = {};
-    data.map(async (item)=>{
-        schoolMajor = {
-            majorId:item.id,
-            schoolId:item.schoolId,
-            status:item.status,
-        };
-        major ={
-            id: item.id,
-            name:item.name,
-            parentId:item.parentId,
-            status:item.status,
-        }
-        await db.Major.create(major).then(await db.SchoolMajor.create(schoolMajor))
-    })
+    const schoolMajor = {
+        majorId: data.id,
+        schoolId: data.schoolId,
+        status: data.status,
+    };
+     const major ={
+        id: data.id,
+        name: data.name,
+        status: data.status,
+    }    
+    await db.Major.create(major).then(db.SchoolMajor.create(schoolMajor))
 };
 
-const update = async (data) => {
-    data.map(async (items) => {
-        await db.Major.update(
-            {
-                parentId: items.parent,
-                name: items.text,
-                status: items.status
+const update = async (id,data) => {
+    await db.Major.update(data, {
+            where: {
+                id
             }
-            , {
-                where: {
-                    id: items.id
-                }
+        }
+    )
+    await db.SchoolMajor.update(data, 
+        {
+            where: {
+                majorid: id
             }
-        )
-        await db.SchoolMajor.update(
-            {
-                status:items.status
-            }, {
-                where: {
-                    majorid: items.id
-                }
-            }
-        )
-    })
+        }
+    )
 };
 
 exports.majorService = {
     findAllMajor,
     createNewMajor,
     update,
+    getAll,
 }
 
