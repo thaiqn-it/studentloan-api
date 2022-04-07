@@ -1,7 +1,7 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS, LOANMEDIA_TYPE, LOANHISTORY_ISACTIVE, } = require('../models/enum')
+const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS, LOANMEDIA_TYPE, } = require('../models/enum')
 const Investment = db.Investment
 
 const findAll = async () => {
@@ -54,7 +54,7 @@ const getLoanStudent = async (id) => {
         model: db.LoanHistory,
         attributes: ["type"],
         where: {
-          isActive: LOANHISTORY_ISACTIVE.TRUE,
+          isActive: true,
         },
       },
       {

@@ -87,11 +87,6 @@ exports.LOANMEDIA_TYPE = {
   REPORT: "REPORT"
 };
 
-exports.LOANHISTORY_ISACTIVE = {
-  TRUE: "true",
-  FALSE : "false"
-};
-
 exports.TUTOR_STATUS = {
   VERIFIED: "VERIFIED",
   UNVERIFIED: "UNVERIFIED",
