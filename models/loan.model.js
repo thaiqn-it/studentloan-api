@@ -92,6 +92,9 @@ module.exports = (sequelize, DataTypes) => {
         Loan.hasMany(models.LoanHistory, {
           foreignKey: "loanId",
         })
+        Loan.hasMany(models.Contract, {
+          foreignKey: "loanId",
+        })
     };
     
     return Loan;

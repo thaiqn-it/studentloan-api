@@ -1,7 +1,12 @@
 const db = require("../models/index");
 const { Op } = require("sequelize");
 const moment = require("moment");
-const { LOAN_STATUS, LOANHISTORY_ISACTIVE } = require("../models/enum");
+const {
+  LOAN_STATUS,
+  LOANHISTORY_ISACTIVE,
+  LOANMEDIA_STATUS,
+  LOANMEDIA_TYPE,
+} = require("../models/enum");
 
 const findAll = async () => {
   return await db.Loan.findAll({
@@ -56,6 +61,15 @@ const getLoanStudent = async (id) => {
           isActive: LOANHISTORY_ISACTIVE.TRUE,
         },
       },
+      {
+        model: db.LoanMedia,
+        attributes: ["imageUrl"],
+        where: {
+          type: LOANMEDIA_TYPE.VIDEO,
+          status: LOANMEDIA_STATUS.ACTIVE,
+        },
+        required: false,
+      },
     ],
   });
 };
@@ -101,6 +115,7 @@ const findById = async (id) => {
             ],
           },
           {
+            required: false,
             model: db.Archievement,
             where: {
               status: "ACTIVE",
@@ -117,6 +132,25 @@ const findById = async (id) => {
         model: db.LoanMedia,
         where: {
           status: "active",
+        },
+      },
+      {
+        required: false,
+        model: db.Contract,
+        where: {
+          status: "active",
+        },
+      },
+      {
+        required: false,
+        model: db.Investment,
+        include: {
+          model: db.Investor,
+          attributes: ["id"],
+          include: {
+            model: db.User,
+            attributes: ["firstName", "lastName", "phoneNumber", "email", "profileUrl"],
+          },
         },
       },
     ],

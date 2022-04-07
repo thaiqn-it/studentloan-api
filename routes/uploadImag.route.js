@@ -9,7 +9,7 @@ router.post(
   "/upload",
   (req, res, next) => {
     uploadMulti(req, res, (err) => {
-      if (err) return res.status(500).send({ mes: err });
+      if (err) return res.status(500).send({ mes: err.message });
       next();
     });
   },
