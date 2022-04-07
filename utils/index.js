@@ -1,6 +1,12 @@
 const bcrypt = require("bcrypt");
 const { isMobilePhone } = require("validator");
 const { BCRYPT_SALT_ROUND } = require("../constants");
+const Intl = require("intl") ;
+
+exports.vndFormat = new Intl.NumberFormat('it-IT', {
+    style: 'currency',
+    currency: 'VND',
+});
 
 exports.hashPassword = (raw) => {
 	return bcrypt.hashSync(raw, BCRYPT_SALT_ROUND);

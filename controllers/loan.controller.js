@@ -37,7 +37,6 @@ const findAllWaiting = async (req, res, next) => {
         const loans = await loanService.findAllWaiting(data);
         return res.json(loans);
     } catch (error) {
-        console.log(error)
         return res
         .status(INTERNAL_SERVER_ERROR)
         .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -53,7 +52,6 @@ const findById = async (req, res, next) => {
       loan,
     });
   } catch (error) {
-    console.log(error)
     return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
   }
 };
@@ -86,7 +84,6 @@ const create = async (req, res, next) => {
     
     return res.json(loan);
   } catch (error) {
-    console.log(error)
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);

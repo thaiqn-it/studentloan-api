@@ -42,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
     birthDate:{
       type: DataTypes.DATE
     },
+    pushToken : {
+      type: DataTypes.STRING,
+      allowNull : true
+    }
 
   });
 

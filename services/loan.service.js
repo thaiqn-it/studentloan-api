@@ -1,7 +1,7 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS, LOANMEDIA_TYPE, } = require('../models/enum')
+const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS, LOANMEDIA_TYPE, CONTRACT_STATUS, } = require('../models/enum')
 const Investment = db.Investment
 
 const findAll = async () => {
@@ -174,9 +174,9 @@ const findById = async (id) => {
     include: [
       {
         model: db.LoanHistory,
-        // where: {
-        //   isActive: LOANHISTORY_ISACTIVE.TRUE,
-        // },
+        where: {
+          isActive: true,
+        },
       },
       {
         model: db.Student,
@@ -185,7 +185,6 @@ const findById = async (id) => {
         include: [
           {
             model: db.SchoolMajor,
-            attributes: ["id"],
             include: [
               { model: db.Major, attributes: ["name"] },
               { model: db.School, attributes: ["name"] },
@@ -215,14 +214,14 @@ const findById = async (id) => {
         required: false,
         model: db.LoanMedia,
         where: {
-          status: "active",
+          status: LOANMEDIA_STATUS.ACTIVE,
         },
       },
       {
         required: false,
         model: db.Contract,
         where: {
-          status: "active",
+          status: CONTRACT_STATUS.ACTIVE,
         },
       },
       {
@@ -254,7 +253,6 @@ const getMatchingLoan = async () => {
       ]
     },
     where : {
-      status : LOAN_STATUS.FUNDING,
       [Op.or] : [
       {
         postExpireAt : {
@@ -286,7 +284,7 @@ const getMatchingLoan = async () => {
             include : [
               {
                 model : db.User,
-                attributes: ["firstName","lastName","email","phoneNumber","address"]
+                attributes: ["firstName","lastName","email","phoneNumber","address","birthDate"]
               },
               {
                 model : db.Investor,
@@ -340,7 +338,9 @@ const updateById = async (id,data) => {
   return await db.Loan.update(data, {
     where: {
       id
-    }
+    },
+    returning: true,
+    plain: true
   })
 };
 

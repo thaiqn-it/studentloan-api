@@ -1,6 +1,6 @@
 module.exports = {
     checkLoanExpired : {
-        frequency : "* * * */10 * *",
+        frequency : "*/15 * * * * *",
         handler : "schedulers/loanExpiredHandler"
     }
 }

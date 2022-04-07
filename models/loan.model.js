@@ -63,6 +63,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       expectedMoney:{
         type:DataTypes.BIGINT,
+      },
+      penaltyFee : {
+        type: DataTypes.FLOAT,
+        allowNull: true,
       }
     }, { timestamps : false});
   
@@ -89,9 +93,6 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey : "loanId"
         })
         Loan.hasMany(models.LoanHistory, {
-          foreignKey: "loanId",
-        })
-        Loan.hasMany(models.Contract, {
           foreignKey: "loanId",
         })
     };
