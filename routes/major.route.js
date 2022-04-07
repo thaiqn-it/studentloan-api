@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get("/school/:id", majorController.findAllMajor)
 
+router.get("/", majorController.getAll)
+
 router.post("/", majorController.createNewMajor)
 
 router.put("/updateMajors/:id", majorController.updateMajor)

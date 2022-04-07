@@ -6,11 +6,11 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
-      loanScheduleId: {
+      investmentId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: "LoanSchedule",
+            model: "Investment",
             key: "id",
         },
       },

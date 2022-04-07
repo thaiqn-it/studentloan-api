@@ -1,6 +1,6 @@
 const { Investment, Sequelize } = require("../models");
 const db = require("../models/index");
-const { INVESTMENT_STATUS } = require('../models/enum')
+const { INVESTMENT_STATUS, LOAN_STATUS } = require('../models/enum')
 const Op = Sequelize.Op;
 const InvestmentService = {};
 
@@ -50,14 +50,63 @@ InvestmentService.createOne = async (InvestmentInfo) => {
   return await Investment.create(InvestmentInfo);
 };
 
-InvestmentService.count = async (loanId,investorId) => {
-  return Investment.count({ where: { loanId, investorId } })
-  .then(count => {
-    if (count != 0) {
-      return true;
+InvestmentService.sumTotalInvestmentByInvetorId = async (investorId) => {
+  return Investment.sum('total',{ where: { investorId, status : INVESTMENT_STATUS.INVESTED } })
+};
+
+InvestmentService.countTotalByInvestorId = async (investorId) => {
+  return Investment.count({ where: { investorId } })
+};
+
+InvestmentService.countPendingByInvestorId = async (investorId) => {
+  return Investment.count({ 
+    where: { 
+      investorId,
+      status : INVESTMENT_STATUS.PENDING
+    } 
+  })
+};
+
+InvestmentService.countLoanFinishByInvestorId = async (investorId) => {
+  return Investment.count({ 
+    where: { 
+      investorId,
+      status : INVESTMENT_STATUS.INVESTED
+    },
+    include : {
+      model : db.Loan,
+      required : true,
+      include : {
+        model : db.LoanHistory,
+        where : {
+          type : LOAN_STATUS.FINISH,
+          isActive : true
+        },
+        required : true
+      }
     }
-    return false;
-  });
+  })
+};
+
+InvestmentService.countLoanOngoingByInvestorId = async (investorId) => {
+  return Investment.count({ 
+    where: { 
+      investorId,
+      status : INVESTMENT_STATUS.INVESTED
+    },
+    include : {
+      model : db.Loan,
+      required : true,
+      include : {
+        model : db.LoanHistory,
+        where : {
+          type : LOAN_STATUS.ONGOING,
+          isActive : true
+        },
+        required : true
+      }
+    }
+  })
 };
 
 InvestmentService.findOneByLoanIdAndInvestorId = async (loanId, investorId) => {

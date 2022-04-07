@@ -19,6 +19,17 @@ const findAllMajor = async (req, res, next) => {
     }
   };
 
+  const getAll = async (req, res, next) => {
+      try {
+        const majors = await majorService.getAll();
+        return res.json(majors);
+      } catch (error) {
+        return res
+          .status(INTERNAL_SERVER_ERROR)
+          .json(restError.INTERNAL_SERVER_ERROR.default);
+      }
+    };
+
   const createNewMajor = async (req, res, next) => {
     const data = req.body;
     try {
@@ -55,4 +66,4 @@ const findAllMajor = async (req, res, next) => {
         .json(restError.INTERNAL_SERVER_ERROR.default);
     }
   };
-  exports.majorController = {findAllMajor, createNewMajor, createSubMajor, updateMajor}
+  exports.majorController = {findAllMajor, createNewMajor, createSubMajor, updateMajor, getAll}

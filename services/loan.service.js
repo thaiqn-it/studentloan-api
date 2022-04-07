@@ -1,7 +1,7 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS } = require('../models/enum')
+const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS } = require('../models/enum')
 const Investment = db.Investment
 
 const findAll = async () => {
@@ -138,12 +138,19 @@ const findById = async (id) => {
           }
         ]
       },
+      // {
+      //   model : db.LoanMedia,
+      //   // where : {
+      //   //   type : 'EVIDENCE'
+      //   // },
+      //   required: false
+      // },
       {
-        required: false,
-        model : db.LoanMedia,
-        where : {
-          type : 'EVIDENCE'
-        }
+        model: db.LoanHistory,
+        where:{
+          isActive : true,
+        },
+        required : true
       }
     ],
    
@@ -231,6 +238,14 @@ const getMatchingLoan = async () => {
             }
           }   
         }]
+      },
+      {
+        model: db.LoanHistory,
+        where:{
+          type : LOAN_STATUS.FUNDING,
+          isActive : true
+        },
+        required : true
       }
     ],
   });
@@ -251,38 +266,109 @@ const search = async (data) => {
   const TODAY = moment().format("YYYY-MM-DD HH:mm:ss.mmm +07:00")
   const YESTERDAY = moment().subtract(1,"day").format("YYYY-MM-DD HH:mm:ss.mmm +07:00")
 
+  const schoolsSearch = data.schools
+  const majorsSearch = data.majors
+
+  const minMoney  = data.minMoney
+  const maxMoney  = data.maxMoney
+
+  const searchText = data.text
+
+  var qText = {}
   var s = []
   var q = {
     postExpireAt : {
-      [Op.gt] : new Date(),
-    } 
+      [Op.gt] : new Date()  
+    }
   }
+
+  if (searchText) {
+    Object.assign(qText,{
+      [Op.or] : [
+        {
+          firstName : {
+            [Op.like] : `%${searchText}%`
+          }
+        },
+        {
+          lastName : {
+            [Op.like] : `%${searchText}%`
+          }
+        }
+      ]     
+    })
+  }
+
+  if (minMoney && maxMoney) {
+    Object.assign(q,{
+      totalMoney : {
+        [Op.between] : [parseInt(minMoney), parseInt(maxMoney)]
+      }
+    })
+  }
+
   var a = {
     include: [
       [db.sequelize.literal('(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)'), 'AccumulatedMoney']
     ]
   }
 
-  var qSchool = {}
-  if (data.schoolMajorId) {
-    Object.assign(qSchool,{
-      schoolMajorId : data.schoolMajorId
+  var qSchoolMajor = []
+  if (majorsSearch !== undefined) {
+    var qMajorSearch = []
+    majorsSearch.map(item => {
+      qMajorSearch.push(
+        {
+          majorId : item
+        }
+      )
+    })
+    qSchoolMajor.push({
+      [Op.or] : qMajorSearch
+    })
+  }
+  
+  if (schoolsSearch !== undefined) {
+    var qSchoolSearch = []
+    schoolsSearch.map(item => {
+      qSchoolSearch.push(
+        {
+          schoolId : item
+        }
+      )
+    })
+    qSchoolMajor.push({
+      [Op.or] : qSchoolSearch
     })
   }
 
-  if (sort === 'lastest') {
-    s.push(['postCreatedAt', 'DESC'])    
-  } else if (sort === 'endingSoon') {
-    s.push(['postExpireAt', 'ASC'])  
-  } else if (sort === 'popular') {
-    s.push([[db.sequelize.literal('PopularCount'), 'DESC']]) 
-    Object.assign(a,{
-      include: [
-        [db.sequelize.literal('(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id AND createdAt BETWEEN ' + "N'"+ YESTERDAY +"'" + ' AND ' + "N'"+ TODAY +"'" + ' )'), 'PopularCount'],
-        [db.sequelize.literal('(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)'), 'AccumulatedMoney']
-      ]
-    })
+  switch(sort) {
+    case 'lastest':
+      s.push(['postCreatedAt', 'DESC']) 
+      break;
+    case 'endingSoon':
+      s.push(['postExpireAt', 'ASC']) 
+      break;
+    case 'popular':
+      s.push([[db.sequelize.literal('PopularCount'), 'DESC']]) 
+      Object.assign(a,{
+        include: [
+          [db.sequelize.literal('(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id AND createdAt BETWEEN ' + "N'"+ YESTERDAY +"'" + ' AND ' + "N'"+ TODAY +"'" + ' )'), 'PopularCount'],
+          [db.sequelize.literal('(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)'), 'AccumulatedMoney']
+        ]
+      })
+      break;  
+    case 'oldest':
+      s.push(['postCreatedAt', 'ASC']) 
+      break;
+    case 'moneyUp':
+      s.push(['totalMoney', 'ASC']) 
+      break;
+    case 'moneyDown':
+      s.push(['totalMoney', 'DESC']) 
+      break;
   }
+
   return await db.Loan.findAll({
     offset: (data.page - 1) * PAGE_LIMIT, 
     limit: PAGE_LIMIT,
@@ -293,11 +379,13 @@ const search = async (data) => {
       {
         model : db.Student,
         attributes: ["id"],
-        where : qSchool,
         include : [
           {
             model : db.SchoolMajor,
-            attributes: ["id"],
+            where : {
+              [Op.and] : qSchoolMajor,
+              status : SCHOOLMAJOR_STATUS.ACTIVE
+            },
             include : [
               { model : db.Major, attributes: ["name"] },
               { model : db.School, attributes: ["name"], }
@@ -306,9 +394,19 @@ const search = async (data) => {
           {
             model : db.User,
             attributes: ["firstname","lastname","profileUrl"],
+            where : qText
           }
-        ]
+        ],
+        required : true
       },
+      {
+        model: db.LoanHistory,
+        required : true,
+        where:{
+          type : LOAN_STATUS.FUNDING,
+          isActive : true
+        },
+      }
     ]
   })
 };

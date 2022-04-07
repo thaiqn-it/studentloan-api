@@ -19,7 +19,6 @@ const findByInvestmentId = async (req, res, next) => {
 
 const findAllByInvestorId = async (req, res, next) => {
     const investor = req.user.Investor;
-    console.log(investor);
     try {
         const contracts = await contractService.getAllByInvestorId(investor.id);
         if (contracts === null) throw new Error();

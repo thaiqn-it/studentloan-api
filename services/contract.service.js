@@ -1,4 +1,5 @@
-const { CONTRACT_STATUS } = require("../models/enum");
+const { Op } = require("sequelize");
+const { CONTRACT_STATUS, LOAN_STATUS } = require("../models/enum");
 const db = require("../models/index");
 
 const create = async (data) => {
@@ -22,8 +23,36 @@ const getAllByInvestorId = async (investorId) => {
               where : {
                 investorId
               },
+              attributes: ["total"],
+              include : {
+                model : db.Loan,
+                attributes: ["interest","loanStartAt","loanEndAt"],
+                required : true,
+                include : [
+                {
+                  model : db.Student,
+                  attributes: ["id"],
+                  include : {
+                    model : db.User,
+                    attributes: ["firstName","lastName"],
+                  }
+                },
+                {
+                  model : db.LoanHistory,
+                  attributes: ["type"],
+                  where : {
+                      type : {
+                        [Op.or] : [
+                          LOAN_STATUS.ONGOING,
+                          LOAN_STATUS.FINISH
+                        ]
+                      }
+                  }
+                }]
+              }
             },
-          ]
+        ],
+        attributes: ["id","contractCode","contractUrl"],
     })
 }
 

@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get("/investment/:id", contractController.findByInvestmentId);
 
-router.get("/", investorAuth ,contractController.findAllByInvestorId);
+router.get("/investor", investorAuth ,contractController.findAllByInvestorId);
 
 module.exports = { contractRoute: router };

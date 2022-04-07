@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       adminId: {
         type: DataTypes.UUID,
+        allowNull: true,
         references: {
             model: "User",
             key: "id",
@@ -23,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       type: {
         type: DataTypes.STRING,
+        allowNull : false
       },
       isActive: {
         type: DataTypes.BOOLEAN,
@@ -30,8 +32,21 @@ module.exports = (sequelize, DataTypes) => {
       },
       description:{
         type: DataTypes.STRING,
+        allowNull : true
       }
     });
+
+    LoanHistory.associate = (models) => {
+      LoanHistory.hasMany(models.LoanHistoryImage,{
+        foreignKey: "loanHistoryId",
+      })
+      LoanHistory.belongsTo(models.Loan,{
+        foreignKey: "loanId",
+      })
+      LoanHistory.belongsTo(models.User,{
+        foreignKey: "adminId",
+      })
+    };
   
     return LoanHistory;
   };

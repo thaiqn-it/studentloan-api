@@ -1,4 +1,5 @@
 
+const { MAJOR_STATUS } = require("../models/enum");
 const db = require("../models/index");
 
 const findAllMajor = async (id) => {
@@ -13,6 +14,15 @@ const findAllMajor = async (id) => {
                 schoolId: id
             },
         },
+    });
+};
+
+const getAll = async () => {
+    return await db.Major.findAll({
+        attributes: ["id", "name"],
+        where: {
+            status: MAJOR_STATUS.ACTIVE,
+        }
     });
 };
 
@@ -50,5 +60,6 @@ exports.majorService = {
     findAllMajor,
     createNewMajor,
     update,
+    getAll,
 }
 
