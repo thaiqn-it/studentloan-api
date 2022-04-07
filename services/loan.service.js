@@ -1,28 +1,73 @@
 const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
-const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS } = require('../models/enum')
+const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS, LOANMEDIA_TYPE, } = require('../models/enum')
 const Investment = db.Investment
 
 const findAll = async () => {
   return await db.Loan.findAll({
-    include : [
+    include: [
       {
-        model : db.Student,
-        attributes: ["firstname","lastname","profileUrl"],
-        include : [
+        model: db.Student,
+        attributes: ["firstname", "lastname", "profileUrl"],
+        include: [
           {
-            model : db.SchoolMajor,
+            model: db.SchoolMajor,
             attributes: ["id"],
-            include : [
-              { model : db.Major, attributes: ["name"] },
-              { model : db.School, attributes: ["name"], }
-            ]
-          }
-        ]
+            include: [
+              { model: db.Major, attributes: ["name"] },
+              { model: db.School, attributes: ["name"] },
+            ],
+          },
+        ],
       },
-    ]
-  })
+    ],
+  });
+};
+
+const getLoanStudent = async (id) => {
+  return await db.Loan.findAll({
+    where: {
+      studentId: id,
+    },
+    attributes: {
+      include: [
+        [
+          db.sequelize.literal(
+            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id)"
+          ),
+          "InvestorCount",
+        ],
+        [
+          db.sequelize.literal(
+            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+          ),
+          "AccumulatedMoney",
+        ],
+      ],
+    },
+    include: [
+      {
+        model: db.Investment,
+      },
+      {
+        model: db.LoanHistory,
+        attributes: ["type"],
+        where: {
+          isActive: true,
+        },
+      },
+      {
+        model: db.LoanMedia,
+        attributes: ["imageUrl"],
+        where: {
+          type: LOANMEDIA_TYPE.VIDEO,
+          status: LOANMEDIA_STATUS.ACTIVE,
+        },
+        required: false,
+      },
+    ],
+  });
 };
 
 const findAllWaiting = async (data) => {
@@ -107,36 +152,57 @@ const getOne = async (id) => {
 
 const findById = async (id) => {
   return await db.Loan.findOne({
-    where : {
-      id : id
+    where: {
+      id: id,
     },
     attributes: {
       include: [
-        [db.sequelize.literal('(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id)'), 'InvestorCount'],
-        [db.sequelize.literal('(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)'), 'AccumulatedMoney']
-      ]
+        [
+          db.sequelize.literal(
+            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id)"
+          ),
+          "InvestorCount",
+        ],
+        [
+          db.sequelize.literal(
+            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+          ),
+          "AccumulatedMoney",
+        ],
+      ],
     },
-    include : [
+    include: [
       {
-        model : db.Student,
+        model: db.LoanHistory,
+        // where: {
+        //   isActive: LOANHISTORY_ISACTIVE.TRUE,
+        // },
+      },
+      {
+        model: db.Student,
         attributes: ["id"],
-        include : [
+        // attributes: ["id","firstname","lastname","profileUrl","semester"],
+        include: [
           {
-            model : db.SchoolMajor,
+            model: db.SchoolMajor,
             attributes: ["id"],
-            include : [
-              { model : db.Major, attributes: ["name"] },
-              { model : db.School, attributes: ["name"], },
-            ]
+            include: [
+              { model: db.Major, attributes: ["name"] },
+              { model: db.School, attributes: ["name"] },
+            ],
           },
           {
-            model : db.Archievement,
+            required: false,
+            model: db.Archievement,
+            where: {
+              status: "ACTIVE",
+            },
           },
           {
-            model : db.User,
-            attributes: ["firstname","lastname","profileUrl"],
-          }
-        ]
+            model: db.User,
+            attributes: ["firstName", "lastName", "phoneNumber", "email", "profileUrl"],
+          },
+        ],
       },
       // {
       //   model : db.LoanMedia,
@@ -146,19 +212,38 @@ const findById = async (id) => {
       //   required: false
       // },
       {
-        model: db.LoanHistory,
-        where:{
-          isActive : true,
+        required: false,
+        model: db.LoanMedia,
+        where: {
+          status: "active",
         },
-        required : true
-      }
+      },
+      {
+        required: false,
+        model: db.Contract,
+        where: {
+          status: "active",
+        },
+      },
+      {
+        required: false,
+        model: db.Investment,
+        include: {
+          model: db.Investor,
+          attributes: ["id"],
+          include: {
+            model: db.User,
+            attributes: ["firstName", "lastName", "phoneNumber", "email", "profileUrl"],
+          },
+        },
+      },
     ],
-   
   });
 };
 
 const create = async ({ ...data }) => {
-  return await db.Loan.create(data);
+  const loan = await db.Loan.create(data);
+  return loan;
 };
 
 const getMatchingLoan = async () => {
@@ -309,9 +394,14 @@ const search = async (data) => {
 
   var a = {
     include: [
-      [db.sequelize.literal('(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)'), 'AccumulatedMoney']
-    ]
-  }
+      [
+        db.sequelize.literal(
+          "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+        ),
+        "AccumulatedMoney",
+      ],
+    ],
+  };
 
   var qSchoolMajor = []
   if (majorsSearch !== undefined) {
@@ -370,12 +460,12 @@ const search = async (data) => {
   }
 
   return await db.Loan.findAll({
-    offset: (data.page - 1) * PAGE_LIMIT, 
+    offset: (data.page - 1) * PAGE_LIMIT,
     limit: PAGE_LIMIT,
-    order : s,
-    where : q,
+    order: s,
+    where: q,
     attributes: a,
-    include : [
+    include: [
       {
         model : db.Student,
         attributes: ["id"],

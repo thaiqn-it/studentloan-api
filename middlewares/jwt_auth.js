@@ -28,14 +28,15 @@ const userAuth = async (req, res, next) => {
 
 const studentAuth = async (req, res, next) => {
   try {
+    if (!req.headers.authorization) throw new Error();
     const token = req.headers.authorization.split(" ")[1];
 
     const data = jwt.verify(token, JWT_SECRET_KEY);
 
     const user = await User.findOne({
-      where: { 
+      where: {
         id: data.userId,
-        type : USER_TYPE.STUDENT
+        type: USER_TYPE.STUDENT,
       },
       include : {
         model : db.Student,
@@ -49,10 +50,9 @@ const studentAuth = async (req, res, next) => {
       nest : true,
     });
     if (user === null) throw new Error();
-    req.user = user
+    req.user = user;
     next();
   } catch (err) {
-    console.log(err)
     res
       .status(BAD_REQUEST)
       .json(restError.BAD_REQUEST.extra({ error: "Authentication Error" }));
@@ -63,11 +63,11 @@ const investorAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const data = jwt.verify(token, JWT_SECRET_KEY);
-    
+
     const user = await User.findOne({
-      where: { 
+      where: {
         id: data.userId,
-        type : USER_TYPE.INVESTOR
+        type: USER_TYPE.INVESTOR,
       },
       include : {
         model : db.Investor,

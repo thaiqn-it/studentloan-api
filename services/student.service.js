@@ -62,10 +62,45 @@ const updateById = async (id, data) => {
   })
 };
 
+const getStudentProfile = async (id) => {
+  return await db.Student.findOne({
+    where: {
+      id: id
+    }
+    ,
+    include: [
+      {
+      model: db.Archievement,
+      where: {
+        status: "ACTIVE"
+      }
+    },
+    {
+      model: db.SchoolMajor,
+      include: [
+        {
+          model: db.School,
+          attributes: ["name"],
+        },
+        {
+          model: db.Major,
+          attributes: ["name"],
+        },
+      ]
+    },
+    {
+      model: db.User,
+      attributes: ["firstName","lastName","phoneNumber","email","profileUrl"]
+    },
+    ]
+  });
+};
+
 exports.studentService = {
   findAll,
   findById,
   create,
   updateById,
   findByUserId,
+  getStudentProfile
 };
