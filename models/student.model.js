@@ -14,9 +14,6 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      birthDate:{
-        type: DataTypes.DATE
-      },
       studentCardId:{
           type: DataTypes.STRING(50)
       },
@@ -52,9 +49,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      address : {
-        type: DataTypes.STRING,
-      },
     });
 
     Student.associate = (models) => {
@@ -69,7 +63,11 @@ module.exports = (sequelize, DataTypes) => {
       });
       Student.hasMany(models.Archievement, {
         foreignKey: "studentId",
-      })
+      });
+      Student.hasOne(models.Student, {
+        foreignKey: 'parentId',
+        as: 'Information'
+      });
   };
 
     return Student;

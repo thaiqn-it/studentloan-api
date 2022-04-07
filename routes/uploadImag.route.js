@@ -16,4 +16,4 @@ router.post(
   uploadController.uploadImage
 );
 
-module.exports = { uploadImageRouter: router };
+module.exports = { uploadImageRouter: router}

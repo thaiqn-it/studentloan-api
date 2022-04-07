@@ -8,9 +8,13 @@ const router = express.Router();
 
 router.get("/", loanController.findAll);
 
-router.get("/student", studentAuth, loanController.getLoanStudent);
+router.post("/waiting",loanController.findAllWaiting);
 
-router.get("/search", loanController.search);
+router.get("/waiting/:id",loanController.getOne);
+
+router.get("/search",loanController.search);
+
+router.get("/student", studentAuth, loanController.getLoanStudent);
 
 router.get("/:id", loanController.findById);
 

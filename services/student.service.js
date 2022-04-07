@@ -1,4 +1,7 @@
+const { STUDENT_STATUS } = require("../models/enum");
+const { Sequelize } = require("../models/index");
 const db = require("../models/index");
+const op = db.Sequelize.Op;
 
 const findAll = async () => {
   return await db.Student.findAll();
@@ -11,7 +14,11 @@ const findById = async (id) => {
 const findByUserId = async (id) => {
   return await db.Student.findOne({
     where: {
-      userId: id
+      userId: id,
+      status:STUDENT_STATUS.ACTIVE,
+      parentId:{
+        [op.not]:null
+      }
     }
     ,
     include: [
@@ -19,7 +26,8 @@ const findByUserId = async (id) => {
       model: db.Archievement,
       where: {
         status: "ACTIVE"
-      }
+      },
+      required : false
     },
     {
       model: db.SchoolMajor,
@@ -32,7 +40,8 @@ const findByUserId = async (id) => {
           model: db.Major,
           attributes: ["name"],
         },
-      ]
+      ],
+      required : false
     },
     {
       model: db.User,

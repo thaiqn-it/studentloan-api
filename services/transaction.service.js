@@ -25,7 +25,7 @@ const deleteTransactionService = async (id) => {
   return await transaction.save();
 };
 
-const getTransactionsByWalletId = async (accountId) => {
+const getTransactionsByWalletId = async (walletId) => {
   const transactions = await Transaction.findAll({
     attributes: {
       include: [
@@ -34,7 +34,7 @@ const getTransactionsByWalletId = async (accountId) => {
       ]
     },
     raw : true,
-    where: { accountId },
+    where: { walletId },
     order : [
       ['createdAt', 'DESC']
     ]

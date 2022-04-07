@@ -16,6 +16,17 @@ const updateMoneyById = async (id,money) => {
     })
 };
 
+const updateMoneyByUserId = async (userId,money) => {
+  return await Wallet.increment(
+    { money }, 
+    { where: 
+      { 
+        userId
+      } 
+    })
+};
+
+
 const getBalanceById = async (id) => {
   return await Wallet.findOne({
     where : {
@@ -49,5 +60,6 @@ module.exports = {
   getOneById,
   deleteById,
   getWalletByUserId,
-  getBalanceById
+  getBalanceById,
+  updateMoneyByUserId
 };

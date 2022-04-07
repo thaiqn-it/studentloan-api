@@ -27,8 +27,6 @@ const getListTutorByStudentId = async (id) => {
   );
 };
 
-
-
 const deleteById = async (id) => {
   const tutor = await Tutor.findByPk(id);
   if (tutor === null) throw new Error();

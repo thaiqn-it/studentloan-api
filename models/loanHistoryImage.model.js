@@ -22,7 +22,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       }
     });
-  
+    
+    LoanHistoryImage.associate = (models) => {
+      LoanHistoryImage.belongsTo(models.LoanHistory,{
+        foreignKey: "loanHistoryId",
+      })
+    };
+
     return LoanHistoryImage;
   };
   

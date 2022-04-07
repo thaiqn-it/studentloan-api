@@ -48,16 +48,15 @@ const findByUserId = async (req, res, next) => {
 };
 
 const create = async (req, res, next) => {
-  const { data } = req.body;
-
-  try {
-    const student = await studentService.create(data);
-    return res.json(student);
-  } catch (error) {
-    return res
-      .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
-  }
+    const { data } = req.body
+    try {      
+        const student = await studentService.create(data)
+        return res.json(student);
+    } catch (error) {
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
 };
 
 const updateById = async (req, res, next) => {

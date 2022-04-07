@@ -3,7 +3,9 @@ const jwt = require("jsonwebtoken");
 const db = require("../models/index");
 const { JWT_SECRET_KEY } = require("../constants");
 const { restError } = require("../errors/rest");
-const { USER_TYPE } = require("../models/enum/");
+const { USER_TYPE } = require("../models/enum/")
+const userService = require('../services/user.service');
+const op = db.Sequelize.Op;
 
 const User = db.User;
 const Student = db.Student;
@@ -13,7 +15,7 @@ const userAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const data = jwt.verify(token, JWT_SECRET_KEY);
-    const user = await User.findOne({ where: { id: data.userId } });
+    const user = await userService.getOne({id:data.userId})
     if (user === null) throw new Error();
     req.user = user;
     next();
@@ -36,9 +38,16 @@ const studentAuth = async (req, res, next) => {
         id: data.userId,
         type: USER_TYPE.STUDENT,
       },
-      include: Student,
-      raw: true,
-      nest: true,
+      include : {
+        model : db.Student,
+        where : {
+          parentId : {
+            [op.is] : null
+          }
+        }      
+      },
+      raw : true,
+      nest : true,
     });
     if (user === null) throw new Error();
     req.user = user;
@@ -60,9 +69,16 @@ const investorAuth = async (req, res, next) => {
         id: data.userId,
         type: USER_TYPE.INVESTOR,
       },
-      include: Investor,
-      raw: true,
-      nest: true,
+      include : {
+        model : db.Investor,
+        where : {
+          parentId : {
+            [op.is] : null
+          }
+        }    
+      },
+      raw : true,
+      nest : true,
     });
     if (user === null) throw new Error();
     req.user = user;
