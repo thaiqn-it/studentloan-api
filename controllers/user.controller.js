@@ -134,7 +134,7 @@ const login = async (req, res) => {
       return res
         .status(BAD_REQUEST)
         .json(restError.BAD_REQUEST.extra({ msg: "Password is wrong" }));
-    const token = jwt.sign({ userId : user.id }, JWT_SECRET_KEY);
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET_KEY);
     res.json({ token });
   } catch (err) {
     res
@@ -268,7 +268,7 @@ const registerByGoogle = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const user = req.user;
-  
+
   res.json(excludePassword(user));
 };
 
@@ -276,7 +276,7 @@ const deleteUser = async (req, res) => {
   try {
     const { id } = req.user;
     const user = await userService.deleteUserService(id);
-    
+
     res.json(user);
   } catch (err) {
     res
@@ -329,6 +329,7 @@ const getAll = async (req, res, next) => {
     const roleOfUser = await userService.getAll();
     return res.json(roleOfUser);
   } catch (e) {
+    console.log(e);
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
