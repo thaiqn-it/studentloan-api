@@ -42,7 +42,6 @@ const findByUserId = async (req, res, next) => {
       student,
     });
   } catch (error) {
-    console.log(error);
     return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
   }
 };
