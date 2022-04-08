@@ -1,9 +1,10 @@
 const db = require("../models");
-const { USER_STATUS, ACCOUNT_TYPE, ACCOUNT_STATUS } = require("../models/enum");
+const { USER_STATUS, WALLET_STATUS } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
-const Account = db.Account;
+const UserStatus = db.UserStatus;
+const Wallet = db.Wallet;
 
 const createUserService = async (user) => {
   return (
@@ -11,14 +12,14 @@ const createUserService = async (user) => {
       {
         ...user,
 
-        Account: {
+        Wallet: {
           money: 0,
-          type: ACCOUNT_TYPE.LOAN_ACCOUNT,
-          status: ACCOUNT_STATUS.ACTIVE,
+
+          status: WALLET_STATUS.ACTIVE,
         },
       },
       {
-        include: Account,
+        include: Wallet,
       }
     )
   ).get({ plain: true });
@@ -40,7 +41,7 @@ const countBaseTypeAndStatus = async (data) => {
   const result = await User.count({
     where: {
       type: data.type,
-      status: data.status
+      status: data.status,
     },
   });
   if (result === null) {
@@ -79,16 +80,13 @@ const deleteUserService = async (id) => {
 };
 
 const updateUserService = async (data) => {
-
   let user = await User.findByPk(data.id);
   if (user === null) throw new Error();
-  return await User.update(data,
-    {
-      where: {
-        id: data.id
-      }
-    }
-  )
+  return await User.update(data, {
+    where: {
+      id: data.id,
+    },
+  });
 };
 
 const getOne = async ({ ...data }) => {
@@ -103,9 +101,7 @@ const getAll = async () => {
     where: {
       type: ["STUDENT", "INVESTOR"],
     },
-    order: [
-      ["createdAt", "ASC"],
-    ],
+    order: [["createdAt", "ASC"]],
   });
 };
 
@@ -118,5 +114,5 @@ module.exports = {
   getOne,
   getAll,
   getUserByEmailService,
-  countBaseTypeAndStatus
+  countBaseTypeAndStatus,
 };
