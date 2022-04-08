@@ -16,10 +16,10 @@ const findAll = async () => {
             attributes: ["id"],
             include: [
               { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
-            ],
-          },
-        ],
+              { model: db.School, attributes: ["name"], }
+            ]
+          }
+        ]
       },
     ],
   });
@@ -72,35 +72,35 @@ const getLoanStudent = async (id) => {
 
 const findAllWaiting = async (data) => {
   return await db.Loan.findAndCountAll({
-    attributes:["totalMoney", "id","title","postCreatedAt"],
-    order:[['postCreatedAt',data.order]],
+    attributes: ["totalMoney", "id", "title", "postCreatedAt"],
+    order: [['postCreatedAt', data.order]],
     limit: data.limit,
     offset: data.offset,
-    include : [
+    include: [
       {
-        model : db.Student,
-        attributes:["id"],
-        include : [
+        model: db.Student,
+        attributes: ["id"],
+        include: [
           {
-            model : db.SchoolMajor,
+            model: db.SchoolMajor,
             attributes: ["id"],
-            include : [
-              { model : db.Major, attributes: ["name"] },
-              { model : db.School, attributes: ["name"], }
+            include: [
+              { model: db.Major, attributes: ["name"] },
+              { model: db.School, attributes: ["name"], }
             ]
           },
           {
             model: db.User,
-            attributes: ["firstName", "lastName", "profileUrl","id"]
+            attributes: ["firstName", "lastName", "profileUrl", "id"]
           }
         ]
       },
       {
         model: db.LoanHistory,
-        attributes:["id","type"],
-        where:{
-          isActive:true,
-          type:data.type
+        attributes: ["id", "type"],
+        where: {
+          isActive: true,
+          type: data.type
         }
       }
     ]
@@ -109,12 +109,31 @@ const findAllWaiting = async (data) => {
 
 const countLoan = async (type) => {
   return await db.Loan.count({
-    include : [
+    include: [
       {
         model: db.LoanHistory,
-        where:{
+        where: {
           type: type,
-          isActive:true,
+          isActive: true,
+        }
+      }
+    ]
+  })
+};
+
+const countLoanBaseTime = async (data) => {
+  return await db.Loan.count({
+    include: [
+      {
+        model: db.LoanHistory,
+        where: {
+          type: data.type,
+          isActive: true,
+          createdAt:
+          {
+            [Op.between]:
+              [data.startDate, data.endDate]
+          }
         }
       }
     ]
@@ -123,41 +142,41 @@ const countLoan = async (type) => {
 
 const getOne = async (id) => {
   return await db.Loan.findOne({
-    where:{
-      id:id,
+    where: {
+      id: id,
     },
-    include : [
+    include: [
       {
-        model : db.Student,
-        attributes:["id"],
-        include : [
+        model: db.Student,
+        attributes: ["id"],
+        include: [
           {
-            model : db.SchoolMajor,
-            attributes:["id"],
-            include : [
-              { model : db.Major, attributes: ["name"] },
-              { model : db.School, attributes: ["name"], }
+            model: db.SchoolMajor,
+            attributes: ["id"],
+            include: [
+              { model: db.Major, attributes: ["name"] },
+              { model: db.School, attributes: ["name"], }
             ]
           },
           {
             model: db.User,
-            attributes: ["firstName", "lastName", "profileUrl","id"]
+            attributes: ["firstName", "lastName", "profileUrl", "id"]
           },
           {
-            model:db.Archievement,
+            model: db.Archievement,
           }
         ]
       },
       {
         model: db.LoanHistory,
-        where:{
-          isActive:true,
+        where: {
+          isActive: true,
         }
       },
       {
-        model:db.LoanMedia,
-        where:{
-          status:LOANMEDIA_STATUS.ACTIVE
+        model: db.LoanMedia,
+        where: {
+          status: LOANMEDIA_STATUS.ACTIVE
         }
       }
     ]
@@ -187,70 +206,35 @@ const findById = async (id) => {
     },
     include: [
       {
-        model: db.LoanHistory,
-        where: {
-          isActive: true,
-        },
-      },
-      {
         model: db.Student,
         attributes: ["id"],
-        // attributes: ["id","firstname","lastname","profileUrl","semester"],
         include: [
           {
             model: db.SchoolMajor,
+            attributes: ["id"],
             include: [
               { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
-            ],
+              { model: db.School, attributes: ["name"], },
+            ]
           },
           {
-            required: false,
             model: db.Archievement,
-            where: {
-              status: "ACTIVE",
-            },
           },
           {
             model: db.User,
-            attributes: ["firstName", "lastName", "phoneNumber", "email", "profileUrl"],
-          },
-        ],
+            attributes: ["firstname", "lastname", "profileUrl"],
+          }
+        ]
       },
-      // {
-      //   model : db.LoanMedia,
-      //   // where : {
-      //   //   type : 'EVIDENCE'
-      //   // },
-      //   required: false
-      // },
-      // {
-      //   required: false,
-      //   model: db.LoanMedia,
-      //   where: {
-      //     status: LOANMEDIA_STATUS.ACTIVE,
-      //   },
-      // },
-      // {
-      //   required: false,
-      //   model: db.Contract,
-      //   where: {
-      //     status: CONTRACT_STATUS.ACTIVE,
-      //   },
-      // },
-      // {
-      //   required: false,
-      //   model: db.Investment,
-      //   include: {
-      //     model: db.Investor,
-      //     attributes: ["id"],
-      //     include: {
-      //       model: db.User,
-      //       attributes: ["firstName", "lastName", "phoneNumber", "email", "profileUrl"],
-      //     },
-      //   },
-      // },
+      {
+        required: false,
+        model: db.LoanMedia,
+        where: {
+          type: 'EVIDENCE'
+        }
+      }
     ],
+
   });
 };
 
@@ -266,75 +250,77 @@ const getMatchingLoan = async () => {
         [db.sequelize.literal("(SELECT ISNULL(SUM(total),0) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"), 'AccumulatedMoney']
       ]
     },
-    where : {
-      [Op.or] : [
-      {
-        postExpireAt : {
-          [Op.lte] : new Date()
-        }
-      },
-      {
-        totalMoney : {
-          [Op.eq] : db.sequelize.literal("(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')")
-        }
-      }
-      ]    
-    },
-    include : [
-      {
-        model : db.Investment,
-        where : {
-          [Op.not] : {
-            status : [INVESTMENT_STATUS.CANCEL,INVESTMENT_STATUS.FAIL]
-          } 
+    where: {
+      status: LOAN_STATUS.FUNDING,
+      [Op.or]: [
+        {
+          postExpireAt: {
+            [Op.lte]: new Date()
+          }
         },
-        include : [
+        {
+          totalMoney: {
+            [Op.eq]: db.sequelize.literal("(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')")
+          }
+        }
+      ]
+    },
+    include: [
+      {
+        model: db.Investment,
+        where: {
+          [Op.not]: {
+            status: [INVESTMENT_STATUS.CANCEL, INVESTMENT_STATUS.FAIL]
+          }
+        },
+        include: [
           {
-            model : db.Investor,
+            model: db.Investor,
             attributes: ["id"],
-            where : {
-              status : INVESTOR_STATUS.ACTIVE,
+            where: {
+              status: INVESTOR_STATUS.ACTIVE,
             },
-            include : [
+            include: [
               {
-                model : db.User,
-                attributes: ["firstName","lastName","email","phoneNumber","address","birthDate"]
+                model: db.User,
+                attributes: ["firstName", "lastName", "email", "phoneNumber", "address"]
               },
               {
-                model : db.Investor,
-                as : 'Information',
-                attributes: ["citizenId","citizenCardCreatedDate","citizenCardCreatedPlace"],
-                where : {
-                  status : INVESTOR_STATUS.ACTIVE,
-                  parentId : {
-                    [Op.not] : null
+                model: db.Investor,
+                as: 'Information',
+                attributes: ["citizenId", "citizenCardCreatedDate", "citizenCardCreatedPlace"],
+                where: {
+                  status: INVESTOR_STATUS.ACTIVE,
+                  parentId: {
+                    [Op.not]: null
                   }
                 }
               }
             ]
           }
         ],
-        require : false
+        require: false
       },
       {
-        model : db.Student,
+        model: db.Student,
         attributes: ["userId"],
-        include :[
-        {
-          model : db.User,
-          attributes: ["firstName","lastName","email","phoneNumber","address","birthDate"]
-        },
-        {      
-          model : db.Student,
-          as : 'Information',
-          attributes: ["citizenId","citizenCardCreatedDate","citizenCardCreatedPlace"],
-          where : {
-            status : STUDENT_STATUS.ACTIVE,
-            parentId : {
-              [Op.not] : null
+        include: [
+          {
+            model: db.User,
+            attributes: ["firstName", "lastName", "email", "phoneNumber", "address", "birthDate"]
+          },
+          {
+            model: db.Student,
+            as: 'Information',
+            attributes: ["citizenId", "citizenCardCreatedDate", "citizenCardCreatedPlace"],
+            where: {
+              status: STUDENT_STATUS.ACTIVE,
+              parentId: {
+                [Op.not]: null
+              }
             }
           }   
-        }]
+        ]
       },
       {
         model: db.LoanHistory,
@@ -348,7 +334,7 @@ const getMatchingLoan = async () => {
   });
 };
 
-const updateById = async (id,data) => {
+const updateById = async (id, data) => {
   return await db.Loan.update(data, {
     where: {
       id
@@ -363,7 +349,7 @@ const search = async (data) => {
   const sort = data.sort;
 
   const TODAY = moment().format("YYYY-MM-DD HH:mm:ss.mmm +07:00")
-  const YESTERDAY = moment().subtract(1,"day").format("YYYY-MM-DD HH:mm:ss.mmm +07:00")
+  const YESTERDAY = moment().subtract(1, "day").format("YYYY-MM-DD HH:mm:ss.mmm +07:00")
 
   const schoolsSearch = data.schools
   const majorsSearch = data.majors
@@ -481,7 +467,7 @@ const search = async (data) => {
     attributes: a,
     include: [
       {
-        model : db.Student,
+        model: db.Student,
         attributes: ["id"],
         include : [
           {
@@ -515,14 +501,15 @@ const search = async (data) => {
   })
 };
 
-exports.loanService = { 
-    findAll, 
-    findById,
-    create,
-    updateById,
-    search,
-    getMatchingLoan,
-    findAllWaiting,
-    getOne,
-    countLoan,
+exports.loanService = {
+  findAll,
+  findById,
+  create,
+  updateById,
+  search,
+  getMatchingLoan,
+  findAllWaiting,
+  getOne,
+  countLoan,
+  countLoanBaseTime,
 };

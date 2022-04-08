@@ -30,6 +30,7 @@ const findAllByInvestorId = async (req, res, next) => {
     }
 };
 
+
 exports.contractController = { 
     findByInvestmentId,
     findAllByInvestorId,

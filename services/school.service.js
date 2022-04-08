@@ -37,4 +37,10 @@ const updateById = async (id,data) => {
     })
 }
 
-exports.schoolServices = {findAllSchool, findOneSchool, createNewSchool, deleteById, updateById}
+exports.schoolServices = {
+    findAllSchool, 
+    findOneSchool, 
+    createNewSchool, 
+    deleteById, 
+    updateById, 
+}

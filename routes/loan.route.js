@@ -20,6 +20,8 @@ router.get("/student", studentAuth, loanController.getLoanStudent);
 
 router.get("/:id", loanController.findById);
 
+router.post("/countLoan/",loanController.countLoanBaseTime);
+
 router.post(
   "/",
 

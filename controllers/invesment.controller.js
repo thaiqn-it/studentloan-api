@@ -17,6 +17,18 @@ InvestmentController.getAllByInvestorID = async (req, res, next) => {
   }
 };
 
+InvestmentController.findAllByLoanId = async (req, res, next) => {
+  try {
+    const {id} = req.params
+    const investments = await InvestmentService.findAllByLoanId(id);
+    return res.json(investments);
+  } catch (error) {
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 InvestmentController.createInvestment = async (req, res, next) => {
   const {
     interest,

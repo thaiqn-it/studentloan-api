@@ -1,7 +1,8 @@
+const { Sequelize } = require("../models");
 const db = require("../models");
 const { TRANSACTION_STATUS } = require("../models/enum");
 const Transaction = db.Transaction;
-const User = db.User;
+const Op = Sequelize.Op;
 
 const createTransactionService = async (transaction) => {
   return await Transaction.create(transaction);
@@ -18,6 +19,17 @@ const getTransactionService = async (id) => {
   return await Transaction.findByPk(id);
 };
 
+const count = async (data) => {
+  return await Transaction.count({
+    where: {
+      createdAt: {
+        [Op.between]:
+          [data.startDate, data.endDate]
+      }
+    }
+  });
+};
+
 const deleteTransactionService = async (id) => {
   const transaction = await Transaction.findByPk(id);
   if (transaction === null) throw new Error();
@@ -30,12 +42,12 @@ const getTransactionsByWalletId = async (walletId) => {
     attributes: {
       include: [
         // [ db.Sequelize.fn('MONTH', db.Sequelize.col('createdAt')), 'month'],
-        [ db.Sequelize.fn('FORMAT', db.Sequelize.col('createdAt'), 'dd-MM-yyyy'), 'date']
+        [db.Sequelize.fn('FORMAT', db.Sequelize.col('createdAt'), 'dd-MM-yyyy'), 'date']
       ]
     },
-    raw : true,
+    raw: true,
     where: { walletId },
-    order : [
+    order: [
       ['createdAt', 'DESC']
     ]
   });
@@ -43,12 +55,16 @@ const getTransactionsByWalletId = async (walletId) => {
   return transactions;
 };
 
-const getAll = async () => {
+const getAll = async (data) => {
   return await Transaction.findAll({
-    include:[{
-      model:User,
-      
-    }]
+    attributes: ['id', 'money', 'transactionFee', 'createdAt', 'type', 'status'],
+    where: {
+      createdAt:
+      {
+        [Op.between]:
+          [data.startDate, data.endDate]
+      }
+    }
   });
 };
 
@@ -59,4 +75,5 @@ module.exports = {
   getTransactionService,
   getTransactionsByWalletId,
   getAll,
+  count,
 };
