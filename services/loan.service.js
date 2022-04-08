@@ -2,7 +2,6 @@ const db = require("../models/index");
 const { Op } = require('sequelize');
 const moment = require('moment');
 const { LOAN_STATUS, INVESTMENT_STATUS, INVESTOR_STATUS, STUDENT_STATUS, LOANMEDIA_STATUS, SCHOOLMAJOR_STATUS, LOANMEDIA_TYPE, CONTRACT_STATUS, } = require('../models/enum')
-const Investment = db.Investment
 
 const findAll = async () => {
   return await db.Loan.findAll({
@@ -512,4 +511,5 @@ exports.loanService = {
   getOne,
   countLoan,
   countLoanBaseTime,
+  getLoanStudent
 };

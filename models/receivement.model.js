@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const LoanRepayment = sequelize.define("LoanRepayment", {
+    const Receivement = sequelize.define("Receivement", {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -34,6 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
   
-    return LoanRepayment;
+    return Receivement;
   };
   

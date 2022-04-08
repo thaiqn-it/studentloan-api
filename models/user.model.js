@@ -56,12 +56,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
     });
-    User.hasOne(models.LoanHistory, {
-      foreignKey: {
-        name: "adminId",
-        allowNull: false,
-      },
-    });
     User.hasOne(models.Investor, {
       foreignKey: {
         name: "userId",
