@@ -285,11 +285,23 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
+const updateById = async (req, res) => {
   try {
     const user = req.user
     const data = req.body;
     const result = await userService.updateUserService(user.id,data);
+    res.json(result);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
+const updateByAdmin = async (req, res) => {
+  try {
+    const data = req.body;
+    const result = await userService.updateUserService(data.id,data);
     res.json(result);
   } catch (err) {
     res
@@ -369,7 +381,8 @@ module.exports = {
   login,
   getProfile,
   deleteUser,
-  updateUser,
+  updateByAdmin,
+  updateById,
   sendOTP,
   verifyOTP,
   registerByFb,
