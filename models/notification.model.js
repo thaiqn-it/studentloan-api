@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       isRead : {
         type : DataTypes.BOOLEAN
       },
+      type: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       status: {
         type: DataTypes.STRING,
         allowNull: false,
