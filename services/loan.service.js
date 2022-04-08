@@ -153,7 +153,7 @@ const getOne = async (id) => {
 const findById = async (id) => {
   return await db.Loan.findOne({
     where: {
-      id: id,
+      id,
     },
     attributes: {
       include: [
@@ -210,32 +210,32 @@ const findById = async (id) => {
       //   // },
       //   required: false
       // },
-      {
-        required: false,
-        model: db.LoanMedia,
-        where: {
-          status: LOANMEDIA_STATUS.ACTIVE,
-        },
-      },
-      {
-        required: false,
-        model: db.Contract,
-        where: {
-          status: CONTRACT_STATUS.ACTIVE,
-        },
-      },
-      {
-        required: false,
-        model: db.Investment,
-        include: {
-          model: db.Investor,
-          attributes: ["id"],
-          include: {
-            model: db.User,
-            attributes: ["firstName", "lastName", "phoneNumber", "email", "profileUrl"],
-          },
-        },
-      },
+      // {
+      //   required: false,
+      //   model: db.LoanMedia,
+      //   where: {
+      //     status: LOANMEDIA_STATUS.ACTIVE,
+      //   },
+      // },
+      // {
+      //   required: false,
+      //   model: db.Contract,
+      //   where: {
+      //     status: CONTRACT_STATUS.ACTIVE,
+      //   },
+      // },
+      // {
+      //   required: false,
+      //   model: db.Investment,
+      //   include: {
+      //     model: db.Investor,
+      //     attributes: ["id"],
+      //     include: {
+      //       model: db.User,
+      //       attributes: ["firstName", "lastName", "phoneNumber", "email", "profileUrl"],
+      //     },
+      //   },
+      // },
     ],
   });
 };

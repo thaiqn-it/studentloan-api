@@ -49,7 +49,7 @@ const findById = async (req, res, next) => {
     const loan = await loanService.findById(id);
     if (loan === null) throw new Error();
     return res.json({
-      loan,
+      loan
     });
   } catch (error) {
     return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
