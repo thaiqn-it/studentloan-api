@@ -74,14 +74,13 @@ const deleteUserService = async (id) => {
 //   return await user.save();
 // };
 
-const updateUserService = async (data) => {
-
-  let user = await User.findByPk(data.id);
+const updateUserService = async (id,data) => {
+  let user = await User.findByPk(id);
   if (user === null) throw new Error();
   return await User.update(data,
     {
       where: {
-        id: data.id
+        id
       }
     }
   )

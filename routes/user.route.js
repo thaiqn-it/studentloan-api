@@ -43,7 +43,7 @@ router.get("/investor/me", investorAuth, userController.getProfile);
 router.get("/admin/me", userAuth, userController.getProfile);
 
 router.put("/",
-//  userAuth, 
+ userAuth, 
  userController.updateUser);
 
 router.delete("/", userController.deleteUser);
