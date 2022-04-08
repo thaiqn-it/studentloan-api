@@ -13,9 +13,16 @@ const Investor = db.Investor;
 
 const userAuth = async (req, res, next) => {
   try {
+    // if (!req.headers.authorization) throw new Error();
     const token = req.headers.authorization.split(" ")[1];
     const data = jwt.verify(token, JWT_SECRET_KEY);
-    const user = await userService.getOne({id:data.userId})
+    const user = await User.findOne({
+      where: {
+        id: data.userId,
+      },
+      raw : true,
+      nest : true,
+    });
     if (user === null) throw new Error();
     req.user = user;
     next();

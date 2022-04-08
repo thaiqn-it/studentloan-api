@@ -44,9 +44,9 @@ router.get("/investor/me", investorAuth, userController.getProfile);
 
 router.get("/admin/me", userAuth, userController.getProfile);
 
-router.put("/", userAuth, userController.updateUser);
+router.put("/", userAuth, userController.updateById);
 
-router.put("/admin", userController.updateUser);
+router.put("/admin", userController.updateByAdmin);
 
 router.delete("/", userController.deleteUser);
 

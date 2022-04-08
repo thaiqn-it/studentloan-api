@@ -287,11 +287,11 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
+    const user = req.user
     const data = req.body;
-    const user = await userService.updateUserService(data);
-    res.json(user);
+    const result = await userService.updateUserService(user.id,data);
+    res.json(result);
   } catch (err) {
-    console.log(err)
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());

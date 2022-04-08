@@ -18,6 +18,7 @@ const { walletRouter } = require("./wallet.route");
 const { contractRoute } = require("./contract.route");
 const { loanHistoryRouter } = require("./loanhistory.route");
 const { loanHistoryImageRouter } = require("./loanhistoryimage.route");
+const { notificationRoute } = require("./notification.route");
 
 const router = express.Router();
 
@@ -39,5 +40,6 @@ router.use("/paypal", paypalRoute);
 router.use("/config", systemConfigRouter);
 router.use("/wallet", walletRouter);
 router.use("/contract", contractRoute);
+router.use("/notification", notificationRoute);
 
 module.exports = { apiRouter: router };

@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
             key: "id",
         },
       },
+      isRead : {
+        type : DataTypes.BOOLEAN
+      },
       status: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      isRead:{
-        type: DataTypes.BOOLEAN,
       },
       redirectUrl:{
         type: DataTypes.STRING,
