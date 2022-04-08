@@ -337,6 +337,18 @@ const getAll = async (req, res, next) => {
   }
 };
 
+const count = async (req, res, next) => {
+  const data = req.body
+  try {
+    const numberUser = await userService.countBaseTypeAndStatus(data);
+    return res.json(numberUser);
+  } catch (e) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
 const getTransactionsByAccountId = async (req, res) => {
   try {
     const { accountId } = req.body;
@@ -368,4 +380,5 @@ module.exports = {
   getWalletInfo,
   getTransactionsByAccountId,
   getAll,
+  count,
 };

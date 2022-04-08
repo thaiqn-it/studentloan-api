@@ -4,6 +4,14 @@ const findAll = async () => {
   return await db.LoanSchedule.findAll();
 };
 
+const findAllByLoanId = async (id) => {
+  return await db.LoanSchedule.findAll({
+    where:{
+      loanId:id
+    }
+  });
+};
+
 const findById = async (id) => {
   return await db.LoanSchedule.findByPk(id);
 };
@@ -25,4 +33,5 @@ exports.loanScheduleService = {
     findById,
     create,
     updateById,
+    findAllByLoanId,
 };

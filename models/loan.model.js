@@ -77,9 +77,6 @@ module.exports = (sequelize, DataTypes) => {
         Loan.hasMany(models.LoanHistory, {
           foreignKey: "loanId",
         })
-        Loan.hasMany(models.Report,{
-          foreignKey : "loanId"
-        })
         Loan.belongsTo(models.Student, {
           foreignKey: "studentId",
         });

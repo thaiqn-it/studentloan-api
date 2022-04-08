@@ -1,4 +1,4 @@
-const { Investment, Sequelize } = require("../models");
+const { Investment,Contract, Sequelize } = require("../models");
 const db = require("../models/index");
 const { INVESTMENT_STATUS, LOAN_STATUS } = require('../models/enum')
 const Op = Sequelize.Op;
@@ -108,6 +108,20 @@ InvestmentService.countLoanOngoingByInvestorId = async (investorId) => {
     }
   })
 };
+
+InvestmentService.findAllByLoanId = async (id) =>{
+  return Investment.findAll({
+    attributes:['id'],
+    where:{
+      loanId:id
+    },
+    include:[
+      {
+        model: Contract,
+      }
+    ]
+  })
+}
 
 InvestmentService.findOneByLoanIdAndInvestorId = async (loanId, investorId) => {
   return await Investment.findOne({ 

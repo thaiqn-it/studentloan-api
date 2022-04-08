@@ -31,15 +31,42 @@ const getLoanStudent = async (req, res, next) => {
   }
 };
 
+
 const findAllWaiting = async (req, res, next) => {
     const data = req.body
-    try {     
+    try {
         const loans = await loanService.findAllWaiting(data);
         return res.json(loans);
     } catch (error) {
         return res
-        .status(INTERNAL_SERVER_ERROR)
-        .json(restError.INTERNAL_SERVER_ERROR.default);
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+};
+
+const countLoan = async (req, res, next) => {
+    const { type } = req.params
+    try {
+        const numberLoan = await loanService.countLoan(type);
+        return res.json(numberLoan);
+    } catch (error) {
+        console.log(error)
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+};
+
+const countLoanBaseTime = async (req, res, next) => {
+    try {
+        const data = req.body
+        const numberLoan = await loanService.countLoanBaseTime(data);
+        return res.json(numberLoan);
+    } catch (error) {
+        console.log(error)
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
     }
 };
 
@@ -61,64 +88,63 @@ const getOne = async (req, res, next) => {
     try {
         const loan = await loanService.getOne(id);
         if (loan === null) throw new Error();
-		return res.json({
-			loan,
-		});
+        return res.json({
+            loan,
+        });
     } catch (error) {
         return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
     }
 };
 
 const create = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(BAD_REQUEST).json(
-      restError.BAD_REQUEST.extra({
-        errorParams: mapErrorArrayExpressValidator(errors.array()),
-      })
-    );
-  }
-  const data = req.body;
-  try {
-    const loan = await loanService.create(data);
-    
-    return res.json(loan);
-  } catch (error) {
-    return res
-      .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
-  }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(BAD_REQUEST).json(
+            restError.BAD_REQUEST.extra({
+                errorParams: mapErrorArrayExpressValidator(errors.array()),
+            })
+        );
+    }
+    const data = req.body
+    try {
+        const loan = await loanService.create(data)
+        return res.json(loan);
+    } catch (error) {
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
 };
 
 const updateById = async (req, res, next) => {
-  const { id } = req.params;
-  const data = req.body;
-  try {
-    const loan = await loanService.updateById(id, data);
-    if (loan === null) throw new Error();
-    return res.json({
-      loan,
-    });
-  } catch (error) {
-    return res
-      .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default());
-  }
-};
+    const { id } = req.params;
+    const data = req.body;
+    try {
+        const loan = await loanService.updateById(id, data)
+        if (loan === null) throw new Error();
+        return res.json({
+            loan,
+        });
+    } catch (error) {
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default());
+    }
+}
 
 const search = async (req, res, next) => {
-  const data = req.query;
-  try {
-    const loans = await loanService.search(data);
-    return res.json(loans);
-  } catch (error) {
-    return res
-      .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default);
-  }
-};
+    const data = req.query;
+    try {
+        const loans = await loanService.search(data);
+        return res.json(loans);
+    } catch (error) {
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+}
 
-exports.loanController = { 
+exports.loanController = {
     findAll,
     findById,
     create,
@@ -126,5 +152,7 @@ exports.loanController = {
     search,
     findAllWaiting,
     getLoanStudent,
-    getOne
+    getOne,
+    countLoan,
+    countLoanBaseTime,
 };

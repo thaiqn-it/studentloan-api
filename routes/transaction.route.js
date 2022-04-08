@@ -9,9 +9,11 @@ router.get("/:id", transactionController.getTransaction);
 
 router.get("/wallet/:id", transactionController.getByWalletId);
 
-router.get("/", transactionController.getAllTransaction);
+router.post("/", transactionController.getAllTransaction);
 
 router.post("/", transactionController.createTransaction);
+
+router.post("/count", transactionController.count);
 
 router.delete("/", transactionController.deleteTransaction);
 

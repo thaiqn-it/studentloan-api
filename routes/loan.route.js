@@ -12,11 +12,15 @@ router.post("/waiting",loanController.findAllWaiting);
 
 router.get("/waiting/:id",loanController.getOne);
 
+router.get("/countLoan/:type",loanController.countLoan);
+
 router.get("/search",loanController.search);
 
 router.get("/student", studentAuth, loanController.getLoanStudent);
 
 router.get("/:id", loanController.findById);
+
+router.post("/countLoan/",loanController.countLoanBaseTime);
 
 router.post(
   "/",

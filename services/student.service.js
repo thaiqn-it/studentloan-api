@@ -15,37 +15,37 @@ const findByUserId = async (id) => {
   return await db.Student.findOne({
     where: {
       userId: id,
-      status:STUDENT_STATUS.ACTIVE,
-      parentId:{
-        [op.not]:null
+      status: STUDENT_STATUS.ACTIVE,
+      parentId: {
+        [op.not]: null
       }
     }
     ,
     include: [
       {
-      model: db.Archievement,
-      where: {
-        status: "ACTIVE"
+        model: db.Archievement,
+        where: {
+          status: "ACTIVE"
+        },
+        required: false
       },
-      required : false
-    },
-    {
-      model: db.SchoolMajor,
-      include: [
-        {
-          model: db.School,
-          attributes: ["name"],
-        },
-        {
-          model: db.Major,
-          attributes: ["name"],
-        },
-      ],
-      required : false
-    },
-    {
-      model: db.User,
-    },
+      {
+        model: db.SchoolMajor,
+        include: [
+          {
+            model: db.School,
+            attributes: ["name"],
+          },
+          {
+            model: db.Major,
+            attributes: ["name"],
+          },
+        ],
+        required: false
+      },
+      {
+        model: db.User,
+      },
     ]
   });
 };

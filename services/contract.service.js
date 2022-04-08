@@ -59,5 +59,5 @@ const getAllByInvestorId = async (investorId) => {
 exports.contractService = { 
     create,
     getByInvestmentId,
-    getAllByInvestorId
+    getAllByInvestorId,
 };

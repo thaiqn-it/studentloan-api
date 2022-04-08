@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.get("/",loanScheduleController.findAll);
 
+router.get("/loan/:id",loanScheduleController.findAllByLoanId);
+
 router.get("/:id", loanScheduleController.findById);
 
 router.post("/:id",loanScheduleController.create);
