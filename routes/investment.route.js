@@ -13,6 +13,8 @@ router.get("/loan/:id",investorAuth, investmentController.checkExistInvestmentBy
 
 router.get("/count",investorAuth, investmentController.countByInvestorId);
 
+router.get("/loanId/:id", investmentController.findAllByLoanId);
+
 router.get("/:id", investmentController.findOneById);
 
 router.put("/:id", investmentController.updateInvestment);

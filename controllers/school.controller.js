@@ -16,6 +16,7 @@ const findAllSchool = async (req, res, next) => {
       .json(restError.INTERNAL_SERVER_ERROR.default);
   }
 };
+
 const findOneSchool = async (req, res, next) => {
   const { id } = req.params;
   try {

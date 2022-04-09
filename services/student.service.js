@@ -15,37 +15,37 @@ const findByUserId = async (id) => {
   return await db.Student.findOne({
     where: {
       userId: id,
-      status:STUDENT_STATUS.ACTIVE,
-      parentId:{
-        [op.not]:null
+      status: STUDENT_STATUS.ACTIVE,
+      parentId: {
+        [op.not]: null
       }
     }
     ,
     include: [
       {
-      model: db.Archievement,
-      where: {
-        status: "ACTIVE"
+        model: db.Archievement,
+        where: {
+          status: "ACTIVE"
+        },
+        required: false
       },
-      required : false
-    },
-    {
-      model: db.SchoolMajor,
-      include: [
-        {
-          model: db.School,
-          attributes: ["name"],
-        },
-        {
-          model: db.Major,
-          attributes: ["name"],
-        },
-      ],
-      required : false
-    },
-    {
-      model: db.User,
-    },
+      {
+        model: db.SchoolMajor,
+        include: [
+          {
+            model: db.School,
+            attributes: ["name"],
+          },
+          {
+            model: db.Major,
+            attributes: ["name"],
+          },
+        ],
+        required: false
+      },
+      {
+        model: db.User,
+      },
     ]
   });
 };
@@ -57,11 +57,23 @@ const create = async ({ ...data }) => {
 const updateById = async (id, data) => {
   return await db.Student.update(data, {
     where: {
-      id: id
-    }
-  })
+      id: id,
+    },
+  });
 };
 
+const createNewStudent = async (data) => {
+  const parent = await db.Student.create(data);
+  const newStudent = await db.Student.create({ ...data, parentId: parent.id });
+  return newStudent;
+};
+
+const updateNewStudentById = async (id, data) => {
+  const oldStudent = await db.Student.findByPk(id);
+  await oldStudent.update({ status: STUDENT_STATUS.INACTIVE });
+  const newStudent = { ...oldStudent, ...data };
+  return await db.Student.create({ ...newStudent });
+}
 const getStudentProfile = async (id) => {
   return await db.Student.findOne({
     where: {
@@ -102,5 +114,7 @@ exports.studentService = {
   create,
   updateById,
   findByUserId,
+  createNewStudent,
+  updateNewStudentById,
   getStudentProfile
 };

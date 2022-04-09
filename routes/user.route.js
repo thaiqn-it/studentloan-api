@@ -8,7 +8,7 @@ const {
 
 const router = express.Router();
 
-router.get("/",userController.getAll);
+router.get("/", userController.getAll);
 
 router.post("/", userController.creatUser);
 
@@ -19,6 +19,8 @@ router.post(
   userAuth,
   userController.getTransactionsByAccountId
 );
+
+router.post("/count", userController.count);
 
 router.post("/registerByFb", userController.registerByFb);
 
@@ -42,9 +44,9 @@ router.get("/investor/me", investorAuth, userController.getProfile);
 
 router.get("/admin/me", userAuth, userController.getProfile);
 
-router.put("/",
-//  userAuth, 
- userController.updateUser);
+router.put("/", userAuth, userController.updateById);
+
+router.put("/admin", userController.updateByAdmin);
 
 router.delete("/", userController.deleteUser);
 

@@ -18,6 +18,20 @@ const findAll = async (req, res, next) => {
     }
 };
 
+
+const findAllByLoanId = async (req, res, next) => {
+    try {
+        const {id} = req.params
+        const loanSchedules = await loanScheduleService.findAllByLoanId(id);
+        return res.json(loanSchedules);
+    } catch (error) {
+        console.log(error)
+        return res
+            .status(INTERNAL_SERVER_ERROR)
+            .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+};
+
 const findById = async (req, res, next) => {
     const { id } = req.params;
     try {
@@ -103,4 +117,5 @@ exports.loanScheduleController = {
     findById,
     create,
     updateById,
+    findAllByLoanId,
 };

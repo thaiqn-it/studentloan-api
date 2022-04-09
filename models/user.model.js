@@ -42,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
     birthDate:{
       type: DataTypes.DATE
     },
+    pushToken : {
+      type: DataTypes.STRING,
+      allowNull : true
+    }
 
   });
 
@@ -49,12 +53,6 @@ module.exports = (sequelize, DataTypes) => {
     User.hasOne(models.Student, {
       foreignKey: {
         name: "userId",
-        allowNull: false,
-      },
-    });
-    User.hasOne(models.LoanHistory, {
-      foreignKey: {
-        name: "adminId",
         allowNull: false,
       },
     });

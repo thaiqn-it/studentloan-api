@@ -13,7 +13,16 @@ const updateById = async (id,data) => {
     })
 }
 
+const updateByLoanId = async (loanId,data) => {
+    return await LoanHistory.update(data, {
+        where : {
+            loanId
+        }
+    })
+}
+
 module.exports.loanHistoryService = {
     create,
     updateById,
+    updateByLoanId
 };

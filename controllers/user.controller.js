@@ -134,7 +134,7 @@ const login = async (req, res) => {
       return res
         .status(BAD_REQUEST)
         .json(restError.BAD_REQUEST.extra({ msg: "Password is wrong" }));
-    const token = jwt.sign({ userId : user.id }, JWT_SECRET_KEY);
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET_KEY);
     res.json({ token });
   } catch (err) {
     res
@@ -268,7 +268,7 @@ const registerByGoogle = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const user = req.user;
-  
+
   res.json(excludePassword(user));
 };
 
@@ -276,7 +276,7 @@ const deleteUser = async (req, res) => {
   try {
     const { id } = req.user;
     const user = await userService.deleteUserService(id);
-    
+
     res.json(user);
   } catch (err) {
     res
@@ -285,13 +285,25 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
+const updateById = async (req, res) => {
+  try {
+    const user = req.user
+    const data = req.body;
+    const result = await userService.updateUserService(user.id,data);
+    res.json(result);
+  } catch (err) {
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
+const updateByAdmin = async (req, res) => {
   try {
     const data = req.body;
-    const user = await userService.updateUserService(data);
-    res.json(user);
+    const result = await userService.updateUserService(data.id,data);
+    res.json(result);
   } catch (err) {
-    console.log(err)
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
@@ -330,6 +342,19 @@ const getAll = async (req, res, next) => {
     const userList = await userService.getAll();
     return res.json(userList);
   } catch (e) {
+    console.log(e);
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
+const count = async (req, res, next) => {
+  const data = req.body
+  try {
+    const numberUser = await userService.countBaseTypeAndStatus(data);
+    return res.json(numberUser);
+  } catch (e) {
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
@@ -356,7 +381,8 @@ module.exports = {
   login,
   getProfile,
   deleteUser,
-  updateUser,
+  updateByAdmin,
+  updateById,
   sendOTP,
   verifyOTP,
   registerByFb,
@@ -367,4 +393,5 @@ module.exports = {
   getWalletInfo,
   getTransactionsByAccountId,
   getAll,
+  count,
 };

@@ -5,7 +5,6 @@ const { schoolRoute } = require("../routes/school.route");
 const { schoolMajorRoute } = require("../routes/schoolmajor.route");
 const { loanRouter } = require("./loan.route");
 const { loanScheduleRouter } = require("./loanSchedule.route");
-const { reportRouter } = require("./report.route");
 const { transactionRouter } = require("./transaction.route");
 const { userRoute } = require("./user.route");
 const { investmentRoute } = require("../routes/investment.route");
@@ -19,6 +18,7 @@ const { walletRouter } = require("./wallet.route");
 const { contractRoute } = require("./contract.route");
 const { loanHistoryRouter } = require("./loanhistory.route");
 const { loanHistoryImageRouter } = require("./loanhistoryimage.route");
+const { notificationRoute } = require("./notification.route");
 
 const router = express.Router();
 
@@ -32,7 +32,6 @@ router.use("/loanSchedule", loanScheduleRouter);
 router.use("/user", userRoute);
 router.use("/investor", investorRoute);
 router.use("/investment", investmentRoute);
-router.use("/report", reportRouter);
 router.use("/transaction", transactionRouter);
 router.use("/student", studentRouter);
 router.use("/image", uploadImageRouter);
@@ -41,5 +40,6 @@ router.use("/paypal", paypalRoute);
 router.use("/config", systemConfigRouter);
 router.use("/wallet", walletRouter);
 router.use("/contract", contractRoute);
+router.use("/notification", notificationRoute);
 
 module.exports = { apiRouter: router };
