@@ -8,13 +8,15 @@ const router = express.Router();
 
 router.get("/", loanController.findAll);
 
-router.post("/waiting",loanController.findAllWaiting);
+router.post("/waiting", loanController.findAllWaiting);
 
-router.get("/waiting/:id",loanController.getOne);
+router.get("/waiting/:id", loanController.getOne);
 
-router.get("/search",loanController.search);
+router.get("/search", loanController.search);
 
 router.get("/student", studentAuth, loanController.getLoanStudent);
+
+router.get("/student/:id", studentAuth, loanController.findByIdStudentSide);
 
 router.get("/:id", loanController.findById);
 
@@ -52,6 +54,7 @@ router.post(
       .isIn(Object.values(LOAN_STATUS))
       .withMessage(`Status should be one of ${Object.values(LOAN_STATUS)}`),
   ],
+  studentAuth,
   loanController.create
 );
 
