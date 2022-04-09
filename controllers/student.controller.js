@@ -77,7 +77,7 @@ const updateById = async (req, res, next) => {
 const getStudentProfile = async (req, res, next) => {
   const user = req.user
   try {
-    const student = await studentService.getStudentProfile(user.Student.id);
+    const student = await studentService.findByUserId(user.id);
     if (student === null) throw new Error();
     const tutor = await tutorService.getListTutorByStudentId(student.parentId);
     return res.json({
@@ -85,7 +85,6 @@ const getStudentProfile = async (req, res, next) => {
       tutor,
     });
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
