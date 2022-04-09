@@ -23,6 +23,7 @@ exports.LOAN_SCHEDULE_TYPE = {
 exports.USER_TYPE = {
   STUDENT: "STUDENT",
   INVESTOR: "INVESTOR",
+  ADMIN: "ADMIN",
 };
 
 exports.USER_STATUS = {

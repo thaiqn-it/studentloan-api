@@ -3,7 +3,6 @@ const { USER_STATUS, WALLET_STATUS } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
-const UserStatus = db.UserStatus;
 const Wallet = db.Wallet;
 
 const createUserService = async (user) => {

@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     percent : {
       type : DataTypes.FLOAT,
-      allowNull : false
+      // allowNull : false
     },
     loanId: {
       type: DataTypes.UUID,
