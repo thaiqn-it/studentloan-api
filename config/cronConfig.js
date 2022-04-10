@@ -4,7 +4,7 @@ module.exports = {
         handler : "schedulers/loanExpiredHandler"
     },
     checkLoanScheduleExpireHandler : {
-        frequency : "*/2 * * * * *",
+        frequency : "* * * */2 * *",
         handler : "schedulers/loanScheduleExpireHandler"
     }
 }
