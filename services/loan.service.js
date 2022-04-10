@@ -250,7 +250,6 @@ const getMatchingLoan = async () => {
       ]
     },
     where: {
-      status: LOAN_STATUS.FUNDING,
       [Op.or]: [
         {
           postExpireAt: {

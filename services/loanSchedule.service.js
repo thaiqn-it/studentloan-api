@@ -1,4 +1,6 @@
+const { LOAN_SCHEDULE_STATUS } = require("../models/enum");
 const db = require("../models/index");
+const { Op } = require('sequelize');
 
 const findAll = async () => {
   return await db.LoanSchedule.findAll();
@@ -8,7 +10,33 @@ const findAllByLoanId = async (id) => {
   return await db.LoanSchedule.findAll({
     where:{
       loanId:id
-    }
+    },
+    order : [
+      ['startAt', 'ASC']
+    ]
+    // attributes: {
+    //   include: [
+    //     [ db.Sequelize.fn('YEAR', db.Sequelize.col('createdAt')), 'year']
+    //   ]
+    // },
+    // raw: true,
+  });
+};
+
+const getAllExpired = async (id) => {
+  return await db.LoanSchedule.findAll({
+    where:{
+      status : LOAN_SCHEDULE_STATUS.ONGOING,
+      endAt : {
+        [Op.lte]: new Date()
+      },
+    },
+    include : [
+      {
+        model : db.Loan,
+        attributes: ["penaltyFee"],
+      }
+    ]
   });
 };
 
@@ -34,4 +62,5 @@ exports.loanScheduleService = {
     create,
     updateById,
     findAllByLoanId,
+    getAllExpired
 };
