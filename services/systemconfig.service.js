@@ -60,5 +60,5 @@ exports.systemConfigService = {
   getTransactionFee,
   getOne,
   create,
-  update
+  update,
 };

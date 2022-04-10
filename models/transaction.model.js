@@ -61,6 +61,9 @@ module.exports = (sequelize, DataTypes) => {
     Transaction.hasOne(models.Investment, {
       foreignKey: "transactionId",
     });
+    Transaction.hasMany(models.LoanScheduleTransaction, {
+      foreignKey: "transactionId",
+    });
   };
 
   return Transaction;
