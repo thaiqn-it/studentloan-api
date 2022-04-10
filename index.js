@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
 })
 
 db.sequelize
-  .sync({ force: true })
+  .sync({ alter: true })
   .then(() => {
     console.log("Connected to database");
   })
