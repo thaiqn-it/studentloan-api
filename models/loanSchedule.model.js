@@ -32,14 +32,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         allowNull:false
       },
-      transactionId: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: "Transaction",
-            key: "id",
-        },
-      },
       penaltyMoney:{
         type:DataTypes.BIGINT,
       },
@@ -48,6 +40,9 @@ module.exports = (sequelize, DataTypes) => {
     LoanSchedule.associate = (models) => {
       LoanSchedule.belongsTo(models.Loan,{
         foreignKey: "loanId",
+      })
+      LoanSchedule.hasMany(models.LoanScheduleTransaction,{
+        foreignKey: "loanScheduleId",
       })
     };
    

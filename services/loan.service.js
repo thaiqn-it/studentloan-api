@@ -248,9 +248,9 @@ const findByIdStudentSide = async (id, type) => {
   const include = [
     {
       model: db.LoanHistory,
-      where: {
-        isActive: true,
-      },
+      // where: {
+      //   isActive: true,
+      // },
     },
     {
       model: db.Student,
@@ -273,7 +273,14 @@ const findByIdStudentSide = async (id, type) => {
         },
         {
           model: db.User,
-          attributes: ["firstName", "lastName", "phoneNumber", "email"],
+          attributes: [
+            "firstName",
+            "lastName",
+            "phoneNumber",
+            "email",
+            "address",
+            "birthDate",
+          ],
         },
       ],
     },
@@ -318,10 +325,10 @@ const findByIdStudentSide = async (id, type) => {
     includeCondition = include.filter(
       (item) => item.model !== db.Contract && item.model !== db.Investment
     );
-    var index = includeCondition.findIndex(
+    var indexLoanMedia = includeCondition.findIndex(
       (item) => item.model === db.LoanMedia
     );
-    var replace = {
+    var replaceLoan = {
       required: false,
       model: db.LoanMedia,
       where: {
@@ -331,7 +338,18 @@ const findByIdStudentSide = async (id, type) => {
         },
       },
     };
-    includeCondition[index] = replace;
+
+    var indexLoanHistory = includeCondition.findIndex(
+      (item) => item.model === db.LoanHistory
+    );
+    var replaceLoanHistory = {
+      model: db.LoanHistory,
+      where: {
+        isActive: true,
+      },
+    };
+    includeCondition[indexLoanMedia] = replaceLoan;
+    includeCondition[indexLoanHistory] = replaceLoanHistory;
   } else {
     includeCondition = include;
   }
@@ -357,6 +375,7 @@ const findByIdStudentSide = async (id, type) => {
       ],
     },
     include: includeCondition,
+    order: [[db.LoanHistory, "createdAt", "ASC"]],
   });
 };
 
@@ -386,7 +405,6 @@ const getMatchingLoan = async () => {
       ],
     },
     where: {
-      status: LOAN_STATUS.FUNDING,
       [Op.or]: [
         {
           postExpireAt: {
@@ -493,13 +511,14 @@ const getMatchingLoan = async () => {
 };
 
 const updateById = async (id, data) => {
-  return await db.Loan.update(data, {
+  const loan = await db.Loan.update(data, {
     where: {
       id,
     },
     returning: true,
     plain: true,
   });
+  return loan[1];
 };
 
 const search = async (data) => {

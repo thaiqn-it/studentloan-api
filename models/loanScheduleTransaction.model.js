@@ -1,18 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-    const Receivement = sequelize.define("Receivement", {
+    const LoanScheduleTransaction = sequelize.define("LoanScheduleTransaction", {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
-      },
-      investmentId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "Investment",
-            key: "id",
-        },
       },
       transactionId: {
         type: DataTypes.UUID,
@@ -22,11 +14,13 @@ module.exports = (sequelize, DataTypes) => {
             key: "id",
         },
       },
-      money: {
-        type: DataTypes.BIGINT,
-      },
-      penaltyMoney: {
-        type: DataTypes.BIGINT,
+      loanScheduleId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: "LoanSchedule",
+            key: "id",
+        },
       },
       status: {
         type: DataTypes.STRING,
@@ -34,6 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
   
-    return Receivement;
+    return LoanScheduleTransaction;
   };
   

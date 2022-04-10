@@ -94,5 +94,5 @@ exports.systemConfigController = {
     findTransactionFee,
     getOne,
     create,
-    update
+    update,
 };

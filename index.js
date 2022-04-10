@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
 })
 
 db.sequelize
-  .sync({ alter: true })
+  .sync({ force: true })
   .then(() => {
     console.log("Connected to database");
   })
@@ -41,4 +41,4 @@ server.listen(APP_PORT, () => {
   );
 });
 
-scheduler.initCron(cronConfig)
+// scheduler.initCron(cronConfig)

@@ -6,7 +6,8 @@ const tutorService = require("../services/tutor.service");
 const createTutor = async (req, res) => {
   try {
     const data = req.body;
-    const tutor = await tutorService.create(data);
+    const newData = {...data, studentId: req.user.Student.id}
+    const tutor = await tutorService.create(newData);
     res.json(tutor);
   } catch (err) {
     res
