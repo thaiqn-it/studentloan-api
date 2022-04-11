@@ -5,8 +5,9 @@ const { userAuth } = require("../middlewares/jwt_auth");
 const router = express.Router();
 
 router.get("/", userAuth , notificationController.getAllByUserId)
+router.get("/:id", notificationController.getOneById)
+router.post("/getTop", userAuth , notificationController.getTop5TodayByUserId)
 router.post("/", notificationController.create)
 router.put("/:id", notificationController.updateById)
-router.get("/:id", notificationController.getOneById)
 
 module.exports = { notificationRoute : router };

@@ -60,10 +60,22 @@ const getOneById = async (req, res, next) => {
     }
 };
 
+const getTop5TodayByUserId = async (req, res, next) => {
+    const user = req.user;
+    const data = req.body
+    try {
+        const notifications = await notificationService.getTop5TodayByUserId(user.id,data);
+        if (notifications === null) throw new Error();
+		return res.json(notifications);
+    } catch (error) {
+        return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+    }
+};
 
 exports.notificationController = { 
     create,
     getAllByUserId,
     updateById,
-    getOneById
+    getOneById,
+    getTop5TodayByUserId
 };
