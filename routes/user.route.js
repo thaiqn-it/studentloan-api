@@ -4,6 +4,7 @@ const {
   userAuth,
   studentAuth,
   investorAuth,
+  adminAuth,
 } = require("../middlewares/jwt_auth");
 
 const router = express.Router();
@@ -42,11 +43,11 @@ router.get("/student/me", studentAuth, userController.getProfile);
 
 router.get("/investor/me", investorAuth, userController.getProfile);
 
-router.get("/admin/me", userAuth, userController.getProfile);
+router.get("/admin/me", adminAuth, userController.getProfile);
 
 router.put("/", userAuth, userController.updateById);
 
-router.put("/admin", userController.updateByAdmin);
+router.put("/admin",adminAuth, userController.updateByAdmin);
 
 router.delete("/", userController.deleteUser);
 

@@ -40,5 +40,3 @@ server.listen(APP_PORT, () => {
     `⚡️ [server]: Server is running at http://localhost:${APP_PORT}`
   );
 });
-
-scheduler.initCron(cronConfig)

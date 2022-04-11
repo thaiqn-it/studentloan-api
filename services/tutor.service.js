@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const db = require("../models");
 const { TUTOR_STATUS } = require("../models/enum");
 
@@ -22,7 +23,8 @@ const getById = async (id) => {
 const getListTutorByStudentId = async (id) => {
   return await Tutor.findAll({
     where:{
-      studentId: id
+      studentId: id,
+      status:[TUTOR_STATUS.UNVERIFIED,TUTOR_STATUS.VERIFIED]
     }}
   );
 };
