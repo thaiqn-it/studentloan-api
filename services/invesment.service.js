@@ -88,7 +88,14 @@ InvestmentService.sumTotalPendingByInvetorId = async (investorId) => {
 };
 
 InvestmentService.countTotalByInvestorId = async (investorId) => {
-  return Investment.count({ where: { investorId } })
+  return Investment.count({ 
+    where: { 
+      investorId,
+      status : {
+        [Op.not] : [INVESTMENT_STATUS.CANCEL,INVESTMENT_STATUS.FAIL]
+      }
+    } 
+  })
 };
 
 
