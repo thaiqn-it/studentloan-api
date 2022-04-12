@@ -1,7 +1,8 @@
 const InvestmentService = require("../services/invesment.service");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
-const { INVESTMENT_STATUS } = require('../models/enum')
+const { INVESTMENT_STATUS } = require('../models/enum');
+const { loanScheduleService } = require("../services/loanSchedule.service");
 
 const InvestmentController = {};
 
@@ -56,22 +57,12 @@ InvestmentController.createInvestment = async (req, res, next) => {
 };
 
 InvestmentController.updateInvestment = async (req, res, next) => {
-  const { isDonate, startDay, endDay, interest, status, total } = req.body;
-
+  const data = req.body;
   const { id } = req.params;
   try {
-    const investment = await InvestmentService.updateOne(id, {
-      isDonate,
-      startDay,
-      endDay,
-      interest,
-      status,
-      total,
-    });
-    // const Investment = await create(req.body);
+    const investment = await InvestmentService.updateOne(id, data);
     return res.json(investment);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -138,13 +129,26 @@ InvestmentController.countByInvestorId = async (req, res, next) => {
     const countLoanFinish = await InvestmentService.countLoanFinishByInvestorId(investor.id);
     const countLoanOngoing = await InvestmentService.countLoanOngoingByInvestorId(investor.id);
     const totalInvestment = await InvestmentService.sumTotalInvestmentByInvetorId(investor.id);
+    const totalPending = await InvestmentService.sumTotalPendingByInvetorId(investor.id);
+    const interestMaterial = await InvestmentService.countInterest(investor.id);
 
+    var interestReceived = 0
+    var interestUnreceived = 0
+
+    JSON.parse(JSON.stringify(interestMaterial)).forEach(item => {
+      interestReceived = interestReceived + parseInt(item.Loan.PaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
+      interestUnreceived = interestUnreceived + parseInt(item.Loan.UnpaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
+    })
+    
     return res.json({
       total : countTotal,
       pending : countPending,
       loanFinish : countLoanFinish,
       loanOngoing : countLoanOngoing,
-      totalInvestment : totalInvestment
+      totalInvestment,
+      totalPending,
+      interestReceived,
+      interestUnreceived
     });
   } catch (error) {
     console.log(error);

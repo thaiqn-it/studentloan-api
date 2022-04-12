@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../models");
 const { WALLET_STATUS } = require("../models/enum");
 const Wallet = db.Wallet;
@@ -48,7 +49,27 @@ const deleteById = async (id) => {
 };
 
 const getWalletByUserId = async (userId) => {
-  const wallet = await Wallet.findOne({ where: { userId } });
+  const wallet = await Wallet.findOne({ 
+    where: {
+      userId 
+    },
+    include : {
+      model : db.User,
+      attributes: ["type"],
+      include : {
+        model : db.Investor,
+        attributes: ["id"],
+        require : false,
+        where : {
+          parentId : {
+            [Op.is] : null
+          }
+        }
+      }
+    },
+    raw : true,
+    nest : true
+  });
   if (wallet === null) throw new Error();
 
   return wallet;

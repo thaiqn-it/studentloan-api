@@ -1,4 +1,4 @@
-const { LOAN_SCHEDULE_STATUS } = require("../models/enum");
+const { LOAN_SCHEDULE_STATUS, INVESTMENT_STATUS } = require("../models/enum");
 const db = require("../models/index");
 const { Op } = require('sequelize');
 
@@ -23,6 +23,25 @@ const findAllByLoanId = async (id) => {
   });
 };
 
+// const countInterest = async (investorId) => {
+//   return db.LoanSchedule.findAll({
+//     where : {
+//       status : LOAN_SCHEDULE_STATUS.COMPLETED
+//     },
+//     include : {
+//       attributes:['id'],
+//       model : db.Loan,
+//       include : {
+//         model : db.Investment,
+//         where : {
+//           investorId,
+//           status : INVESTMENT_STATUS.INVESTED
+//         }
+//       }
+//     }
+//   })
+// };
+
 const getAllExpired = async (id) => {
   return await db.LoanSchedule.findAll({
     where:{
@@ -35,6 +54,27 @@ const getAllExpired = async (id) => {
       {
         model : db.Loan,
         attributes: ["penaltyFee"],
+        include : [
+        {
+          model : db.Student,
+          attributes: ["id"],
+          include : {
+            model : db.User,
+            attributes: ["id"]
+          }
+        },
+        {
+          model : db.Investment,
+          attributes: ["id"],
+          include : {
+            model : db.Investor,
+            attributes: ["id"],
+            include : {
+              model : db.User,
+              attributes: ["id"]
+            }
+          }
+        }]
       }
     ]
   });
@@ -52,7 +92,9 @@ const updateById = async (id,data) => {
   return await db.LoanSchedule.update(data, {
     where: {
       id : id
-    }
+    },
+    returning : true,
+    plain : true
   })
 };
 

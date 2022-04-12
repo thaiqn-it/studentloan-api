@@ -30,4 +30,17 @@ const {loanHistoryService} = require('../services/loanHistory.service')
         .json(restError.INTERNAL_SERVER_ERROR.default);
     }
   };
-  exports.loanHistoryController = {updateById, create}
+
+  const getOneByLoanId = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+      const loanHistorys = await loanHistoryService.getOneByLoanId(id);
+      return res.json(loanHistorys);
+    } catch (error) {
+      return res
+        .status(NOT_FOUND)
+        .json(restError.NOT_FOUND.default);
+    }
+  };
+
+  exports.loanHistoryController = {updateById, create, getOneByLoanId}
