@@ -21,8 +21,35 @@ const updateByLoanId = async (loanId,data) => {
     })
 }
 
+const getOneByLoanId = async (loanId) => {
+
+    return await LoanHistory.findOne({
+        where : {
+            loanId,
+            isActive : true
+        },
+        include : [
+        {
+            model : db.LoanHistoryImage,
+            where : {
+                status : 'ACTIVE'
+            },
+            required : false
+        },
+        {
+            model : db.User,
+            where : {
+                status : 'VERIFIED'
+            },
+            attributes: ["firstname", "lastname"],
+            required : false
+        }]
+    })
+}
+
 module.exports.loanHistoryService = {
     create,
     updateById,
-    updateByLoanId
+    updateByLoanId,
+    getOneByLoanId
 };

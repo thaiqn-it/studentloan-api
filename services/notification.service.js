@@ -5,6 +5,14 @@ const create = async (notification) => {
   return await Notification.create(notification);
 };
 
+const countByUserId = async (userId) => {
+  return await Notification.count({
+    where : {
+      userId
+    }
+  });
+};
+
 const updateById = async (id,data) => {
   return await db.Notification.update(data, {
     where: {
@@ -48,5 +56,6 @@ module.exports = {
   updateById,
   getAllByUserId,
   countIsNotRead,
-  getOneById
+  getOneById,
+  countByUserId
 };

@@ -2,6 +2,7 @@ const { INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("http-status");
 const { restError } = require("../errors/rest");
 const { PAYPAL_CLIENT_ID,PAYPAL_SECRET } = require("../constants");
 const walletService = require("../services/wallet.service");
+const {systemConfigService} = require("../services/systemconfig.service");
 const CC = require('currency-converter-lt')
 
 const paypal = require('paypal-rest-sdk')
@@ -63,7 +64,7 @@ const transfer = async (req, res, next) => {
     const { money,email,accountId } = req.body
     const now = new Date().getTime()
     let currencyConverter = new CC({ isDecimalComma:true })
-    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
+    const transactionFee = await systemConfigService.getTransactionFee()
     try {   
         const balance = await walletService.getBalanceById(accountId)
         
@@ -72,6 +73,9 @@ const transfer = async (req, res, next) => {
             .status(BAD_REQUEST)
             .json(restError.BAD_REQUEST.extra({ error: "Số dư ví không đủ" }));
         }
+        const fee = parseInt(money) * transactionFee.transactionFee
+        const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money) - fee).convert()
+        
         let requestBody = {
             "sender_batch_header": {
               "email_message": `Chuyển tiền đến tài khoản ${email}`,

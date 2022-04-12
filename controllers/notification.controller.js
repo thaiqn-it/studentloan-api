@@ -60,10 +60,24 @@ const getOneById = async (req, res, next) => {
     }
 };
 
+const countByUserId = async (req, res, next) => {
+    const user = req.user
+    try {
+        const result = await notificationService.countIsNotRead(user.id);
+        if (result === null) throw new Error();
+		return res.json({
+            numOfNotification : result
+		});
+    } catch (error) {
+        return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+    }
+};
+
 
 exports.notificationController = { 
     create,
     getAllByUserId,
     updateById,
-    getOneById
+    getOneById,
+    countByUserId
 };
