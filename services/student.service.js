@@ -1,4 +1,4 @@
-const { STUDENT_STATUS } = require("../models/enum");
+const { STUDENT_STATUS, ACHIEVEMENT_STATUS } = require("../models/enum");
 const { Sequelize } = require("../models/index");
 const db = require("../models/index");
 const op = db.Sequelize.Op;
@@ -17,17 +17,16 @@ const findByUserId = async (id) => {
       userId: id,
       status: STUDENT_STATUS.ACTIVE,
       parentId: {
-        [op.not]: null
-      }
-    }
-    ,
+        [op.not]: null,
+      },
+    },
     include: [
       {
         model: db.Archievement,
         where: {
-          status: "ACTIVE"
+          status: ACHIEVEMENT_STATUS.ACTIVE,
         },
-        required: false
+        required: false,
       },
       {
         model: db.SchoolMajor,
@@ -41,13 +40,15 @@ const findByUserId = async (id) => {
             attributes: ["name"],
           },
         ],
-        required: false
+        required: false,
       },
       {
         model: db.User,
-        attributes:  {exclude: ["password","oAuthId","pushToken","createAt","updateAt"]},
+        attributes: {
+          exclude: ["password", "oAuthId", "pushToken", "createAt", "updateAt"],
+        },
       },
-    ]
+    ],
   });
 };
 
@@ -71,10 +72,12 @@ const createNewStudent = async (data) => {
 
 const updateNewStudentById = async (id, data) => {
   const oldStudent = await db.Student.findByPk(id);
+  const oldData = oldStudent.get({ plain: true });
+  const newStudent = { ...oldData, ...data, status: STUDENT_STATUS.ACTIVE };
+  delete newStudent.id;
   await oldStudent.update({ status: STUDENT_STATUS.INACTIVE });
-  const newStudent = { ...oldStudent, ...data };
-  return await db.Student.create({ ...newStudent });
-}
+  return await create(newStudent);
+};
 // const getStudentProfile = async (id) => {
 //   return await db.Student.findOne({
 //     where: {
