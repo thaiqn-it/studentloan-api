@@ -21,10 +21,6 @@ module.exports = (sequelize, DataTypes) => {
             model: "LoanSchedule",
             key: "id",
         },
-      },
-      status: {
-        type: DataTypes.STRING,
-        allowNull: false,
       }
     });
   
