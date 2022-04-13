@@ -9,6 +9,7 @@ exports.LOAN_STATUS = {
   FINISH: "FINISH",
   CANCEL: "CANCEL",
   INCOMPLETE: "INCOMPLETE"
+  
 };
 
 exports.LOAN_SCHEDULE_STATUS = {
