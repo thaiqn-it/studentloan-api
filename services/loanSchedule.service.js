@@ -6,9 +6,10 @@ const findAll = async () => {
 
 const findAllByLoanId = async (id) => {
   return await db.LoanSchedule.findAll({
-    where:{
-      loanId:id
-    }
+    where: {
+      loanId: id,
+    },
+    order: [["startAt", "ASC"]],
   });
 };
 
@@ -17,21 +18,24 @@ const findById = async (id) => {
 };
 
 const create = async (data) => {
-  return await db.LoanSchedule.bulkCreate(data, {returning: true})
+  return await db.LoanSchedule.bulkCreate(data, { returning: true });
 };
 
-const updateById = async (id,data) => {
-  return await db.LoanSchedule.update(data, {
+const updateById = async (id, data) => {
+  const loanSchedule = await db.LoanSchedule.update(data, {
     where: {
-      id : id
-    }
-  })
+      id: id,
+    },
+    returning: true,
+    plain: true,
+  });
+  return loanSchedule[1];
 };
 
-exports.loanScheduleService = { 
-    findAll, 
-    findById,
-    create,
-    updateById,
-    findAllByLoanId,
+exports.loanScheduleService = {
+  findAll,
+  findById,
+  create,
+  updateById,
+  findAllByLoanId,
 };

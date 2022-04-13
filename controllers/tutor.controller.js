@@ -1,12 +1,13 @@
 const { BAD_REQUEST, INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
+const {TUTOR_STATUS} =require("../models/enum")
 
 const tutorService = require("../services/tutor.service");
 
 const createTutor = async (req, res) => {
   try {
     const data = req.body;
-    const newData = {...data, studentId: req.user.Student.id}
+    const newData = {...data,status: TUTOR_STATUS.VERIFIED, studentId: req.user.Student.id}
     const tutor = await tutorService.create(newData);
     res.json(tutor);
   } catch (err) {

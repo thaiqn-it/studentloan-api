@@ -106,14 +106,14 @@ const creatUser = async (req, res) => {
     });
     if (checkExistsUser) return res.json(checkExistsUser);
 
-    const status = USER_STATUS.ACTIVE;
+    // const status = USER_STATUS.UNVERIFIED;
     const password = hashPassword(data.password);
     const user = await userService.createUserService({
       email: data.email,
       phoneNumber: data.phoneNumber,
       password,
       type: data.type,
-      status,
+      status:USER_STATUS.UNVERIFIED,
     });
     res.json(user);
   } catch (err) {
@@ -268,7 +268,7 @@ const registerByGoogle = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const user = req.user;
-
+  
   res.json(excludePassword(user));
 };
 
