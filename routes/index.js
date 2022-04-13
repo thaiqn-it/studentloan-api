@@ -20,6 +20,7 @@ const { loanHistoryRouter } = require("./loanhistory.route");
 const { loanHistoryImageRouter } = require("./loanhistoryimage.route");
 const { notificationRoute } = require("./notification.route");
 const { achievementRouter } = require("./achievement.route");
+const { loanMediaRoute } = require("./loanMedia.route");
 
 const router = express.Router();
 
@@ -43,5 +44,6 @@ router.use("/wallet", walletRouter);
 router.use("/contract", contractRoute);
 router.use("/notification", notificationRoute);
 router.use("/achievement", achievementRouter);
+router.use("/loanmedia", loanMediaRoute);
 
 module.exports = { apiRouter: router };

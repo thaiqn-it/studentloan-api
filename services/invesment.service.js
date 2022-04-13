@@ -6,7 +6,7 @@ const {
   User,
 } = require("../models");
 const db = require("../models/index");
-const { INVESTMENT_STATUS, LOAN_STATUS } = require("../models/enum");
+const { INVESTMENT_STATUS, LOAN_STATUS, LOAN_SCHEDULE_STATUS } = require('../models/enum')
 const Op = Sequelize.Op;
 const InvestmentService = {};
 
@@ -18,8 +18,8 @@ InvestmentService.getAllByInvestorId = async (id) => {
         status: [INVESTMENT_STATUS.CANCEL, INVESTMENT_STATUS.FAIL],
       },
     },
-    attributes: ["id", "total"],
-    include: [
+    attributes: ["id","total","percent"],
+    include : [
       {
         model: db.Loan,
         attributes: {
@@ -59,6 +59,35 @@ InvestmentService.getAllByInvestorId = async (id) => {
   });
 };
 
+InvestmentService.countInterest = async (investorId) => {
+  return await Investment.findAll({
+    attributes:['percent'],
+    where : {
+      investorId,
+      status : INVESTMENT_STATUS.INVESTED
+    },
+    include : {
+      model : db.Loan,
+      attributes: [
+          ["interest","interest"],
+          ["duration","duration"],
+          [
+            db.sequelize.literal(
+              "(SELECT SUM(money) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND LoanSchedule.status = 'COMPLETED')"
+            ),
+            "PaidMoney",
+          ],
+          [
+            db.sequelize.literal(
+              "(SELECT SUM(money) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND (LoanSchedule.status = 'INCOMPLETE' OR LoanSchedule.status = 'ONGOING'))"
+            ),
+            "UnpaidMoney",
+          ]
+      ]
+    }
+  });
+};
+
 InvestmentService.createOne = async (InvestmentInfo) => {
   return await Investment.create(InvestmentInfo);
 };
@@ -69,9 +98,21 @@ InvestmentService.sumTotalInvestmentByInvetorId = async (investorId) => {
   });
 };
 
-InvestmentService.countTotalByInvestorId = async (investorId) => {
-  return Investment.count({ where: { investorId } });
+InvestmentService.sumTotalPendingByInvetorId = async (investorId) => {
+  return Investment.sum('total',{ where: { investorId, status : INVESTMENT_STATUS.PENDING } })
 };
+
+InvestmentService.countTotalByInvestorId = async (investorId) => {
+  return Investment.count({ 
+    where: { 
+      investorId,
+      status : {
+        [Op.not] : [INVESTMENT_STATUS.CANCEL,INVESTMENT_STATUS.FAIL]
+      }
+    } 
+  })
+};
+
 
 InvestmentService.countPendingByInvestorId = async (investorId) => {
   return Investment.count({
@@ -182,7 +223,10 @@ InvestmentService.findOneById = async (id) => {
 
 InvestmentService.updateOne = async (id, investmentInfo) => {
   const investment = await Investment.update(investmentInfo, {
-    where: { id },
+    where: { 
+      id,
+      status : INVESTMENT_STATUS.PENDING
+    },
     returning: true,
     plain: true,
   });

@@ -7,7 +7,8 @@ const {
 } = require("../services/loanScheduleTransaction.service");
 const { restError } = require("../errors/rest");
 const moment = require("moment");
-const { WALLET_TYPE, TRANSACTION_STATUS, LOAN_SCHEDULE_STATUS } = require("../models/enum");
+const { WALLET_TYPE, TRANSACTION_STATUS, LOAN_SCHEDULE_STATUS,USER_TYPE } = require("../models/enum");
+const InvestmentService = require("../services/invesment.service");
 
 const create = async (req, res) => {
   try {
@@ -59,6 +60,18 @@ const getByUserId = async (req, res) => {
   try {
     const user = req.user;
     const account = await walletService.getWalletByUserId(user.id);
+    if (account.User.type === USER_TYPE.INVESTOR) {
+      const totalPending = await InvestmentService.sumTotalPendingByInvetorId(account.User.Investor.id)
+      if (totalPending) {
+        Object.assign(account,{
+          totalPending
+        })
+      } else {
+        Object.assign(account,{
+          totalPending : 0
+        })
+      }
+    }
     res.json(account);
   } catch (err) {
     res

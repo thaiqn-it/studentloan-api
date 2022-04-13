@@ -21,13 +21,11 @@ const getById = async (id) => {
 
 const getListTutorByStudentId = async (id) => {
   return await Tutor.findAll({
-    where: {
+    where:{
       studentId: id,
-      status: {
-        [Op.not]: TUTOR_STATUS.DELETED,
-      },
-    },
-  });
+      status:[TUTOR_STATUS.UNVERIFIED,TUTOR_STATUS.VERIFIED]
+    }}
+  );
 };
 
 const deleteById = async (id) => {

@@ -1,9 +1,8 @@
 const db = require("../models");
-const { USER_STATUS, WALLET_STATUS } = require("../models/enum");
+const { USER_STATUS, WALLET_STATUS,USER_TYPE } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
-const UserStatus = db.UserStatus;
 const Wallet = db.Wallet;
 
 const createUserService = async (user) => {
@@ -123,6 +122,15 @@ const getAll = async () => {
   });
 };
 
+const getPushTokenByUserId = async (id) => {
+  return await User.findOne({
+    attributes: ["pushToken"],
+    where: {
+      id
+    },
+  });
+};
+
 module.exports = {
   createUserService,
   loginService,
@@ -133,4 +141,5 @@ module.exports = {
   getAll,
   getUserByEmailService,
   countBaseTypeAndStatus,
+  getPushTokenByUserId
 };

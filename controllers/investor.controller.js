@@ -1,6 +1,8 @@
 const InvestorService = require("../services/investor.service");
+const userService = require("../services/user.service");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
+const { INVESTOR_STATUS, USER_STATUS } = require("../models/enum");
 
 const InvestorController = {};
 
@@ -57,36 +59,25 @@ InvestorController.createInvestor = async (req, res, next) => {
 };
 
 InvestorController.updateInvestor = async (req, res, next) => {
-  const {
-    lastName,
-    firstName,
-    job,
-    citizenId,
-    frontCitizenCardImageId,
-    backCitizenCardImageId,
-    type,
-    status,
-    parentId,
-  } = req.body;
-
-  const { id } = req.params;
+  const user = req.user
+  const data = req.body;
 
   try {
-    const investor = await InvestorService.updateOne(id, {
-      lastName,
-      firstName,
-      job,
-      citizenId,
-      frontCitizenCardImageId,
-      backCitizenCardImageId,
-      type,
-      status,
-      parentId,
-    });
-    // const investor = await create(req.body);
-    return res.json(investor);
+    const newInvestor = {
+      ...data,
+      userId : user.id,
+      parentId : user.Investor.id,
+      status : INVESTOR_STATUS.ACTIVE
+    }
+    await InvestorService.updateOneByParentId(user.Investor.id, {
+      status : INVESTOR_STATUS.INACTIVE
+    })
+    const result = await InvestorService.createOne(newInvestor);
+    await userService.updateUserService(user.id, {
+      status : USER_STATUS.PENDING
+    })
+    return res.json(result);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);

@@ -37,6 +37,15 @@ InvestorService.updateOne = async (id, investorInfo) => {
   return invest;
 };
 
+InvestorService.updateOneByParentId = async (id, investorInfo) => {
+  const invest = await Investor.update(
+    investorInfo,
+    { where: { parentId : id }, returning: true, plain: true }
+  );
+
+  return invest;
+};
+
 InvestorService.deleteOne = async (id) => {
   const investor = await Investor.update(
     { status: "inactive" },

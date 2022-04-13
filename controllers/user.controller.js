@@ -123,12 +123,18 @@ const creatUser = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, type } = req.body;
     const user = await userService.getUserByEmailService(email);
     if (!user)
       return res
         .status(BAD_REQUEST)
         .json(restError.BAD_REQUEST.extra({ msg: "User is not found" }));
+
+    if (user.type !== type) {
+      return res
+        .status(BAD_REQUEST)
+        .json(restError.BAD_REQUEST.extra({ msg: "Not match user" }));
+    }
 
     if (!comparePassword(password, user.password))
       return res
@@ -144,14 +150,13 @@ const login = async (req, res) => {
 };
 
 const loginByFb = async (req, res) => {
-  const { access_token } = req.body;
+  const { access_token, type } = req.body;
   try {
     const fbRes = await axios.get(
       `https://graph.facebook.com/me?access_token=${access_token}&fields=email,first_name,last_name`
     );
     const { id: fb_userId, email, first_name, last_name } = fbRes.data;
     const user = await userService.getOne({ oAuthId: fb_userId });
-
     if (!user) {
       return res.json({
         isNew: true,
@@ -162,15 +167,22 @@ const loginByFb = async (req, res) => {
         },
       });
     } else {
-      const token = jwt.sign(
-        {
-          userId: user.id,
-        },
-        JWT_SECRET_KEY
-      );
-      return res.json({
-        token,
-      });
+      if (user.type !== type) {
+        return res
+        .status(BAD_REQUEST)
+        .json(restError.BAD_REQUEST.extra({ msg: "Not match user" }));
+      } else {
+        const token = jwt.sign(
+          {
+            userId: user.id,
+          },
+          JWT_SECRET_KEY
+        );
+        return res.json({
+          token,
+        });
+      }
+      
     }
   } catch (err) {
     return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
@@ -178,7 +190,7 @@ const loginByFb = async (req, res) => {
 };
 
 const loginByGoogle = async (req, res) => {
-  const { access_token } = req.body;
+  const { access_token, type } = req.body;
   try {
     let googleRes = await axios("https://www.googleapis.com/userinfo/v2/me", {
       headers: { Authorization: `Bearer ${access_token}` },
@@ -202,15 +214,21 @@ const loginByGoogle = async (req, res) => {
         },
       });
     } else {
-      const token = jwt.sign(
-        {
-          userId: user.id,
-        },
-        JWT_SECRET_KEY
-      );
-      return res.json({
-        token,
-      });
+      if (user.type !== type) {
+        return res
+        .status(BAD_REQUEST)
+        .json(restError.BAD_REQUEST.extra({ msg: "Not match user" }));
+      } else {
+        const token = jwt.sign(
+          {
+            userId: user.id,
+          },
+          JWT_SECRET_KEY
+        );
+        return res.json({
+          token,
+        });
+      }
     }
   } catch (err) {
     return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());

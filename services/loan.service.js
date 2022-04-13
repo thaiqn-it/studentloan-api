@@ -199,15 +199,21 @@ const findById = async (id) => {
       include: [
         [
           db.sequelize.literal(
-            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id)"
+            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
           ),
           "InvestorCount",
         ],
         [
           db.sequelize.literal(
-            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
           ),
           "AccumulatedMoney",
+        ],
+        [
+          db.sequelize.literal(
+            "(SELECT type FROM LoanHistory WHERE LoanHistory.loanId = Loan.id AND LoanHistory.isActive = 'true')"
+          ),
+          "Status",
         ],
       ],
     },
@@ -236,10 +242,10 @@ const findById = async (id) => {
       {
         required: false,
         model: db.LoanMedia,
-        where: {
-          type: "EVIDENCE",
-        },
-      },
+        where : {
+          status : LOANMEDIA_STATUS.ACTIVE
+        }
+      }
     ],
   });
 };
@@ -442,6 +448,7 @@ const getMatchingLoan = async () => {
               {
                 model: db.User,
                 attributes: [
+                  "id",
                   "firstName",
                   "lastName",
                   "email",
@@ -476,6 +483,7 @@ const getMatchingLoan = async () => {
           {
             model: db.User,
             attributes: [
+              "id",
               "firstName",
               "lastName",
               "email",
