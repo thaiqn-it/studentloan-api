@@ -30,7 +30,7 @@ module.exports = async () => {
                         `${pushToken}`,
                         {
                             "notification" : {
-                                "body" : "Khoản thanh toán vay bị trễ hạn",
+                                "body" : "Sinh viên đã không trả đúng hạn cho bạn",
                                 "title": "Thông báo",
                                 "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
                             },
