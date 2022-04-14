@@ -188,7 +188,17 @@ InvestmentService.findOneById = async (id) => {
     include : 
     [
       {
-        model : db.Loan
+        model : db.Loan,
+        // attributes: {
+        //   include: [
+        //     [
+        //       db.sequelize.literal(
+        //         "(SELECT ISNULL(SUM(total),0) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
+        //       ),
+        //       "AccumulatedMoney",
+        //     ],
+        //   ],
+        // }
       },
       {
         model : db.Transaction,

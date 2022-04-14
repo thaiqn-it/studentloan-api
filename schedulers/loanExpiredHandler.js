@@ -32,6 +32,8 @@ const createSchedule = async (loanId) => {
     var scheduleData = [];
     try {     
         const loan = await loanService.findById(loanId)
+        // const moneyPaidInGraduation = loan.expectedGraduationTime * parseFloat(loan.fixedMoney) 
+        // if (parseFloat(loan.total) - moneyPaidInGraduation > 100000)
         
         for (let i = 0; i < loan.expectedGraduationTime ; i++) {
             const startAt = moment(new Date()).add(i,'month');
@@ -81,10 +83,15 @@ module.exports = async () => {
     else {
         JSON.parse(JSON.stringify(loan)).forEach(item => {
             if(parseInt(item.totalMoney) > parseInt(item.AccumulatedMoney) && parseInt(item.expectedMoney) > parseInt(item.AccumulatedMoney)) {
-                console.log('fail');
                 loanHistoryService.updateByLoanId(item.id, {
-                    type : LOAN_STATUS.FAIL
-                })
+                    isActive : false
+                }).then(() => {
+                    loanHistoryService.create({
+                        loanId : item.id,
+                        type : LOAN_STATUS.FAIL,
+                        isActive : true
+                    }) 
+                })             
                 investmentService.updateByLoanId(item.id, {
                     status : INVESTMENT_STATUS.FAIL
                 })
@@ -176,8 +183,13 @@ module.exports = async () => {
                         loanEndAt : moment().local().add(item.duration,'M')
                     }).then((res) => { 
                         loanHistoryService.updateByLoanId(res.id, {
-                            type : LOAN_STATUS.ONGOING
-                        }).then(() => {             
+                            isActive : false,
+                        }).then(() => {     
+                            loanHistoryService.create({
+                                loanId : res.id,
+                                type : LOAN_STATUS.ONGOING,
+                                isActive : true
+                            })                   
                             createSchedule(item.id).then(() => {
                                 item.Investments.forEach(async investment => {
                                     const randomCha = randomCharater(3)
@@ -237,7 +249,7 @@ module.exports = async () => {
                                                     "experienceId": "@thainq2k/student-loan-app-client",
                                                     "scopeKey": "@thainq2k/student-loan-app-client",
                                                     "title": "Thông báo",
-                                                    "message": "Khoản đầu tư của bạn đẵ được góp vốn thành công.",
+                                                    "message": "Khoản đầu tư của bạn đã được góp vốn thành công.",
                                                     "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
                                             }
                                             })
@@ -246,7 +258,7 @@ module.exports = async () => {
                                     notificationService.create({
                                         userId : investment.Investor.User.id,
                                         redirectUrl : "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
-                                        description : "Khoản đầu tư của bạn đẵ được góp vốn thành công.",
+                                        description : "Khoản đầu tư của bạn đã được góp vốn thành công.",
                                         isRead : false,
                                         type : NOTIFICATION_TYPE.LOAN,
                                         status : NOTIFICATION_STATUS.ACTIVE
