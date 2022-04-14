@@ -43,7 +43,6 @@ const uploadImage = async (req, res) => {
       res.status(200).json(shortResponseOne);
     }
   } catch (error) {
-
     return res.status(500).json({ msg: error.message });
   }
 };

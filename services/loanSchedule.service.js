@@ -1,6 +1,6 @@
 const { LOAN_SCHEDULE_STATUS, INVESTMENT_STATUS } = require("../models/enum");
 const db = require("../models/index");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 const findAll = async () => {
   return await db.LoanSchedule.findAll();
@@ -8,18 +8,31 @@ const findAll = async () => {
 
 const findAllByLoanId = async (id) => {
   return await db.LoanSchedule.findAll({
-    where:{
-      loanId:id
+    where: {
+      loanId: id,
+      status: {
+        [Op.not]: null,
+      },
     },
-    order : [
-      ['startAt', 'ASC']
-    ]
+    order: [["startAt", "ASC"]],
     // attributes: {
     //   include: [
     //     [ db.Sequelize.fn('YEAR', db.Sequelize.col('createdAt')), 'year']
     //   ]
     // },
     // raw: true,
+  });
+};
+
+const findAllByLoanIdOption = async (id, option) => {
+  return await db.LoanSchedule.findAll({
+    where: {
+      loanId: id,
+      status: {
+        [Op.not]: option,
+      },
+    },
+    order: [["startAt", "ASC"]],
   });
 };
 
@@ -44,39 +57,40 @@ const findAllByLoanId = async (id) => {
 
 const getAllExpired = async (id) => {
   return await db.LoanSchedule.findAll({
-    where:{
-      status : LOAN_SCHEDULE_STATUS.ONGOING,
-      endAt : {
-        [Op.lte]: new Date()
+    where: {
+      status: LOAN_SCHEDULE_STATUS.ONGOING,
+      endAt: {
+        [Op.lte]: new Date(),
       },
     },
-    include : [
+    include: [
       {
-        model : db.Loan,
+        model: db.Loan,
         attributes: ["penaltyFee"],
-        include : [
-        {
-          model : db.Student,
-          attributes: ["id"],
-          include : {
-            model : db.User,
-            attributes: ["id"]
-          }
-        },
-        {
-          model : db.Investment,
-          attributes: ["id"],
-          include : {
-            model : db.Investor,
+        include: [
+          {
+            model: db.Student,
             attributes: ["id"],
-            include : {
-              model : db.User,
-              attributes: ["id"]
-            }
-          }
-        }]
-      }
-    ]
+            include: {
+              model: db.User,
+              attributes: ["id"],
+            },
+          },
+          {
+            model: db.Investment,
+            attributes: ["id"],
+            include: {
+              model: db.Investor,
+              attributes: ["id"],
+              include: {
+                model: db.User,
+                attributes: ["id"],
+              },
+            },
+          },
+        ],
+      },
+    ],
   });
 };
 
@@ -85,24 +99,26 @@ const findById = async (id) => {
 };
 
 const create = async (data) => {
-  return await db.LoanSchedule.bulkCreate(data, {returning: true})
+  return await db.LoanSchedule.bulkCreate(data, { returning: true });
 };
 
-const updateById = async (id,data) => {
-  return await db.LoanSchedule.update(data, {
+const updateById = async (id, data) => {
+  const loanSchedule = await db.LoanSchedule.update(data, {
     where: {
-      id : id
+      id: id,
     },
-    returning : true,
-    plain : true
-  })
+    returning: true,
+    plain: true,
+  });
+  return loanSchedule[1];
 };
 
-exports.loanScheduleService = { 
-    findAll, 
-    findById,
-    create,
-    updateById,
-    findAllByLoanId,
-    getAllExpired
+exports.loanScheduleService = {
+  findAll,
+  findById,
+  create,
+  updateById,
+  findAllByLoanId,
+  getAllExpired,
+  findAllByLoanIdOption,
 };

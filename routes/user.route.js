@@ -39,6 +39,8 @@ router.post("/loginByFb", userController.loginByFb);
 
 router.post("/loginByGoogle", userController.loginByGoogle);
 
+router.post("/verifyPassword",userAuth, userController.verifyPassword);
+
 router.get("/student/me", studentAuth, userController.getProfile);
 
 router.get("/investor/me", investorAuth, userController.getProfile);

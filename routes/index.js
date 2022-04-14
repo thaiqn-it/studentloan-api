@@ -12,13 +12,14 @@ const { investorRoute } = require("../routes/investor.route");
 const { studentRouter } = require("../routes/student.route");
 const { uploadImageRouter } = require("../routes/uploadImag.route");
 const { tutorRouter } = require("./tutor.route");
-const { paypalRoute } = require("./paypal.route")
-const { systemConfigRouter } = require("./systemconfig.route")
+const { paypalRoute } = require("./paypal.route");
+const { systemConfigRouter } = require("./systemconfig.route");
 const { walletRouter } = require("./wallet.route");
 const { contractRoute } = require("./contract.route");
 const { loanHistoryRouter } = require("./loanhistory.route");
 const { loanHistoryImageRouter } = require("./loanhistoryimage.route");
 const { notificationRoute } = require("./notification.route");
+const { achievementRouter } = require("./achievement.route");
 const { loanMediaRoute } = require("./loanMedia.route");
 
 const router = express.Router();
@@ -42,6 +43,7 @@ router.use("/config", systemConfigRouter);
 router.use("/wallet", walletRouter);
 router.use("/contract", contractRoute);
 router.use("/notification", notificationRoute);
+router.use("/achievement", achievementRouter);
 router.use("/loanmedia", loanMediaRoute);
 
 module.exports = { apiRouter: router };

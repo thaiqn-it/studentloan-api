@@ -16,4 +16,6 @@ router.post("/", studentController.create);
 
 router.put("/:id", studentController.updateById);
 
+router.put("/profile/:id", studentAuth, studentController.updateStudentProfile);
+
 module.exports = { studentRouter: router };

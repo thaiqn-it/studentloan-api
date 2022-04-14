@@ -1,12 +1,11 @@
-const { Op } = require('sequelize');
 const db = require("../models");
 const { TUTOR_STATUS } = require("../models/enum");
+const { Op } = require("sequelize");
 
 const Tutor = db.Tutor;
 
 const create = async (data) => {
-  const tutor = { ...data, status: TUTOR_STATUS.UNVERIFIED };
-  return await Tutor.create(tutor);
+  return await Tutor.create(data);
 };
 
 const update = async (data) => {
@@ -34,7 +33,7 @@ const deleteById = async (id) => {
   if (tutor === null) throw new Error();
   //change status
 
-  return await tutor.update({ status: 'delete' });
+  return await tutor.update({ status: TUTOR_STATUS.DELETED });
 };
 
 const getByUserId = async (userId) => {
@@ -53,5 +52,5 @@ module.exports = {
   deleteById,
   getById,
   getByUserId,
-  getListTutorByStudentId
+  getListTutorByStudentId,
 };

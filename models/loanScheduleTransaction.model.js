@@ -22,10 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             key: "id",
         },
       },
-      status: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      }
+      // status: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // }
     });
   
     return LoanScheduleTransaction;

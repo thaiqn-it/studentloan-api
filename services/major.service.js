@@ -1,12 +1,12 @@
 
-const { MAJOR_STATUS } = require("../models/enum");
+const { MAJOR_STATUS, SCHOOL_STATUS } = require("../models/enum");
 const db = require("../models/index");
 
 const findAllMajor = async (id) => {
     return await db.Major.findAll({
         attributes: ["id", "name", "status"],
         where: {
-            status: 'ACTIVE',
+            status: SCHOOL_STATUS.ACTIVE,
         },
         include:{
             model: db.SchoolMajor,
