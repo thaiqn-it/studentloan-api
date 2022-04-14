@@ -59,7 +59,7 @@ const deleteById = async (req, res) => {
 const getByUserId = async (req, res) => {
   try {
     const user = req.user;
-    const account = await walletService.getWalletByUserId(user.id);
+    const account = await walletService.getWalletByUserId(user);
     if (account.User.type === USER_TYPE.INVESTOR) {
       const totalPending = await InvestmentService.sumTotalPendingByInvetorId(account.User.Investor.id)
       if (totalPending) {
@@ -83,7 +83,7 @@ const getByUserId = async (req, res) => {
 const repayment = async (req, response) => {
   try {
     const user = req.user;
-    const { loanschedule, investments } = req.body;
+    const { loanSchedule, investments } = req.body;
 
     var studentWallet = null;
     var transaction = null;
@@ -91,19 +91,19 @@ const repayment = async (req, response) => {
     walletService.getWalletByUserId(user.id).then((resp) => {
       studentWallet = resp;
       walletService
-        .updateMoneyById(resp.id, -parseInt(loanschedule.money))
+        .updateMoneyById(resp.id, -parseInt(loanSchedule.money))
         .then((resp) => {
           transactionService
             .createTransactionService({
-              money: parseInt(loanschedule.money),
+              money: parseInt(loanSchedule.money),
               type: WALLET_TYPE.TRANSFER,
               description: `Thanh toán kỳ hạn_${moment(
-                loanschedule.startAt
-              ).format("MM/YYYY")}_${loanschedule.id}`,
+                loanSchedule.startAt
+              ).format("MM/YYYY")}`,
               status: TRANSACTION_STATUS.SUCCESS,
               transactionFee: 0,
               recipientId: null,
-              recipientName: "StudentLoanPlatform",
+              recipientName: "Các nhà đầu tư",
               senderId: user.id,
               senderName: user.firstName + user.lastName,
               walletId: studentWallet.id,
@@ -112,7 +112,7 @@ const repayment = async (req, response) => {
               transaction = res;
               var data = {
                 transactionId: res.id,
-                loanScheduleId: loanschedule.id,
+                loanScheduleId: loanSchedule.id,
               };
               loanScheduleTransactionService.create(data).then((res) => {
                 var investorWallet = null;
@@ -125,19 +125,19 @@ const repayment = async (req, response) => {
                       walletService
                         .updateMoneyById(
                           res.id,
-                          parseInt(loanschedule.money * investment.percent)
+                          parseInt(loanSchedule.money * investment.percent)
                         )
                         .then((res) => {
                           transactionService
                             .createTransactionService({
                               money: parseInt(
-                                loanschedule.money * investment.percent
+                                loanSchedule.money * investment.percent
                               ),
                               type: WALLET_TYPE.TRANSFER,
                               description: `${
                                 user.firstName + user.lastName
                               }_thanh toán kỳ hạn_${moment(
-                                loanschedule.startAt
+                                loanSchedule.startAt
                               ).format("MM/YYYY")}`,
                               status: TRANSACTION_STATUS.SUCCESS,
                               transactionFee: 0,
@@ -151,7 +151,7 @@ const repayment = async (req, response) => {
                             .then((res) => {
                               var data = {
                                 transactionId: res.id,
-                                loanScheduleId: loanschedule.id,
+                                loanScheduleId: loanSchedule.id,
                               };
                               loanScheduleTransactionService.create(data);
                             });
@@ -159,7 +159,7 @@ const repayment = async (req, response) => {
                     });
                 });
                 var data = {status: LOAN_SCHEDULE_STATUS.COMPLETED}
-                loanScheduleService.updateById(loanschedule.id, data).then((res) => {
+                loanScheduleService.updateById(loanSchedule.id, data).then((res) => {
                   response.json(res);
                 });
               });

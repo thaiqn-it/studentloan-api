@@ -113,7 +113,7 @@ const creatUser = async (req, res) => {
       phoneNumber: data.phoneNumber,
       password,
       type: data.type,
-      status:USER_STATUS.UNVERIFIED,
+      status: USER_STATUS.UNVERIFIED,
     });
     res.json(user);
   } catch (err) {
@@ -169,8 +169,8 @@ const loginByFb = async (req, res) => {
     } else {
       if (user.type !== type) {
         return res
-        .status(BAD_REQUEST)
-        .json(restError.BAD_REQUEST.extra({ msg: "Not match user" }));
+          .status(BAD_REQUEST)
+          .json(restError.BAD_REQUEST.extra({ msg: "Not match user" }));
       } else {
         const token = jwt.sign(
           {
@@ -182,7 +182,6 @@ const loginByFb = async (req, res) => {
           token,
         });
       }
-      
     }
   } catch (err) {
     return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
@@ -216,8 +215,8 @@ const loginByGoogle = async (req, res) => {
     } else {
       if (user.type !== type) {
         return res
-        .status(BAD_REQUEST)
-        .json(restError.BAD_REQUEST.extra({ msg: "Not match user" }));
+          .status(BAD_REQUEST)
+          .json(restError.BAD_REQUEST.extra({ msg: "Not match user" }));
       } else {
         const token = jwt.sign(
           {
@@ -231,6 +230,16 @@ const loginByGoogle = async (req, res) => {
       }
     }
   } catch (err) {
+    return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
+  }
+};
+
+const verifyPassword = async (req, res) => {
+  try {
+    const data = req.body;
+    var flag = comparePassword(data.password, req.user.password);
+    return res.json(flag);
+  } catch (error) {
     return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
   }
 };
@@ -286,7 +295,7 @@ const registerByGoogle = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const user = req.user;
-  
+
   res.json(excludePassword(user));
 };
 
@@ -305,9 +314,9 @@ const deleteUser = async (req, res) => {
 
 const updateById = async (req, res) => {
   try {
-    const user = req.user
+    const user = req.user;
     const data = req.body;
-    const result = await userService.updateUserService(user.id,data);
+    const result = await userService.updateUserService(user.id, data);
     res.json(result);
   } catch (err) {
     res
@@ -319,7 +328,7 @@ const updateById = async (req, res) => {
 const updateByAdmin = async (req, res) => {
   try {
     const data = req.body;
-    const result = await userService.updateUserService(data.id,data);
+    const result = await userService.updateUserService(data.id, data);
     res.json(result);
   } catch (err) {
     res
@@ -368,7 +377,7 @@ const getAll = async (req, res, next) => {
 };
 
 const count = async (req, res, next) => {
-  const data = req.body
+  const data = req.body;
   try {
     const numberUser = await userService.countBaseTypeAndStatus(data);
     return res.json(numberUser);
@@ -412,4 +421,5 @@ module.exports = {
   getTransactionsByAccountId,
   getAll,
   count,
+  verifyPassword,
 };
