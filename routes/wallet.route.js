@@ -13,6 +13,8 @@ router.post("/", walletController.create);
 
 router.post("/repayment", studentAuth, walletController.repayment)
 
+router.post("/repaymentAll", studentAuth, walletController.repaymentAll)
+
 router.delete("/", walletController.deleteById);
 
 router.put("/:id", walletController.updateMoneyById);
