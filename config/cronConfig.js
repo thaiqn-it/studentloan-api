@@ -8,7 +8,7 @@ module.exports = {
         handler : "schedulers/loanScheduleExpireHandler"
     },
     checkLoanFinishHandler : {
-        frequency : "*/1 * * * * *",
+        frequency : "*/10 * * * * *",
         handler : "schedulers/loanFinishHandler"
     }
 }

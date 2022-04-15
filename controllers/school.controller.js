@@ -23,7 +23,6 @@ const findOneSchool = async (req, res, next) => {
     const school = await schoolServices.findOneSchool(id);
     return res.json(school);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
