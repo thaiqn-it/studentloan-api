@@ -64,6 +64,7 @@ const deleteById = async (req, res) => {
 const getByUserId = async (req, res) => {
   try {
     const user = req.user;
+    console.log(user);
     const account = await walletService.getWalletByUserId(user);
     if (account.User.type === USER_TYPE.INVESTOR) {
       const totalPending = await InvestmentService.sumTotalPendingByInvetorId(
@@ -81,6 +82,7 @@ const getByUserId = async (req, res) => {
     }
     res.json(account);
   } catch (err) {
+    console.log(err);
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -191,7 +193,8 @@ const repaymentAll = async (req, res) => {
 
     var studentWallet = null;
     var transaction = null;
-   await loanSchedules.map((loanSchedule) => {
+    var flag = false;
+    await loanSchedules.map((loanSchedule) => {
       walletService.getWalletByUserId(user).then((resp) => {
         studentWallet = resp;
         walletService
@@ -265,15 +268,23 @@ const repaymentAll = async (req, res) => {
                           });
                       });
                   });
+                  flag = true;
                   var data = { status: LOAN_SCHEDULE_STATUS.COMPLETED };
-                  loanScheduleService.updateById(loanSchedule.id, data);
+                  loanScheduleService
+                    .updateById(loanSchedule.id, data)
+                    .catch((err) => {
+                      flag = false;
+                      res.json({
+                        messge: "Thanh toán Thất bại",
+                        success: flag,
+                      });
+                    });
                 });
               });
           });
       });
     });
-    if(transaction == null)  throw new Error();
-    res.json(transaction);
+    res.json({ messge: "Thanh toán thành công", success: flag });
   } catch (err) {
     res
       .status(INTERNAL_SERVER_ERROR)

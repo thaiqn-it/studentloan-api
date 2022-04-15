@@ -41,4 +41,4 @@ server.listen(APP_PORT, () => {
   );
 });
 
-scheduler.initCron(cronConfig)
+// scheduler.initCron(cronConfig)
