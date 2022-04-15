@@ -51,7 +51,6 @@ const countLoan = async (req, res, next) => {
     const numberLoan = await loanService.countLoan(type);
     return res.json(numberLoan);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -64,7 +63,6 @@ const countLoanBaseTime = async (req, res, next) => {
     const numberLoan = await loanService.countLoanBaseTime(data);
     return res.json(numberLoan);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -86,7 +84,6 @@ const findById = async (req, res, next) => {
 
 const findByIdStudentSide = async (req, res, next) => {
   const { id } = req.params;
-  // const { findType } = req.query.data;
   const { type } = req.query;
   try {
     const loan = await loanService.findByIdStudentSide(id, type);
@@ -95,7 +92,6 @@ const findByIdStudentSide = async (req, res, next) => {
       loan,
     });
   } catch (error) {
-    console.log(error);
     return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
   }
 };
@@ -128,7 +124,6 @@ const create = async (req, res, next) => {
     const loan = await loanService.create(newData);
     return res.json(loan);
   } catch (error) {
-    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -156,7 +151,6 @@ const updateById = async (req, res, next) => {
       returnLoan,
     });
   } catch (error) {
-    console.log(error)
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
