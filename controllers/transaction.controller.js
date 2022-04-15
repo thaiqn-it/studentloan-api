@@ -70,7 +70,6 @@ const getAllTransaction = async (req, res) => {
     const transactions = await transactionService.getAll(data);
     res.json(transactions);
   } catch (err) {
-    console.log(err)
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
