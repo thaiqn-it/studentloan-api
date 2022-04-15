@@ -32,6 +32,12 @@ InvestmentService.getAllByInvestorId = async (id) => {
               ),
               "PaidMoney",
             ],
+            [
+              db.sequelize.literal(
+                "(SELECT type FROM LoanHistory WHERE LoanHistory.loanId = Loan.id AND LoanHistory.isActive ='true')"
+              ),
+              "Status",
+            ],
           ],
         },
         include: [
@@ -52,7 +58,7 @@ InvestmentService.getAllByInvestorId = async (id) => {
                 attributes: ["firstname", "lastname", "profileUrl"],
               },
             ],
-          },
+          }
         ],
       },
     ],
