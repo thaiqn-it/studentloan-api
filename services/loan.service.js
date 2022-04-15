@@ -9,6 +9,7 @@ const {
   LOANMEDIA_STATUS,
   SCHOOLMAJOR_STATUS,
   LOANMEDIA_TYPE,
+  LOAN_SCHEDULE_STATUS,
 } = require("../models/enum");
 const { loanHistoryService } = require("./loanHistory.service");
 const Investment = db.Investment;
@@ -401,6 +402,32 @@ const create = async ({ ...data }) => {
   return loan;
 };
 
+const getFinishLoan = async () => {
+  return await db.Loan.findAll({
+    attributes: ["id"],
+    include: [
+      {
+        model: db.LoanHistory,
+        where: {
+          type: LOAN_STATUS.ONGOING,
+          isActive: true,
+        },
+        required: true,
+      },
+      {
+        model: db.LoanSchedule,
+        attributes: ["id"],
+        where: {
+          status: {
+            [Op.not] : [LOAN_SCHEDULE_STATUS.ONGOING, LOAN_SCHEDULE_STATUS.INCOMPLETE]
+          }
+        },
+        required: true,
+      }
+    ],
+  });
+};
+
 const getMatchingLoan = async () => {
   return await db.Loan.findAll({
     attributes: {
@@ -474,7 +501,7 @@ const getMatchingLoan = async () => {
             ],
           },
         ],
-        require: false,
+        required: false,
       },
       {
         model: db.Student,
@@ -508,6 +535,7 @@ const getMatchingLoan = async () => {
             },
           },
         ],
+        required: true,
       },
       {
         model: db.LoanHistory,
@@ -718,4 +746,5 @@ exports.loanService = {
   countLoanBaseTime,
   findByIdStudentSide,
   getLoanStudent,
+  getFinishLoan
 };
