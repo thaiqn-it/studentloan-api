@@ -407,9 +407,28 @@ const create = async ({ ...data }) => {
   return loan;
 };
 
-const getFinishLoan = async () => {
+const getAll = async () => {
   return await db.Loan.findAll({
     attributes: ["id"],
+    include: [
+      {
+        model: db.LoanHistory,
+        where: {
+          type: LOAN_STATUS.ONGOING,
+          isActive: true,
+        },
+        required: true,
+      }
+    ]
+  })
+}
+
+const getFinishLoan = async (id) => {
+  return await db.Loan.findOne({
+    attributes: ["id"],
+    where :{
+      id
+    },
     include: [
       {
         model: db.LoanHistory,
@@ -423,11 +442,9 @@ const getFinishLoan = async () => {
         model: db.LoanSchedule,
         attributes: ["id"],
         where: {
-          status: {
-            [Op.not] : [LOAN_SCHEDULE_STATUS.ONGOING, LOAN_SCHEDULE_STATUS.INCOMPLETE]
-          }
+          status: [LOAN_SCHEDULE_STATUS.ONGOING, LOAN_SCHEDULE_STATUS.INCOMPLETE]     
         },
-        required: true,
+        required: false,
       }
     ],
   });
@@ -751,5 +768,6 @@ exports.loanService = {
   countLoanBaseTime,
   findByIdStudentSide,
   getLoanStudent,
-  getFinishLoan
+  getFinishLoan,
+  getAll
 };
