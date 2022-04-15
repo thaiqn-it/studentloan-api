@@ -193,6 +193,7 @@ const repaymentAll = async (req, res) => {
 
     var studentWallet = null;
     var transaction = null;
+    var flag = false;
     await loanSchedules.map((loanSchedule) => {
       walletService.getWalletByUserId(user).then((resp) => {
         studentWallet = resp;
@@ -267,18 +268,23 @@ const repaymentAll = async (req, res) => {
                           });
                       });
                   });
+                  flag = true;
                   var data = { status: LOAN_SCHEDULE_STATUS.COMPLETED };
                   loanScheduleService
                     .updateById(loanSchedule.id, data)
-                    .catch((err) =>
-                      res.json({ messge: "Thanh toán Thất bại", success: true })
-                    );
+                    .catch((err) => {
+                      flag = false;
+                      res.json({
+                        messge: "Thanh toán Thất bại",
+                        success: flag,
+                      });
+                    });
                 });
               });
           });
       });
     });
-    res.json({ messge: "Thanh toán thành công", success: true });
+    res.json({ messge: "Thanh toán thành công", success: flag });
   } catch (err) {
     res
       .status(INTERNAL_SERVER_ERROR)
