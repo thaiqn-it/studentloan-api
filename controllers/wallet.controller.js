@@ -64,6 +64,7 @@ const deleteById = async (req, res) => {
 const getByUserId = async (req, res) => {
   try {
     const user = req.user;
+    console.log(user)
     const account = await walletService.getWalletByUserId(user);
     if (account.User.type === USER_TYPE.INVESTOR) {
       const totalPending = await InvestmentService.sumTotalPendingByInvetorId(
@@ -81,6 +82,7 @@ const getByUserId = async (req, res) => {
     }
     res.json(account);
   } catch (err) {
+    console.log(err)
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
