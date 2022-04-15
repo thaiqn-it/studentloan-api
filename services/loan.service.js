@@ -10,6 +10,7 @@ const {
   SCHOOLMAJOR_STATUS,
   LOANMEDIA_TYPE,
   LOAN_SCHEDULE_STATUS,
+  ACHIEVEMENT_STATUS
 } = require("../models/enum");
 const { loanHistoryService } = require("./loanHistory.service");
 const Investment = db.Investment;
@@ -232,7 +233,11 @@ const findById = async (id) => {
             ],
           },
           {
+            required : false,
             model: db.Archievement,
+            where : {
+              status : ACHIEVEMENT_STATUS.ACTIVE
+            }
           },
           {
             model: db.User,
