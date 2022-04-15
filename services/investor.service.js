@@ -1,5 +1,7 @@
 const { Investor } = require("../models");
+const { INVESTOR_STATUS } = require("../models/enum");
 const db = require("../models/index");
+const op = db.Sequelize.Op;
 const InvestorService = {};
 
 InvestorService.getAll = async () => {
@@ -9,7 +11,11 @@ InvestorService.getAll = async () => {
 InvestorService.getUserById = async (id) => {
   return await Investor.findOne({
     where: {
-      userId: id
+      userId: id,
+      status: INVESTOR_STATUS.ACTIVE,
+      parentId: {
+        [op.not]: null,
+      },
     },
     include: [
       {
