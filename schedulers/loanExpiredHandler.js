@@ -136,7 +136,11 @@ module.exports = async () => {
             } else if(parseInt(item.totalMoney) <= parseInt(item.AccumulatedMoney) || parseInt(item.expectedMoney) <= parseInt(item.AccumulatedMoney)) {
                 try {
                     item.Investments.forEach(investment => {
-                        walletService.getWalletByUserId(investment.Investor.User.id).then(res => {             
+                        const user = {
+                            id : investment.Investor.User.id,
+                            type : 'INVESTOR'
+                        }
+                        walletService.getWalletByUserId(user).then(res => {             
                             walletService.updateMoneyById(res.id, -parseInt(investment.total)).then(() => {
                                 transactionService.createTransactionService({
                                     money : parseInt(investment.total),
@@ -154,7 +158,11 @@ module.exports = async () => {
                                         status : INVESTMENT_STATUS.INVESTED,
                                         transactionId : res.id
                                     }).then(() => {
-                                        walletService.getWalletByUserId(item.Student.User.id).then(res => {
+                                        const user = {
+                                            id : item.Student.User.id,
+                                            type : 'INVESTOR'
+                                        }
+                                        walletService.getWalletByUserId(user).then(res => {
                                             walletService.updateMoneyById(res.id, parseInt(investment.total)).then(() => {
                                                 transactionService.createTransactionService({
                                                     money : parseInt(investment.total),
