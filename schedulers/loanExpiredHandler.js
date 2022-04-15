@@ -97,7 +97,7 @@ module.exports = async () => {
                 })
                 notificationService.create({
                     userId : item.Student.User.id,
-                    redirectUrl : "",
+                    redirectUrl : `https://studentloanfpt.ddns.net/trang-chu/ho-so/xem/${item.id}`,
                     description : "Khoản vay của bạn đã kêu gọi thất bại.",
                     isRead : false,
                     type : NOTIFICATION_TYPE.LOAN,
@@ -126,7 +126,7 @@ module.exports = async () => {
                     
                     notificationService.create({
                         userId : investment.Investor.User.id,
-                        redirectUrl : "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
+                        redirectUrl : `myapp://investmentDetail/${investment.id}`,
                         description : "Khoản đầu tư của bạn đã góp vốn thất bại.",
                         isRead : false,
                         type : NOTIFICATION_TYPE.LOAN,
@@ -257,7 +257,7 @@ module.exports = async () => {
                                     
                                     notificationService.create({
                                         userId : investment.Investor.User.id,
-                                        redirectUrl : "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
+                                        redirectUrl : `myapp://investmentDetail/${investment.id}`,
                                         description : "Khoản đầu tư của bạn đã được góp vốn thành công.",
                                         isRead : false,
                                         type : NOTIFICATION_TYPE.LOAN,
@@ -267,7 +267,7 @@ module.exports = async () => {
                             })
                             notificationService.create({
                                 userId : item.Student.User.id,
-                                redirectUrl : "",
+                                redirectUrl : `https://studentloanfpt.ddns.net/trang-chu/ho-so/xem/${item.id}`,
                                 description : "Khoản vay của bạn đã được kêu gọi thành công.",
                                 isRead : false,
                                 type : NOTIFICATION_TYPE.LOAN,

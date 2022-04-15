@@ -10,6 +10,7 @@ const {
   SCHOOLMAJOR_STATUS,
   LOANMEDIA_TYPE,
   LOAN_SCHEDULE_STATUS,
+  ACHIEVEMENT_STATUS
 } = require("../models/enum");
 const { loanHistoryService } = require("./loanHistory.service");
 const Investment = db.Investment;
@@ -44,13 +45,13 @@ const getLoanStudent = async (id) => {
       include: [
         [
           db.sequelize.literal(
-            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id)"
+            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
           ),
           "InvestorCount",
         ],
         [
           db.sequelize.literal(
-            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
           ),
           "AccumulatedMoney",
         ],
@@ -232,7 +233,11 @@ const findById = async (id) => {
             ],
           },
           {
+            required : false,
             model: db.Archievement,
+            where : {
+              status : ACHIEVEMENT_STATUS.ACTIVE
+            }
           },
           {
             model: db.User,
@@ -372,13 +377,13 @@ const findByIdStudentSide = async (id, type) => {
       include: [
         [
           db.sequelize.literal(
-            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id)"
+            "(SELECT COUNT(*) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
           ),
           "InvestorCount",
         ],
         [
           db.sequelize.literal(
-            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+            "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
           ),
           "AccumulatedMoney",
         ],
@@ -614,7 +619,7 @@ const search = async (data) => {
     include: [
       [
         db.sequelize.literal(
-          "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+          "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
         ),
         "AccumulatedMoney",
       ],
@@ -667,13 +672,13 @@ const search = async (data) => {
                 "N'" +
                 TODAY +
                 "'" +
-                " )"
+                " AND Investment.status = 'PENDING' )"
             ),
             "PopularCount",
           ],
           [
             db.sequelize.literal(
-              "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id)"
+              "(SELECT SUM(total) FROM Investment WHERE Investment.loanId = Loan.id AND Investment.status = 'PENDING')"
             ),
             "AccumulatedMoney",
           ],

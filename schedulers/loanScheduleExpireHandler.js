@@ -17,7 +17,7 @@ module.exports = async () => {
             
             notificationService.create({
                 userId : item.Loan.Student.User.id,
-                redirectUrl : "",
+                redirectUrl : `https://studentloanfpt.ddns.net/trang-chu/ho-so/xem/${item.Loan.id}`,
                 description : "Bạn đã không hoàn thành khoản thanh toán vay đúng hạn. Khoản vay sẽ được áp dụng phí phạt như trong điểu khoản.",
                 isRead : false,
                 type : NOTIFICATION_TYPE.LOAN,
@@ -45,7 +45,7 @@ module.exports = async () => {
                 }
                 notificationService.create({
                     userId : item.Investor.User.id,
-                    redirectUrl : "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
+                    redirectUrl : `myapp://investmentDetail/${item.id}`,
                     description : "Khoản thanh toán vay bị trễ hạn",
                     isRead : false,
                     type : NOTIFICATION_TYPE.LOAN,
