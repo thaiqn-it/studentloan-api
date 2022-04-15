@@ -83,26 +83,41 @@ const getLoanStudent = async (id) => {
 
 const findAllWaiting = async (data) => {
   return await db.Loan.findAndCountAll({
-    attributes: ["totalMoney", "id", "title", "postCreatedAt"],
+    attributes: ["totalMoney", "id", 'studentId', "title", "postCreatedAt"],
     order: [["postCreatedAt", data.order]],
     limit: data.limit,
     offset: data.offset,
     include: [
       {
         model: db.Student,
-        attributes: ["id"],
+        attributes: ["id", 'userId'],
         include: [
           {
-            model: db.SchoolMajor,
-            attributes: ["id"],
-            include: [
-              { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
-            ],
+            model: db.User,
+            attributes: ["id", 'firstName', 'lastName', 'profileUrl']
           },
           {
-            model: db.User,
-            attributes: ["firstName", "lastName", "profileUrl", "id"],
+            model: db.Student,
+            as: "Information",
+            attributes: [
+              "id"
+            ],
+            include: [
+              {
+                model: db.SchoolMajor,
+                attributes: ["id"],
+                include: [
+                  { model: db.Major, attributes: ["name"] },
+                  { model: db.School, attributes: ["name"] },
+                ],
+              },
+            ],
+            where: {
+              status: STUDENT_STATUS.ACTIVE,
+              parentId: {
+                [Op.not]: null,
+              },
+            },
           },
         ],
       },
@@ -157,15 +172,30 @@ const getOne = async (id) => {
     include: [
       {
         model: db.Student,
-        attributes: ["id"],
+        attributes: ["id", 'userId'],
         include: [
           {
-            model: db.SchoolMajor,
-            attributes: ["id"],
-            include: [
-              { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
+            model: db.Student,
+            as: "Information",
+            attributes: [
+              "id"
             ],
+            include: [
+              {
+                model: db.SchoolMajor,
+                attributes: ["id"],
+                include: [
+                  { model: db.Major, attributes: ["name"] },
+                  { model: db.School, attributes: ["name"] },
+                ],
+              },
+            ],
+            where: {
+              status: STUDENT_STATUS.ACTIVE,
+              parentId: {
+                [Op.not]: null,
+              },
+            },
           },
           {
             model: db.User,
@@ -187,6 +217,7 @@ const getOne = async (id) => {
         where: {
           status: LOANMEDIA_STATUS.ACTIVE,
         },
+        required:false
       },
     ],
   });
@@ -248,8 +279,8 @@ const findById = async (id) => {
       {
         required: false,
         model: db.LoanMedia,
-        where : {
-          status : LOANMEDIA_STATUS.ACTIVE
+        where: {
+          status: LOANMEDIA_STATUS.ACTIVE
         }
       }
     ],
