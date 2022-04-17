@@ -16,8 +16,8 @@ paypal.configure({
 const topup = async (req, res, next) => {
     const { money } = req.body
     const now = new Date().getTime()
-    let currencyConverter = new CC({ isDecimalComma:true })
-    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
+    let currencyConverter = new CC()
+    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert() / 100
     try {   
         var create_payment_json = {
             "intent": "sale",
@@ -63,7 +63,7 @@ const topup = async (req, res, next) => {
 const transfer = async (req, res, next) => {
     const { money,email,accountId } = req.body
     const now = new Date().getTime()
-    let currencyConverter = new CC({ isDecimalComma:true })
+    let currencyConverter = new CC()
     const transactionFee = await systemConfigService.getTransactionFee()
     try {   
         const balance = await walletService.getBalanceById(accountId)
@@ -74,7 +74,7 @@ const transfer = async (req, res, next) => {
             .json(restError.BAD_REQUEST.extra({ error: "Số dư ví không đủ" }));
         }
         const fee = parseInt(money) * transactionFee.transactionFee
-        const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money) - fee).convert()
+        const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money) - fee).convert() / 100
         
         let requestBody = {
             "sender_batch_header": {

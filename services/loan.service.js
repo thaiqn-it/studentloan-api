@@ -225,12 +225,17 @@ const findById = async (id) => {
         attributes: ["id"],
         include: [
           {
-            model: db.SchoolMajor,
+            model: db.Student,
+            as : "Information",
             attributes: ["id"],
-            include: [
-              { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
-            ],
+            include : {
+              model: db.SchoolMajor,
+              attributes: ["id"],
+              include: [
+                { model: db.Major, attributes: ["name"] },
+                { model: db.School, attributes: ["name"] },
+              ],
+            }
           },
           {
             required : false,
@@ -725,15 +730,22 @@ const search = async (data) => {
         attributes: ["id"],
         include: [
           {
-            model: db.SchoolMajor,
-            where: {
-              [Op.and]: qSchoolMajor,
-              status: SCHOOLMAJOR_STATUS.ACTIVE,
-            },
-            include: [
-              { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
-            ],
+            required: true,
+            model: db.Student,
+            as : "Information",
+            attributes: ["id"],
+            include : {
+              required: true,
+              model: db.SchoolMajor,
+              where: {
+                [Op.and]: qSchoolMajor,
+                status: SCHOOLMAJOR_STATUS.ACTIVE,
+              },
+              include: [
+                { model: db.Major, attributes: ["name"] },
+                { model: db.School, attributes: ["name"] },
+              ],
+            }
           },
           {
             model: db.User,
