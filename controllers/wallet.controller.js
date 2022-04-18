@@ -138,7 +138,7 @@ const repayment = async (req, response) => {
                             money: parseInt(
                               loanSchedule.money * investment.percent
                             ),
-                            type: WALLET_TYPE.TRANSFER,
+                            type: WALLET_TYPE.RECEIVE,
                             description: `${
                               user.firstName + user.lastName
                             }_thanh toán kỳ hạn_${moment(

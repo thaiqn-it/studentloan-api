@@ -1,7 +1,7 @@
 const userService = require("../services/user.service");
 const walletService = require("../services/wallet.service");
 const transactionService = require("../services/transaction.service");
-const { USER_STATUS } = require("../models/enum/index");
+
 const {
   INTERNAL_SERVER_ERROR,
   BAD_REQUEST,
@@ -17,6 +17,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 const nodemailer = require("nodemailer");
 const axios = require("axios");
+const { USER_STATUS } = require("../models/enum");
 
 const sendMail = async (token) => {
   // const transporter = nodemailer.createTransport({
@@ -106,17 +107,19 @@ const creatUser = async (req, res) => {
     });
     if (checkExistsUser) return res.json(checkExistsUser);
 
-    // const status = USER_STATUS.UNVERIFIED;
     const password = hashPassword(data.password);
     const user = await userService.createUserService({
       email: data.email,
       phoneNumber: data.phoneNumber,
       password,
+      firstName: data.firstName,
+      lastName: data.lastName,
       type: data.type,
       status: USER_STATUS.UNVERIFIED,
     });
     res.json(user);
   } catch (err) {
+    console.log(err);
     res.status(INTERNAL_SERVER_ERROR).json(restError.INTERNAL_SERVER_ERROR);
   }
 };

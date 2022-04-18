@@ -6,8 +6,8 @@ const db = require("./models");
 const { APP_PORT } = require("./constants/index");
 const { apiRouter } = require("./routes");
 const fileUpload = require("express-fileupload");
-const scheduler = require("./schedulers/index")
-const cronConfig = require("./config/cronConfig")
+const scheduler = require("./schedulers/index");
+const cronConfig = require("./config/cronConfig");
 
 const app = express();
 
@@ -20,10 +20,10 @@ app.use("/api", apiRouter);
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   console.log("connected");
-  socket.emit("welcome", "hello")
-})
+  socket.emit("welcome", "hello");
+});
 
 db.sequelize
   .sync({ alter: true })
@@ -41,4 +41,4 @@ server.listen(APP_PORT, () => {
   );
 });
 
-// scheduler.initCron(cronConfig)
+scheduler.initCron(cronConfig);
