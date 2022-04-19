@@ -23,7 +23,7 @@ const getAllByInvestorId = async (investorId) => {
               where : {
                 investorId
               },
-              attributes: ["total"],
+              attributes: ["total","id"],
               include : {
                 model : db.Loan,
                 attributes: ["interest","loanStartAt","loanEndAt"],
@@ -46,7 +46,8 @@ const getAllByInvestorId = async (investorId) => {
                           LOAN_STATUS.ONGOING,
                           LOAN_STATUS.FINISH
                         ]
-                      }
+                      },
+                      isActive : true
                   }
                 }]
               }
