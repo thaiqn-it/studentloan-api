@@ -8,8 +8,6 @@ const router = express.Router();
 
 router.get("/", loanController.findAll);
 
-router.post("/waiting", loanController.findAllWaiting);
-
 router.get("/waiting/:id", loanController.getOne);
 
 router.get("/countLoan/:type",loanController.countLoan);
@@ -21,6 +19,8 @@ router.get("/student", studentAuth, loanController.getLoanStudent);
 router.get("/student/:id", studentAuth, loanController.findByIdStudentSide);
 
 router.get("/:id", loanController.findById);
+
+router.post("/waiting", loanController.findAllWaiting);
 
 router.post("/countLoan/",loanController.countLoanBaseTime);
 
