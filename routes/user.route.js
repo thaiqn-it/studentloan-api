@@ -21,6 +21,8 @@ router.post(
   userController.getTransactionsByAccountId
 );
 
+router.post("/forgot-password", userController.forgotPassword);
+
 router.post("/count", userController.count);
 
 router.post("/registerByFb", userController.registerByFb);
@@ -50,6 +52,10 @@ router.get("/admin/me", adminAuth, userController.getProfile);
 router.put("/", userAuth, userController.updateById);
 
 router.put("/admin",adminAuth, userController.updateByAdmin);
+
+router.put("/change-password",userAuth, userController.changePassword);
+
+router.put("/reset-password", userController.resetPassword);
 
 router.delete("/", userController.deleteUser);
 

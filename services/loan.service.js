@@ -298,12 +298,13 @@ const findByIdStudentSide = async (id, type) => {
       model: db.LoanHistory,
       include: [{
         model: db.LoanHistoryImage
-      }]
-      // where: {
-      //   isActive: true,
-      // },
+      }],
+      where: {
+        isActive: true,
+      },
     },
     {
+      required : false,
       model: db.Student,
       attributes: ["id"],
       include: [

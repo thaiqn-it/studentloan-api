@@ -12,8 +12,13 @@ const {
   TRANSACTION_STATUS,
   LOAN_SCHEDULE_STATUS,
   USER_TYPE,
+  NOTIFICATION_TYPE,
+  NOTIFICATION_STATUS,
 } = require("../models/enum");
 const InvestmentService = require("../services/invesment.service");
+const firebaseService = require('../services/firebase.service')
+const notificationService = require('../services/notification.service')
+const userService = require('../services/user.service')
 
 const create = async (req, res) => {
   try {
@@ -160,7 +165,42 @@ const repayment = async (req, response) => {
                               transactionId: res.id,
                               loanScheduleId: loanSchedule.id,
                             };
-                            loanScheduleTransactionService.create(data);
+                            loanScheduleTransactionService.create(data).then(async () => {
+                              const { pushToken } = await userService.getPushTokenByUserId(investorUser.id)
+                              if (pushToken) {
+                                  firebaseService.pushNotificationService(
+                                      `${pushToken}`,
+                                      {
+                                          "notification" : {
+                                              "body" : `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
+                                                loanSchedule.startAt
+                                              ).format("MM/YYYY")}`,
+                                              "title": "Thông báo",
+                                              "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
+                                          },
+                                          "data" : {
+                                              "experienceId": "@thainq2k/student-loan-app-client",
+                                              "scopeKey": "@thainq2k/student-loan-app-client",
+                                              "title": "Thông báo",
+                                              "message": `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
+                                                loanSchedule.startAt
+                                              ).format("MM/YYYY")}`,
+                                              "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
+                                      }
+                                  })
+                              }
+                              
+                              notificationService.create({
+                                userId : investorUser.id,
+                                redirectUrl : `myapp://investmentDetail/${investment.id}`,
+                                description : `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
+                                  loanSchedule.startAt
+                                ).format("MM/YYYY")}`,
+                                isRead : false,
+                                type : NOTIFICATION_TYPE.LOAN,
+                                status : NOTIFICATION_STATUS.ACTIVE
+                              })
+                            });
                           });
                       });
                   });
@@ -190,95 +230,129 @@ const repaymentAll = async (req, res) => {
     var studentWallet = null;
     var transaction = null;
     var flag = false;
-    await loanSchedules.map((loanSchedule) => {
-      walletService.getWalletByUserId(user).then((resp) => {
-        studentWallet = resp;
-        walletService
-          .updateMoneyById(resp.id, -parseInt(loanSchedule.money))
-          .then((resp) => {
-            transactionService
-              .createTransactionService({
-                money: parseInt(loanSchedule.money),
-                type: WALLET_TYPE.TRANSFER,
-                description: `Thanh toán kỳ hạn_${moment(
-                  loanSchedule.startAt
-                ).format("MM/YYYY")}`,
-                status: TRANSACTION_STATUS.SUCCESS,
-                transactionFee: 0,
-                recipientId: null,
-                recipientName: "Các nhà đầu tư",
-                senderId: user.id,
-                senderName: user.firstName + " " + user.lastName,
-                walletId: studentWallet.id,
-              })
-              .then((res) => {
-                transaction = res;
+    var total = 0
+
+    loanSchedules.map(item => {
+      total += parseFloat(item.money) 
+    })
+    
+    walletService.getWalletByUserId(user).then((resp) => {
+      studentWallet = resp;
+      walletService
+        .updateMoneyById(resp.id, -total)
+        .then((resp) => {
+          transactionService
+            .createTransactionService({
+              money: total,
+              type: WALLET_TYPE.TRANSFER,
+              description: `Thanh toán hoàn toàn khoản nợ`,
+              status: TRANSACTION_STATUS.SUCCESS,
+              transactionFee: 0,
+              recipientId: null,
+              recipientName: "Các nhà đầu tư",
+              senderId: user.id,
+              senderName: user.firstName + " " + user.lastName,
+              walletId: studentWallet.id,
+            })
+            .then((res) => {
+              transaction = res;
+              loanSchedules.map(item => {
                 var data = {
                   transactionId: res.id,
-                  loanScheduleId: loanSchedule.id,
+                  loanScheduleId: item.id,
                 };
-                loanScheduleTransactionService.create(data).then((res) => {
-                  var investorWallet = null;
-                  investments.map((investment) => {
-                    var investorUser = investment.Investor.User;
+                loanScheduleTransactionService.create(data)
+              })
+                 
+              var investorWallet = null;
+              investments.map((investment) => {
+                var investorUser = investment.Investor.User;
+                walletService
+                  .getWalletByUserId(investorUser)
+                  .then((res) => {
+                    investorWallet = res;
                     walletService
-                      .getWalletByUserId(investorUser)
-                      .then((res) => {
-                        investorWallet = res;
-                        walletService
-                          .updateMoneyById(
-                            res.id,
-                            parseInt(loanSchedule.money * investment.percent)
-                          )
+                      .updateMoneyById(
+                        res.id,
+                        parseInt(total * investment.percent)
+                      )
+                      .then(async (res) => {
+                        transactionService
+                          .createTransactionService({
+                            money: parseInt(
+                              total * investment.percent
+                            ),
+                            type: WALLET_TYPE.RECEIVE,
+                            description: `Thanh toán hoàn toàn khoản nợ`,
+                            status: TRANSACTION_STATUS.SUCCESS,
+                            transactionFee: 0,
+                            recipientId: investorUser.id,
+                            recipientName:
+                              investorUser.firstName +
+                              " " +
+                              investorUser.lastName,
+                            senderId: user.id,
+                            senderName:
+                              user.firstName + " " + user.lastName,
+                            walletId: investorWallet.id,
+                          })
                           .then((res) => {
-                            transactionService
-                              .createTransactionService({
-                                money: parseInt(
-                                  loanSchedule.money * investment.percent
-                                ),
-                                type: WALLET_TYPE.RECEIVE,
-                                description: `${
-                                  user.firstName + user.lastName
-                                }_thanh toán kỳ hạn_${moment(
-                                  loanSchedule.startAt
-                                ).format("MM/YYYY")}`,
-                                status: TRANSACTION_STATUS.SUCCESS,
-                                transactionFee: 0,
-                                recipientId: investorUser.id,
-                                recipientName:
-                                  investorUser.firstName +
-                                  " " +
-                                  investorUser.lastName,
-                                senderId: user.id,
-                                senderName:
-                                  user.firstName + " " + user.lastName,
-                                walletId: investorWallet.id,
-                              })
-                              .then((res) => {
-                                var data = {
-                                  transactionId: res.id,
-                                  loanScheduleId: loanSchedule.id,
-                                };
-                                loanScheduleTransactionService.create(data);
-                              });
+                            loanSchedules.map(item => {
+                              var data = {
+                                transactionId: res.id,
+                                loanScheduleId: item.id,
+                              };
+                              loanScheduleTransactionService.create(data)
+                            })
                           });
+
+                          const { pushToken } = await userService.getPushTokenByUserId(investorUser.id)
+                          if (pushToken) {
+                              firebaseService.pushNotificationService(
+                                  `${pushToken}`,
+                                  {
+                                      "notification" : {
+                                          "body" : `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
+                                          "title": "Thông báo",
+                                          "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
+                                      },
+                                      "data" : {
+                                          "experienceId": "@thainq2k/student-loan-app-client",
+                                          "scopeKey": "@thainq2k/student-loan-app-client",
+                                          "title": "Thông báo",
+                                          "message": `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
+                                          "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
+                                  }
+                              })
+                          }
+                          
+                          notificationService.create({
+                            userId : investorUser.id,
+                            redirectUrl : `myapp://investmentDetail/${investment.id}`,
+                            description : `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
+                            isRead : false,
+                            type : NOTIFICATION_TYPE.LOAN,
+                            status : NOTIFICATION_STATUS.ACTIVE
+                          })
                       });
                   });
-                  flag = true;
-                  var data = { status: LOAN_SCHEDULE_STATUS.COMPLETED };
-                  loanScheduleService
-                    .updateById(loanSchedule.id, data)
-                    .catch((err) => {
-                      flag = false;
-                      res.json({
-                        messge: "Thanh toán Thất bại",
-                        success: flag,
-                      });
-                    });
-                });
               });
-          });
-      });
+
+              flag = true;
+              var data = { status: LOAN_SCHEDULE_STATUS.COMPLETED };
+              loanSchedules.map(item => {
+                loanScheduleService
+                .updateById(item.id, data)
+                .catch((err) => {
+                  flag = false;
+                  res.json({
+                    messge: "Thanh toán Thất bại",
+                    success: flag,
+                  });
+                }); 
+              })                    
+            });
+        });
     });
     res.json({ messge: "Thanh toán thành công", success: flag });
   } catch (err) {
