@@ -101,7 +101,7 @@ const updateUserService = async (id,data) => {
     {
       where: {
         id
-      }
+      },
     }
   )
 };

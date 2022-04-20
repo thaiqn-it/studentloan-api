@@ -42,16 +42,24 @@ InvestmentService.getAllByInvestorId = async (id) => {
         },
         include: [
           {
+            required : true,
             model: db.Student,
             attributes: ["id"],
             include: [
               {
-                model: db.SchoolMajor,
+                required : false,
+                model : db.Student,
+                as : "Information",
                 attributes: ["id"],
-                include: [
-                  { model: db.Major, attributes: ["name"] },
-                  { model: db.School, attributes: ["name"] },
-                ],
+                include : {
+                  required : true,
+                  model: db.SchoolMajor,
+                  attributes: ["id"],
+                  include: [
+                    { model: db.Major, attributes: ["name"] },
+                    { model: db.School, attributes: ["name"] },
+                  ],
+                }
               },
               {
                 model: db.User,
@@ -223,6 +231,11 @@ InvestmentService.findOneById = async (id) => {
         model: db.Transaction,
         require: false,
       },
+      {
+        model : db.Contract,
+        attributes: ["contractUrl"],
+        required : false
+      }
     ],
   });
 };

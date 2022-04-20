@@ -19,22 +19,22 @@ const nodemailer = require("nodemailer");
 const axios = require("axios");
 const { USER_STATUS } = require("../models/enum");
 
-const sendMail = async (token) => {
-  // const transporter = nodemailer.createTransport({
-  //   host: "smtp.gmail.com",
-  //   port: 465,
-  //   secure: true,
-  //   auth: {
-  //     user: `${process.env.EMAIL_ADDRESS}`,
-  //     pass: `${process.env.EMAIL_PASSWORD}`,
-  //   },
-  // });
-  // const mailOptions = {
-  //   from: `${process.env.EMAIL_ADDRESS}`,
-  //   to: "qthai20102000@gmail.com",
-  //   subject: "Verify your account",
-  //   text: `OTP code is ${token}`,
-  // };
+const sendMail = async (email,token) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: `${process.env.EMAIL_ADDRESS}`,
+      pass: `${process.env.EMAIL_PASSWORD}`,
+    },
+  });
+  const mailOptions = {
+    from: `${process.env.EMAIL_ADDRESS}`,
+    to: `${email}`,
+    subject: "Student Loan xác thực tài khoản",
+    text: `Mã xác nhận của bạn là ${token}`,
+  };
   // const key = jwt.sign(
   //   {
   //     token,
@@ -44,15 +44,37 @@ const sendMail = async (token) => {
   //     expiresIn: "1h",
   //   }
   // );
-  // await transporter.verify();
-  // await transporter.sendMail(mailOptions, (err, res) => {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     console.log("success");
-  //   }
-  // });
+
+  await transporter.verify();
+  await transporter.sendMail(mailOptions, (err, res) => {
+  if (err) {
+    console.log(err);
+  }
+  });
 };
+
+const forgotPassword = (req, res) => {
+  const { email } = req.body
+  try {
+    authenticator.options = {
+      step: 900,
+      window: [1, 0],
+    };
+
+    const secret = authenticator.generateSecret();
+    const token = authenticator.generate(secret);
+    const timeRemaining = authenticator.timeRemaining();
+
+    sendMail(email,token)
+
+    res.json({
+      secret,
+      timeRemaining,
+    });
+  } catch (error) {
+    res.status(INTERNAL_SERVER_ERROR).json(restError.INTERNAL_SERVER_ERROR);
+  }
+}
 
 const sendOTP = (req, res) => {
   try {
@@ -90,7 +112,7 @@ const verifyOTP = (req, res) => {
     const { token, secret } = req.body;
     const isValid = authenticator.check(token, secret);
     res.json({
-      isValid,
+      isValid
     });
   } catch (error) {
     res.status(INTERNAL_SERVER_ERROR).json(restError.INTERNAL_SERVER_ERROR);
@@ -406,6 +428,50 @@ const getTransactionsByAccountId = async (req, res) => {
       .json(restError.INTERNAL_SERVER_ERROR.default());
   }
 };
+
+const changePassword = async (req,res) => {
+  try {
+    let user = await userService.getOne({
+      id: req.user.id,
+    });
+    const { password, newPassword } = req.body
+
+    if (!comparePassword(password, user.password)) throw new Error();
+
+    user = await userService.updateUserService(user.id, {
+      password : hashPassword(newPassword),
+    })
+    return res.json({
+      user: excludePassword(user),
+    });
+
+  } catch (error) {
+    res
+      .status(BAD_REQUEST)
+      .json(restError.BAD_REQUEST.default());
+  }
+}
+
+const resetPassword = async (req,res) => {
+  try {
+    const { newPassword, email } = req.body
+
+    let user = await userService.getUserByEmailService(email)
+    
+    user = await userService.updateUserService(user.id, {
+      password : hashPassword(newPassword),
+    })
+    return res.json({
+      user: excludePassword(user),
+    });
+
+  } catch (error) {
+    res
+      .status(BAD_REQUEST)
+      .json(restError.BAD_REQUEST.default());
+  }
+}
+
 module.exports = {
   creatUser,
   login,
@@ -425,4 +491,7 @@ module.exports = {
   getAll,
   count,
   verifyPassword,
+  changePassword,
+  forgotPassword,
+  resetPassword
 };
