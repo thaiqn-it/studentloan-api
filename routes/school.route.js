@@ -7,6 +7,8 @@ router.get("/", schoolControllers.findAllSchool)
 
 router.get("/:id", schoolControllers.findOneSchool)
 
+router.get("/checkDuplicate/:name", schoolControllers.checkDuplicateName)
+
 router.post("/", schoolControllers.createNewSchool)
 
 router.put("/:id", schoolControllers.updateSchool)
