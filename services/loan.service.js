@@ -189,6 +189,13 @@ const getOne = async (id) => {
                   { model: db.School, attributes: ["name"] },
                 ],
               },
+              {
+                model: db.Archievement,
+                where: {
+                  status: ACHIEVEMENT_STATUS.ACTIVE,
+                },
+                required: false,
+              },
             ],
             where: {
               status: STUDENT_STATUS.ACTIVE,
@@ -200,9 +207,6 @@ const getOne = async (id) => {
           {
             model: db.User,
             attributes: ["firstName", "lastName", "profileUrl", "id"],
-          },
-          {
-            model: db.Archievement,
           },
         ],
       },

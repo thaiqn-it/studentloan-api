@@ -12,7 +12,17 @@ const findAllSchool = async() => {
 const findOneSchool = async(id) => {
     return await School.findOne({
         where:{
-            id : id
+            id : id,
+            status : SCHOOL_STATUS.ACTIVE 
+        }
+    });
+};
+
+const checkDuplicateName = async(name) => {
+    return await School.findOne({
+        where:{
+            name : name,
+            status:SCHOOL_STATUS.ACTIVE
         }
     });
 };
@@ -43,4 +53,5 @@ exports.schoolServices = {
     createNewSchool, 
     deleteById, 
     updateById, 
+    checkDuplicateName,
 }

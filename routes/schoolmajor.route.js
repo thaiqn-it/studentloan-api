@@ -5,10 +5,12 @@ const router = express.Router();
 
 router.get("/", schoolMajorControllers.findAllSchoolMajor)
 
+router.get("/school/:id", schoolMajorControllers.getAllBySchoolId)
+
 router.get("/:majorId/:schoolId", schoolMajorControllers.findOneSchoolMajor)
 
 router.post("/", schoolMajorControllers.createNewSchoolMajor)
 
-router.put("/:majorId/:schoolId", schoolMajorControllers.updateSchoolMajor)
+router.put("/:id", schoolMajorControllers.updateSchoolMajor)
 
 module.exports = { schoolMajorRoute: router }
