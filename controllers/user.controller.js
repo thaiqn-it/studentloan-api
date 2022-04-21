@@ -111,6 +111,8 @@ const creatUser = async (req, res) => {
     const user = await userService.createUserService({
       email: data.email,
       phoneNumber: data.phoneNumber,
+      firstName: data.firstName,
+      lastName: data.lastName,
       password,
       type: data.type,
       status: USER_STATUS.UNVERIFIED,
@@ -369,7 +371,6 @@ const getAll = async (req, res, next) => {
     const userList = await userService.getAll();
     return res.json(userList);
   } catch (e) {
-    console.log(e);
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
@@ -397,7 +398,6 @@ const getTransactionsByAccountId = async (req, res) => {
 
     return res.json(transactions);
   } catch (e) {
-    console.log(e);
     res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
