@@ -187,6 +187,13 @@ const getOne = async (id) => {
                   { model: db.School, attributes: ["name"] },
                 ],
               },
+              {
+                model: db.Archievement,
+                where: {
+                  status: ACHIEVEMENT_STATUS.ACTIVE,
+                },
+                required: false,
+              },
             ],
             where: {
               status: STUDENT_STATUS.ACTIVE,
@@ -198,9 +205,6 @@ const getOne = async (id) => {
           {
             model: db.User,
             attributes: ["firstName", "lastName", "profileUrl", "id"],
-          },
-          {
-            model: db.Archievement,
           },
         ],
       },
@@ -254,12 +258,17 @@ const findById = async (id) => {
         attributes: ["id"],
         include: [
           {
-            model: db.SchoolMajor,
+            model: db.Student,
+            as : "Information",
             attributes: ["id"],
-            include: [
-              { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
-            ],
+            include : {
+              model: db.SchoolMajor,
+              attributes: ["id"],
+              include: [
+                { model: db.Major, attributes: ["name"] },
+                { model: db.School, attributes: ["name"] },
+              ],
+            }
           },
           {
             required: false,
@@ -299,6 +308,7 @@ const findByIdStudentSide = async (id, type) => {
       // },
     },
     {
+      required : false,
       model: db.Student,
       attributes: ["id"],
       include: [
@@ -759,15 +769,22 @@ const search = async (data) => {
         attributes: ["id"],
         include: [
           {
-            model: db.SchoolMajor,
-            where: {
-              [Op.and]: qSchoolMajor,
-              status: SCHOOLMAJOR_STATUS.ACTIVE,
-            },
-            include: [
-              { model: db.Major, attributes: ["name"] },
-              { model: db.School, attributes: ["name"] },
-            ],
+            required: true,
+            model: db.Student,
+            as : "Information",
+            attributes: ["id"],
+            include : {
+              required: true,
+              model: db.SchoolMajor,
+              where: {
+                [Op.and]: qSchoolMajor,
+                status: SCHOOLMAJOR_STATUS.ACTIVE,
+              },
+              include: [
+                { model: db.Major, attributes: ["name"] },
+                { model: db.School, attributes: ["name"] },
+              ],
+            }
           },
           {
             model: db.User,

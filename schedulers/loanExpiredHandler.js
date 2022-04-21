@@ -209,8 +209,8 @@ module.exports = async () => {
                                     const data = {
                                         contractCode,
                                         total : investment.total,
-                                        loanStartAt : item.loanStartAt,
-                                        loanEndAt : item.loanEndAt,
+                                        loanStartAt : moment().local(),
+                                        loanEndAt : moment().local().add(item.duration,'M'),
                                         duration : item.duration,
                                         interest : item.interest
                                     }

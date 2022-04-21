@@ -3,6 +3,10 @@ const {majorController} = require("../controllers/major.controller");
 
 const router = express.Router();
 
+router.get("/checkDuplicate/:name", majorController.isDuplicatedName)
+
+router.get("/:id", majorController.getOne)
+
 router.get("/school/:id", majorController.findAllMajor)
 
 router.get("/", majorController.getAll)

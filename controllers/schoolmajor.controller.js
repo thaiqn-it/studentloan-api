@@ -28,6 +28,19 @@ const findAllSchoolMajor = async (req, res, next) => {
         .json(restError.INTERNAL_SERVER_ERROR.default);
     }
   };
+
+  const getAllBySchoolId = async (req, res, next) => {
+    try {
+      const {id} = req.params
+      const schoolMajors = await schoolMajorServices.getAllBySchoolId(id);
+      return res.json(schoolMajors);
+    } catch (error) {
+      console.log(error)
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json(restError.INTERNAL_SERVER_ERROR.default);
+    }
+  };
   
   const createNewSchoolMajor = async (req, res, next) => {
     const data = req.body;
@@ -42,10 +55,10 @@ const findAllSchoolMajor = async (req, res, next) => {
   };
   
   const updateSchoolMajor = async (req, res, next) => {
-    const {majorId, schoolId} = req.params;
-    const data = req.body;
     try {
-      const newSchoolMajorForUpdate = await schoolMajorServices.updateSchoolMajor(majorId, schoolId, data);
+      const {id} =req.params
+      const data = req.body;
+      const newSchoolMajorForUpdate = await schoolMajorServices.updateSchoolMajor(id,data);
       return res.json(newSchoolMajorForUpdate);
     } catch (error) {
       return res
@@ -53,4 +66,5 @@ const findAllSchoolMajor = async (req, res, next) => {
         .json(restError.INTERNAL_SERVER_ERROR.default);
     }
   };
-  exports.schoolMajorControllers = {findAllSchoolMajor, findOneSchoolMajor, createNewSchoolMajor, updateSchoolMajor}
+  exports.schoolMajorControllers = {findAllSchoolMajor, findOneSchoolMajor, createNewSchoolMajor, updateSchoolMajor
+  ,getAllBySchoolId}

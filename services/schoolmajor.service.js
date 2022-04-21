@@ -1,8 +1,24 @@
 const { SchoolMajor } = require("../models");
 const db = require("../models/index");
+const {SCHOOLMAJOR_STATUS} = require('../models/enum/index')
 
 const findAllSchoolMajor = async () => {
   return await SchoolMajor.findAll();
+};
+
+const getAllBySchoolId = async (id) => {
+  return await SchoolMajor.findAll({
+    where:{
+      schoolId:id,
+      status:SCHOOLMAJOR_STATUS.ACTIVE
+    },
+    include:[
+      {
+        model:db.Major,
+        attributes:['name']
+      }
+    ],
+  });
 };
 
 const findOneSchoolMajorById = async (majorId, schoolId) => {
@@ -10,6 +26,7 @@ const findOneSchoolMajorById = async (majorId, schoolId) => {
     where: {
       majorId: majorId,
       schoolId: schoolId,
+      status:SCHOOLMAJOR_STATUS.ACTIVE
     },
   });
 };
@@ -18,11 +35,10 @@ const createNewSchoolMajor = async (schoolMajor) => {
   return await SchoolMajor.create(schoolMajor);
 };
 
-const updateSchoolMajor = async (majorId, schoolId, data) => {
-  return await SchoolMajor.update(data, {
+const updateSchoolMajor = async (id,data) => {
+  return await SchoolMajor.update(data,{
     where: {
-      majorId: majorId,
-      schoolId: schoolId,
+      id:id,
     },
   });
 };
@@ -32,4 +48,5 @@ exports.schoolMajorServices = {
   findOneSchoolMajorById,
   createNewSchoolMajor,
   updateSchoolMajor,
+  getAllBySchoolId
 };

@@ -29,6 +29,18 @@ const findOneSchool = async (req, res, next) => {
   }
 };
 
+const checkDuplicateName = async (req, res, next) => {
+  const { name } = req.params;
+  try {
+    const school = await schoolServices.checkDuplicateName(name);
+    return res.json(school);
+  } catch (error) {
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
 const createNewSchool = async (req, res, next) => {
   const data = req.body;
   try {
@@ -40,6 +52,7 @@ const createNewSchool = async (req, res, next) => {
       .json(restError.INTERNAL_SERVER_ERROR.default);
   }
 };
+
 
 const updateSchool = async (req, res, next) => {
   const { id } = req.params;
@@ -58,4 +71,5 @@ exports.schoolControllers = {
   findOneSchool,
   createNewSchool,
   updateSchool,
+  checkDuplicateName,
 };
