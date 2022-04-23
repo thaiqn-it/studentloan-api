@@ -27,6 +27,9 @@ module.exports = (sequelize, DataTypes) => {
         minDuration:{
             type: DataTypes.INTEGER,
         },
+        maxDuration:{
+            type: DataTypes.INTEGER,
+        },
         postExpireTime:{
             type: DataTypes.INTEGER,
         },
