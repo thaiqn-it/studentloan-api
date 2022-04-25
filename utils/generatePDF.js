@@ -63,16 +63,41 @@ function generatePart1(doc, student) {
         .text('PHẦN I: THÔNG TIN CƠ BẢN')
         .moveDown()
 
+    // doc
+    //     .font('fonts/NotoSans-Regular.ttf')
+    //     .fontSize(12)
+    //     .text(`Họ và tên: ${student.User.firstName} ${student.User.lastName}`)
+    //     .text(`Ngày tháng năm sinh: ${moment(student.User.birthDate).format("DD/MM/YYYY")}`)
+    //     .text(`Số CMNND: ${student.citizenId}, Cấp tại: ${student.citizenCardCreatedPlace}, Vào ngày: ${moment(student.citizenCardCreatedDate).format("DD/MM/YYYY")}`)
+    //     .text(`Địa chỉ hiện tại: ${address}`)
+    //     .text(`Học tại trường: ${student.SchoolMajor.School.name}`)
+    //     .text(`Chuyên ngành: ${student.SchoolMajor.Major.name}`)
+    //     .text(`MSSV: ${student.studentCardId}`)
+    //     .moveDown()
+
     doc
         .font('fonts/NotoSans-Regular.ttf')
         .fontSize(12)
-        .text(`Họ và tên: ${student.User.firstName} ${student.User.lastName}`)
-        .text(`Ngày tháng năm sinh: ${moment(student.User.birthDate).format("DD/MM/YYYY")}`)
-        .text(`Số CMNND: ${student.citizenId}, Cấp tại: ${student.citizenCardCreatedPlace}, Vào ngày: ${moment(student.citizenCardCreatedDate).format("DD/MM/YYYY")}`)
-        .text(`Địa chỉ hiện tại: ${address}`)
-        .text(`Học tại trường: ${student.SchoolMajor.School.name}`)
-        .text(`Chuyên ngành: ${student.SchoolMajor.Major.name}`)
-        .text(`MSSV: ${student.studentCardId}`)
+        .table({
+            headers: ["Họ và tên: ", `${student.User.firstName} ${student.User.lastName}`],
+            rows: [
+                [`Ngày tháng năm sinh:`, `${moment(student.User.birthDate).format("DD/MM/YYYY")}`],
+                ['Số CMND:', `${student.citizenId}`],
+                ['Cấp vào ngày:', `${moment(student.citizenCardCreatedDate).format("DD/MM/YYYY")}`],
+                ['Cấp tại:', `${student.citizenCardCreatedPlace}`],
+                ['Địa chỉ hiện tại:', `${address}`],
+                ['Học tại trường:', `${student.SchoolMajor.School.name}`],
+                ['Chuyên ngành:', `${student.SchoolMajor.Major.name}`],
+                [`MSSV:`, `${student.studentCardId}`]
+            ],
+        }, {
+            columnsSize: [250, doc.page.width - 350, 0],
+            prepareHeader: () => doc.font('fonts/NotoSans-Bold.ttf').fontSize(12),
+            prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                doc.font('fonts/NotoSans-Regular.ttf').fontSize(10);
+            },
+        })
+    doc
         .moveDown()
 }
 
@@ -88,23 +113,49 @@ function generatePart2(doc, loan) {
         .fontSize(12)
         .text('PHẦN II: THÔNG TIN HỒ SƠ VAY')
         .moveDown()
-
     doc
         .font('fonts/NotoSans-Regular.ttf')
         .fontSize(12)
-        .text('Số tiền cần vay:')
-        .text(`Bằng số: ${vndFormat.format(loan.totalMoney)}`)
-        .text(`Bằng chữ: ${VNnum2words(loan.totalMoney)}đồng`)
-        .text(`Với lãi suất ${Number.parseFloat(loan.interest) * 100}%`)
-        .text(`Và với lãi suất quá hạn: ${Number.parseFloat(loan.penaltyFee) * 100}% số dư nợ phải trả`)
-        .text(`Thời hạn vay là ${loan.duration} tháng`)
-        .text(`Với mức tiền cần trả mỗi tháng khi còn đi học:`)
-        .text(`Bằng số: ${vndFormat.format(loan.fixedMoney)}`)
-        .text(`Bằng chữ: ${VNnum2words(loan.fixedMoney)}đồng`)
-        .text(`Khi học sinh đã ra trường phần tiền phải trả trên mỗi tháng: `)
-        .text(`Bằng số: ${vndFormat.format(moneyPaidGraduted)}`)
-        .text(`Bằng chữ: ${VNnum2words(moneyPaidGraduted)} đồng`)
+        .table({
+            headers: ["Mã hồ sơ vay: ", `${loan.id}`],
+            rows: [
+                [`Số tiền cần vay: `, `Bằng số: ${vndFormat.format(loan.totalMoney)}`],
+                ['', `Bằng chữ: ${VNnum2words(loan.totalMoney)}đồng`],
+                ['Với lãi suất', `${Number.parseFloat(loan.interest) * 100}%`],
+                ['Và với lãi suất quá hạn:', `${Number.parseFloat(loan.penaltyFee) * 100}% số dư nợ phải trả`],
+                ['Thời hạn vay', `${loan.duration} tháng`],
+                ['Thời hạn kết thúc hồ sơ vay: ', `${moment(loan.loanEndAt).format('DD/YY/MMMM')}`],
+                ['Với mức tiền cần trả mỗi tháng khi còn đi học:', `Bằng số: ${vndFormat.format(loan.fixedMoney)}`],
+                ['', `Bằng chữ: ${VNnum2words(loan.fixedMoney)}đồng`],
+                [`Khi học sinh đã ra trường phần tiền phải trả trên mỗi tháng: `, `Bằng số: ${vndFormat.format(moneyPaidGraduted)}`],
+                ['', `Bằng chữ: ${VNnum2words(moneyPaidGraduted)} đồng`]
+            ],
+        }, {
+            columnsSize: [250, doc.page.width - 350, 0],
+            prepareHeader: () => doc.font('fonts/NotoSans-Bold.ttf').fontSize(12),
+            prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                doc.font('fonts/NotoSans-Regular.ttf').fontSize(10);
+            },
+        })
+    doc
         .moveDown()
+
+    // doc
+    //     .font('fonts/NotoSans-Regular.ttf')
+    //     .fontSize(12)
+    //     .text('Số tiền cần vay:')
+    //     .text(`Bằng số: ${vndFormat.format(loan.totalMoney)}`)
+    //     .text(`Bằng chữ: ${VNnum2words(loan.totalMoney)}đồng`)
+    //     .text(`Với lãi suất ${Number.parseFloat(loan.interest) * 100}%`)
+    //     .text(`Và với lãi suất quá hạn: ${Number.parseFloat(loan.penaltyFee) * 100}% số dư nợ phải trả`)
+    //     .text(`Thời hạn vay là ${loan.duration} tháng`)
+    //     .text(`Với mức tiền cần trả mỗi tháng khi còn đi học:`)
+    //     .text(`Bằng số: ${vndFormat.format(loan.fixedMoney)}`)
+    //     .text(`Bằng chữ: ${VNnum2words(loan.fixedMoney)}đồng`)
+    //     .text(`Khi học sinh đã ra trường phần tiền phải trả trên mỗi tháng: `)
+    //     .text(`Bằng số: ${vndFormat.format(moneyPaidGraduted)}`)
+    //     .text(`Bằng chữ: ${VNnum2words(moneyPaidGraduted)} đồng`)
+    //     .moveDown()
 
     doc
         .addPage()
