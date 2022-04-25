@@ -22,7 +22,7 @@ const createByStudentId = async (req, res, next) => {
 const updateById = async (req, res, next) => {
   try {
     const data = req.body;
-    const {id,...newData} = data
+    const { id, ...newData } = data;
     const achievement = achievementService.updateById(id, newData);
     if (achievement === null) throw new Error();
 
@@ -32,7 +32,19 @@ const updateById = async (req, res, next) => {
   }
 };
 
+const getByStudentId = async (req, res, next) => {
+  try {
+    const achievements = await achievementService.getByStudentId(req.user.Student.id);
+    if (achievements === null) throw new Error();
+
+    return res.json(achievements);
+  } catch (error) {
+    return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+  }
+};
+
 exports.achievementController = {
   createByStudentId,
   updateById,
+  getByStudentId,
 };
