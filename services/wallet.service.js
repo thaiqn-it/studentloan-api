@@ -60,9 +60,9 @@ const getWalletByUserId = async (user) => {
       },
     },
   };
-  var includeType = temp
-  if(user.type === USER_TYPE.STUDENT){
-    includeType = {...temp, model: db.Student}
+  var includeType = temp;
+  if (user.type === USER_TYPE.STUDENT) {
+    includeType = { ...temp, model: db.Student };
   }
   const wallet = await Wallet.findOne({
     where: {
@@ -70,7 +70,7 @@ const getWalletByUserId = async (user) => {
     },
     include: {
       model: db.User,
-      attributes: ["type"],
+      attributes: ["type", "firstName", "lastName"],
       include: includeType,
     },
     raw: true,
