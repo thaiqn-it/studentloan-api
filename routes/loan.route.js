@@ -2,13 +2,11 @@ const express = require("express");
 const { loanController } = require("../controllers/loan.controller");
 const { body } = require("express-validator");
 const { LOAN_STATUS } = require("../models/enum/index");
-const { studentAuth, userAuth } = require("../middlewares/jwt_auth");
+const { studentAuth } = require("../middlewares/jwt_auth");
 
 const router = express.Router();
 
 router.get("/", loanController.findAll);
-
-router.get("/pdf/:id",userAuth, loanController.generatePDF);
 
 router.get("/waiting/:id", loanController.getOne);
 
