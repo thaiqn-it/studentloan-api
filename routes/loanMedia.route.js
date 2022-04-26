@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get("/loan/:id/evidence" , loanMediaController.findAllEvidenceByLoanId)
 
+router.get("/loan/:id/transcript" , loanMediaController.findAllTranscriptByLoanId)
+
 router.put("/:id" , loanMediaController.updateLoanMedia)
 
 router.post("/" , loanMediaController.createLoanMedia)

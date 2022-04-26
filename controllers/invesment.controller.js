@@ -3,6 +3,8 @@ const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
 const { INVESTMENT_STATUS } = require('../models/enum');
 const { loanScheduleService } = require("../services/loanSchedule.service");
+const { loanService } = require("../services/loan.service");
+const { vndFormat } = require("../utils");
 
 const InvestmentController = {};
 
@@ -11,6 +13,32 @@ InvestmentController.getAllByInvestorID = async (req, res, next) => {
     const investor = req.user.Investor
     const investments = await InvestmentService.getAllByInvestorId(investor.id);
     return res.json(investments);
+  } catch (error) {
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default);
+  }
+};
+
+InvestmentController.checkValidMoney = async (req, res, next) => {
+  const investor = req.user.Investor
+  const { loanId, money } = req.query
+
+  try {
+    const totalInvest = await InvestmentService.sumInvestedMoney(loanId,investor.id);
+    const { totalMoney } = await loanService.getTotalById(loanId)
+
+    if (parseFloat(totalMoney) - parseFloat(totalInvest !== null ? totalInvest : 0) >= parseFloat(money)) {
+      return res.json({
+        status : true,
+        message : 'Thành công'
+      });
+    } else {
+      return res.json({
+        status : false,
+        message : `Khoản đầu tư không thể lớn hơn ${vndFormat.format(parseFloat(totalMoney) - parseFloat(totalInvest !== null ? totalInvest : 0))}`
+      });
+    } 
   } catch (error) {
     return res
       .status(INTERNAL_SERVER_ERROR)

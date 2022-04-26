@@ -15,6 +15,19 @@ const getByInvestmentId = async (investmentId) => {
     })
 }
 
+const getAllByLoanId = async (loanId) => {
+  return await db.Contract.findAll({
+      attributes: ["id"],
+      include : {
+        model : db.Investment,
+        attributes: ["id"],
+        where : {
+          loanId
+        }
+      }
+  })
+}
+
 const getAllByInvestorId = async (investorId) => {
     return await db.Contract.findAll({
         include : [
@@ -61,4 +74,5 @@ exports.contractService = {
     create,
     getByInvestmentId,
     getAllByInvestorId,
+    getAllByLoanId
 };

@@ -22,6 +22,19 @@ const findAllEvidenceByLoanId = async (req, res, next) => {
   }
 };
 
+const findAllTranscriptByLoanId = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const transcripts = await loanMediaService.getAllTranscriptByLoanId(id);
+    if (transcripts === null) throw new Error();
+    return res.json({
+      transcripts
+    });
+  } catch (error) {
+    return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
+  }
+};
+
 const createLoanMedia = async (req, res) => {
   try {
     const data = req.body;
@@ -58,4 +71,5 @@ exports.loanMediaController = {
   findAllEvidenceByLoanId,
   createLoanMedia,
   updateLoanMedia,
+  findAllTranscriptByLoanId
 };

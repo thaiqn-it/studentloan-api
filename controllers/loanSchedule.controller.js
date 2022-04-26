@@ -22,7 +22,8 @@ const findAll = async (req, res, next) => {
 const findAllByLoanId = async (req, res, next) => {
     try {
         const {id} = req.params
-        const loanSchedules = await loanScheduleService.findAllByLoanId(id);
+        const user = req.user
+        const loanSchedules = await loanScheduleService.findAllByLoanId(id, user.id);
         return res.json(loanSchedules);
     } catch (error) {
         console.log(error)
@@ -63,6 +64,7 @@ const create = async (req, res, next) => {
     var scheduleData = [];
     try {     
         const loan = await loanService.findById(id)
+
         for (let i = 0; i < loan.expectedGraduationTime ; i++) {
             const startAt = moment(new Date()).add(i,'month');
             const endAt = moment(new Date()).add(i + 1,'month');

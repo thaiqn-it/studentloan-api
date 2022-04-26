@@ -6,7 +6,15 @@ const findAll = async () => {
   return await db.LoanSchedule.findAll();
 };
 
-const findAllByLoanId = async (id) => {
+const getTotalMoneyCompleted = async () => {
+  return await db.LoanSchedule.sum('money', {
+    where : {
+      status : LOAN_SCHEDULE_STATUS.COMPLETED
+    }
+  });
+};
+
+const findAllByLoanId = async (id, userId) => {
   return await db.LoanSchedule.findAll({
     where: {
       loanId: id,
@@ -15,12 +23,19 @@ const findAllByLoanId = async (id) => {
       },
     },
     order: [["startAt", "ASC"]],
-    // attributes: {
-    //   include: [
-    //     [ db.Sequelize.fn('YEAR', db.Sequelize.col('createdAt')), 'year']
-    //   ]
-    // },
-    // raw: true,
+    include : {
+      required : false,
+      model : db.LoanScheduleTransaction,
+      attributes: ["id"],
+      include : {
+        required : true,
+        model : db.Transaction,
+        attributes: ["id"],
+        where : {
+          recipientId : userId
+        }
+      }
+    }
   });
 };
 
@@ -121,4 +136,5 @@ exports.loanScheduleService = {
   findAllByLoanId,
   getAllExpired,
   findAllByLoanIdOption,
+  getTotalMoneyCompleted
 };

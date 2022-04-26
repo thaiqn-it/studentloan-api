@@ -23,6 +23,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       }
     });
+
+    LoanScheduleTransaction.associate = (models) => {
+      LoanScheduleTransaction.belongsTo(models.Transaction,{
+        foreignKey: "transactionId",
+      })
+    };
   
     return LoanScheduleTransaction;
   };
