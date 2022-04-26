@@ -1,6 +1,6 @@
 const express = require("express");
 const { studentController } = require("../controllers/student.controller");
-const { studentAuth } = require("../middlewares/jwt_auth");
+const { studentAuth, userAuth } = require("../middlewares/jwt_auth");
 
 const router = express.Router();
 
