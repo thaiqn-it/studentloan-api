@@ -258,10 +258,12 @@ const findById = async (id) => {
         attributes: ["id"],
         include: [
           {
+            required : true,
             model: db.Student,
             as : "Information",
             attributes: ["id"],
             include : {
+              required : true,
               model: db.SchoolMajor,
               attributes: ["id"],
               include: [
@@ -626,6 +628,15 @@ const updateById = async (id, data) => {
   return loan[1];
 };
 
+const getTotalById = async (id) => {
+  return await db.Loan.findOne({
+    attributes: ["totalMoney"],
+    where: {
+      id,
+    }
+  });
+};
+
 const search = async (data) => {
   const PAGE_LIMIT = 5;
   const sort = data.sort;
@@ -821,4 +832,5 @@ exports.loanService = {
   getLoanStudent,
   getFinishLoan,
   getAll,
+  getTotalById
 };

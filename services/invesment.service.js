@@ -226,6 +226,16 @@ InvestmentService.findOneById = async (id) => {
     include: [
       {
         model: db.Loan,
+        attributes: {
+          include: [
+            [
+              db.sequelize.literal(
+                "(SELECT SUM(penaltyMoney) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id)"
+              ),
+              "PenaltySum",
+            ]
+          ],
+        },
       },
       {
         model: db.Transaction,
@@ -256,6 +266,18 @@ InvestmentService.updateByLoanId = async (loanId, investmentInfo) => {
   const investment = await Investment.update(investmentInfo, {
     where: { loanId },
     returning: true,
+  });
+  return investment;
+};
+
+InvestmentService.sumInvestedMoney = async (loanId, investorId) => {
+  const investment = await Investment.sum('total', {
+    where: { 
+      loanId,
+      investorId : {
+        [Op.not] : investorId
+      }
+    },
   });
   return investment;
 };

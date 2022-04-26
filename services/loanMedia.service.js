@@ -12,6 +12,16 @@ const getAllEvidenceByLoanId = async (loanId) => {
   });
 };
 
+const getAllTranscriptByLoanId = async (loanId) => {
+  return await db.LoanMedia.findAll({
+    where: {
+      loanId,
+      type: LOANMEDIA_TYPE.TRANSCRIPT,
+      status: LOANMEDIA_STATUS.ACTIVE,
+    },
+  });
+};
+
 const createLoanMedia = async (data) => {
   return await db.LoanMedia.create(data);
 };
@@ -32,5 +42,6 @@ const updateLoanMediaById = async (id, data) => {
 exports.loanMediaService = {
   getAllEvidenceByLoanId,
   updateLoanMediaById,
-  createLoanMedia
+  createLoanMedia,
+  getAllTranscriptByLoanId
 };

@@ -8,6 +8,7 @@ router.post("/", investmentController.createInvestment);
 
 router.get("/",investorAuth, investmentController.getAllByInvestorID);
 
+router.get("/loan/:id/check-money",investorAuth, investmentController.checkValidMoney);
 //check exsist by loanId and investorId
 router.get("/loan/:id",investorAuth, investmentController.checkExistInvestmentByInvestorId);
 

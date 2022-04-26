@@ -3,13 +3,10 @@ const investmentService = require('../services/invesment.service')
 const walletService = require('../services/wallet.service')
 const transactionService = require('../services/transaction.service')
 const { loanScheduleService } = require('../services/loanSchedule.service')
-const { LOAN_STATUS, INVESTMENT_STATUS, WALLET_TYPE, WALLET_STATUS, TRANSACTION_STATUS, LOAN_SCHEDULE_TYPE, LOAN_SCHEDULE_STATUS, CONTRACT_STATUS, NOTIFICATION_TYPE, NOTIFICATION_STATUS } = require('../models/enum/index')
+const { LOAN_STATUS, INVESTMENT_STATUS, WALLET_TYPE, TRANSACTION_STATUS, LOAN_SCHEDULE_TYPE, LOAN_SCHEDULE_STATUS, CONTRACT_STATUS, NOTIFICATION_TYPE, NOTIFICATION_STATUS } = require('../models/enum/index')
 const FCM = require('fcm-node');
 const serverKey = 'AAAAsTkfFbA:APA91bF2cc2Af_4o-yc8c7g2rnNMjYg5AQMnSGTPvL-j-Uoslj6D71V1Z-Ev9WAo12n8QC5mROmc1l2VkiKPjY7LTa6ZrRDP9phcp5kvFJPB1ZYXOggV8mnKHn0Nc-BS2lAsHZXrEmT8';
 const fcm = new FCM(serverKey);
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
-const { log } = require('console')
 const moment = require('moment');  
 const { createContract } = require('../utils/generateContract')
 const { contractService } = require('../services/contract.service')
@@ -201,7 +198,7 @@ module.exports = async () => {
                             createSchedule(item.id).then(() => {
                                 item.Investments.forEach(async investment => {
                                     const randomCha = randomCharater(3)
-                                    const mili = moment().millisecond().toString()
+                                    const mili = (moment().millisecond() < 10 ? '00' : moment().millisecond() < 100 ? '0' : '') + moment().millisecond().toString()
                                     const second = (moment().second() < 10 ? '0' : '') + moment().second().toString()
             
                                     const contractCode = randomCha + second + mili
