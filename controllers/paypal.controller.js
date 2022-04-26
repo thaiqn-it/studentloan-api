@@ -48,7 +48,9 @@ const topup = async (req, res, next) => {
 
         paypal.payment.create(create_payment_json, function (error, payment) {
             if (error) {
-                throw error;
+                return res
+                .status(BAD_REQUEST)
+                .json(restError.BAD_REQUEST.extra({ error: error }));
             } else {
                 res.json(payment.links[1].href)
             }
