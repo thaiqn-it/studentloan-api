@@ -1,5 +1,5 @@
 const db = require("../models");
-const { USER_STATUS, WALLET_STATUS,USER_TYPE } = require("../models/enum");
+const { USER_STATUS, WALLET_STATUS, USER_TYPE } = require("../models/enum");
 
 const { comparePassword } = require("../utils");
 const User = db.User;
@@ -94,16 +94,14 @@ const deleteUserService = async (id) => {
 //   return await user.save();
 // };
 
-const updateUserService = async (id,data) => {
+const updateUserService = async (id, data) => {
   let user = await User.findByPk(id);
   if (user === null) throw new Error();
-  return await User.update(data,
-    {
-      where: {
-        id
-      },
-    }
-  )
+  return await User.update(data, {
+    where: {
+      id,
+    },
+  });
 };
 
 const getOne = async ({ ...data }) => {
@@ -126,11 +124,20 @@ const getPushTokenByUserId = async (id) => {
   return await User.findOne({
     attributes: ["pushToken"],
     where: {
-      id
+      id,
     },
   });
 };
 
+const getListAdmin = async () => {
+  return await User.findAll({
+    attributes: ["id","parentId","firstName","lastName"],
+    where: {
+      type: [USER_TYPE.ADMIN],
+      status: [USER_STATUS.VERIFIED]
+    },
+  });
+};
 module.exports = {
   createUserService,
   loginService,
@@ -141,5 +148,6 @@ module.exports = {
   getAll,
   getUserByEmailService,
   countBaseTypeAndStatus,
-  getPushTokenByUserId
+  getPushTokenByUserId,
+  getListAdmin
 };

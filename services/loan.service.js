@@ -10,7 +10,7 @@ const {
   SCHOOLMAJOR_STATUS,
   LOANMEDIA_TYPE,
   LOAN_SCHEDULE_STATUS,
-  ACHIEVEMENT_STATUS
+  ACHIEVEMENT_STATUS,
 } = require("../models/enum");
 const { loanHistoryService } = require("./loanHistory.service");
 const Investment = db.Investment;
@@ -66,6 +66,7 @@ const getLoanStudent = async (id) => {
         attributes: ["type"],
         where: {
           isActive: true,
+          type: { [Op.not]: LOAN_STATUS.DELETED },
         },
       },
       {
@@ -78,30 +79,29 @@ const getLoanStudent = async (id) => {
         required: false,
       },
     ],
+    order: [["postCreatedAt", "DESC"]],
   });
 };
 
 const findAllWaiting = async (data) => {
   return await db.Loan.findAndCountAll({
-    attributes: ["totalMoney", "id", 'studentId', "title", "postCreatedAt"],
+    attributes: ["totalMoney", "id", "studentId", "title", "postCreatedAt"],
     order: [["postCreatedAt", data.order]],
     limit: data.limit,
     offset: data.offset,
     include: [
       {
         model: db.Student,
-        attributes: ["id", 'userId'],
+        attributes: ["id", "userId"],
         include: [
           {
             model: db.User,
-            attributes: ["id", 'firstName', 'lastName', 'profileUrl']
+            attributes: ["id", "firstName", "lastName", "profileUrl"],
           },
           {
             model: db.Student,
             as: "Information",
-            attributes: [
-              "id"
-            ],
+            attributes: ["id"],
             include: [
               {
                 model: db.SchoolMajor,
@@ -172,14 +172,12 @@ const getOne = async (id) => {
     include: [
       {
         model: db.Student,
-        attributes: ["id", 'userId'],
+        attributes: ["id", "userId"],
         include: [
           {
             model: db.Student,
             as: "Information",
-            attributes: [
-              "id"
-            ],
+            attributes: ["id"],
             include: [
               {
                 model: db.SchoolMajor,
@@ -221,7 +219,7 @@ const getOne = async (id) => {
         where: {
           status: LOANMEDIA_STATUS.ACTIVE,
         },
-        required:false
+        required: false,
       },
     ],
   });
@@ -275,11 +273,11 @@ const findById = async (id) => {
             }
           },
           {
-            required : false,
+            required: false,
             model: db.Archievement,
-            where : {
-              status : ACHIEVEMENT_STATUS.ACTIVE
-            }
+            where: {
+              status: ACHIEVEMENT_STATUS.ACTIVE,
+            },
           },
           {
             model: db.User,
@@ -291,9 +289,9 @@ const findById = async (id) => {
         required: false,
         model: db.LoanMedia,
         where: {
-          status: LOANMEDIA_STATUS.ACTIVE
-        }
-      }
+          status: LOANMEDIA_STATUS.ACTIVE,
+        },
+      },
     ],
   });
 };
@@ -302,12 +300,14 @@ const findByIdStudentSide = async (id, type) => {
   const include = [
     {
       model: db.LoanHistory,
-      include: [{
-        model: db.LoanHistoryImage
-      }],
-      where: {
-        isActive: true,
-      },
+      include: [
+        {
+          model: db.LoanHistoryImage,
+        },
+      ],
+      // where: {
+      //   isActive: true,
+      // },
     },
     {
       required : false,
@@ -315,11 +315,24 @@ const findByIdStudentSide = async (id, type) => {
       attributes: ["id"],
       include: [
         {
-          model: db.SchoolMajor,
+          model: db.Student,
+          as: "Information",
           attributes: ["id"],
+          where: {
+            status: STUDENT_STATUS.ACTIVE,
+            parentId: {
+              [Op.not]: null,
+            },
+          },
           include: [
-            { model: db.Major, attributes: ["name"] },
-            { model: db.School, attributes: ["name"] },
+            {
+              model: db.SchoolMajor,
+              attributes: ["id"],
+              include: [
+                { model: db.Major, attributes: ["name"] },
+                { model: db.School, attributes: ["name"] },
+              ],
+            },
           ],
         },
         {
@@ -383,19 +396,6 @@ const findByIdStudentSide = async (id, type) => {
     includeCondition = include.filter(
       (item) => item.model !== db.Contract && item.model !== db.Investment
     );
-    var indexLoanMedia = includeCondition.findIndex(
-      (item) => item.model === db.LoanMedia
-    );
-    var replaceLoan = {
-      required: false,
-      model: db.LoanMedia,
-      where: {
-        status: "active",
-        type: {
-          [Op.not]: LOANMEDIA_TYPE.REPORT,
-        },
-      },
-    };
 
     var indexLoanHistory = includeCondition.findIndex(
       (item) => item.model === db.LoanHistory
@@ -404,9 +404,9 @@ const findByIdStudentSide = async (id, type) => {
       model: db.LoanHistory,
       where: {
         isActive: true,
+        type: { [Op.not]: LOAN_STATUS.DELETED },
       },
     };
-    includeCondition[indexLoanMedia] = replaceLoan;
     includeCondition[indexLoanHistory] = replaceLoanHistory;
   } else {
     includeCondition = include;
@@ -461,16 +461,16 @@ const getAll = async () => {
           isActive: true,
         },
         required: true,
-      }
-    ]
-  })
-}
+      },
+    ],
+  });
+};
 
 const getFinishLoan = async (id) => {
   return await db.Loan.findOne({
     attributes: ["id"],
-    where :{
-      id
+    where: {
+      id,
     },
     include: [
       {
@@ -485,10 +485,13 @@ const getFinishLoan = async (id) => {
         model: db.LoanSchedule,
         attributes: ["id"],
         where: {
-          status: [LOAN_SCHEDULE_STATUS.ONGOING, LOAN_SCHEDULE_STATUS.INCOMPLETE]     
+          status: [
+            LOAN_SCHEDULE_STATUS.ONGOING,
+            LOAN_SCHEDULE_STATUS.INCOMPLETE,
+          ],
         },
         required: false,
-      }
+      },
     ],
   });
 };
