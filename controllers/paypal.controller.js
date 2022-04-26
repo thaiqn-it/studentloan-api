@@ -33,16 +33,16 @@ const topup = async (req, res, next) => {
                     "items": [{
                         "name": "Nạp tiền vào Student Loan",
                         "sku": "item",
-                        "price": `${cvrtMoney}`,
+                        "price": `${cvrtMoney.toFixed(2)}`,
                         "currency": "USD",
                         "quantity": 1
                     }]
                 },
                 "amount": {
                     "currency": "USD",
-                    "total": `${cvrtMoney}`
+                    "total": `${cvrtMoney.toFixed(2)}`
                 },
-                "description": `Nạp ${cvrtMoney} vào Student Loan vào lúc ${now}`
+                "description": `Nạp ${cvrtMoney.toFixed(2)} vào Student Loan vào lúc ${now}`
             }]
         };
 
@@ -81,15 +81,15 @@ const transfer = async (req, res, next) => {
         let requestBody = {
             "sender_batch_header": {
               "email_message": `Chuyển tiền đến tài khoản ${email}`,
-              "note": `Số tiền ${cvrtMoney} đã được chuyển`,
+              "note": `Số tiền ${cvrtMoney.toFixed(2)} đã được chuyển`,
               "email_subject": "Chuyển tiền Paypal"
             },
             "items": [{
               "recipient_type": "EMAIL",
-              "note": `Chuyển ${cvrtMoney} đến tài khoản ${email}`,
+              "note": `Chuyển ${cvrtMoney.toFixed(2)} đến tài khoản ${email}`,
               "amount": {
                 "currency": "USD",
-                "value": `${cvrtMoney}`
+                "value": `${cvrtMoney.toFixed(2)}`
               },
               "receiver": `${email}`,
               "sender_item_id": `${now}`
