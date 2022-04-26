@@ -17,7 +17,7 @@ const topup = async (req, res, next) => {
     const { money } = req.body
     const now = new Date().getTime()
     let currencyConverter = new CC()
-    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert() / 100
+    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
     try {   
         var create_payment_json = {
             "intent": "sale",
@@ -76,7 +76,7 @@ const transfer = async (req, res, next) => {
             .json(restError.BAD_REQUEST.extra({ error: "Số dư ví không đủ" }));
         }
         const fee = parseInt(money) * transactionFee.transactionFee
-        const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money) - fee).convert() / 100
+        const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money) - fee).convert()
         
         let requestBody = {
             "sender_batch_header": {
