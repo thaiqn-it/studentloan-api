@@ -8,10 +8,7 @@ const { restError } = require("../errors/rest");
 const { mapErrorArrayExpressValidator } = require("../utils");
 const { validationResult } = require("express-validator");
 const { loanHistoryService } = require("../services/loanHistory.service");
-const { studentService } = require("../services/student.service");
-const tutorService = require("../services/tutor.service");
-const { LOAN_STATUS, TUTOR_STATUS } = require("../models/enum");
-const { createPDF } = require("../utils/generatePDF");
+const { LOAN_STATUS } = require("../models/enum");
 
 const findAll = async (req, res, next) => {
   try {
@@ -146,7 +143,7 @@ const updateById = async (req, res, next) => {
         type: type,
         isActive: true,
       };
-      await loanHistoryService.updateById(loanHistory.id, { isActive: false }).then(res => {
+      await loanHistoryService.updateById(loanHistory.id, {isActive: false}).then(res=>{
         loanHistoryService.create(loanHistoryData);
       })
     }
@@ -154,42 +151,6 @@ const updateById = async (req, res, next) => {
       returnLoan,
     });
   } catch (error) {
-    return res
-      .status(INTERNAL_SERVER_ERROR)
-      .json(restError.INTERNAL_SERVER_ERROR.default());
-  }
-};
-
-const generatePDF = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const loan = await loanService.getOne(id)
-    if (loan === null) throw new Error();
-    const student = await studentService.findByUserId(loan.Student.userId)
-    var tutorlist = []
-    await tutorService.getListTutorByStudentId(student.id).then(res => {
-      for (let index = 0; index < res.length; index++) {
-        const element = res[index];
-        if (element.status === TUTOR_STATUS.VERIFIED) {
-          tutorlist.push(element)
-        }
-      }
-    }
-    )
-    const data = {
-      loan,
-      student,
-      tutorlist
-    }
-    const pdfRes = await createPDF(data)
-    return res.json({
-      pdfRes,
-      loan,
-      student,
-      tutorlist
-    });
-  } catch (error) {
-    console.log(error)
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
@@ -220,5 +181,4 @@ exports.loanController = {
   findByIdStudentSide,
   countLoan,
   countLoanBaseTime,
-  generatePDF
 };
