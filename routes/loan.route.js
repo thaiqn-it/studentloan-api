@@ -64,4 +64,6 @@ router.post(
 
 router.put("/:id/:type", loanController.updateById);
 
+router.post("/:id/delay", loanController.delayLoan);
+
 module.exports = { loanRouter: router };

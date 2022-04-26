@@ -12,9 +12,9 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY, VERIFY_TOKEN } = require("../constants");
 const { excludePassword, hashPassword, comparePassword } = require("../utils");
 const { authenticator } = require("otplib");
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = require("twilio")(accountSid, authToken);
+// const accountSid = process.env.TWILIO_ACCOUNT_SID;
+// const authToken = process.env.TWILIO_AUTH_TOKEN;
+// const client = require("twilio")(accountSid, authToken);
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const { USER_STATUS } = require("../models/enum");
@@ -25,8 +25,8 @@ const sendMail = async (email,token) => {
     port: 465,
     secure: true,
     auth: {
-      user: `${process.env.EMAIL_ADDRESS}`,
-      pass: `${process.env.EMAIL_PASSWORD}`,
+      user: `${process.env.EMAIL_ADDRESS || 'loanstudent45@gmail.com'}`,
+      pass: `${process.env.EMAIL_PASSWORD || '123456loan'}`,
     },
   });
   const mailOptions = {
@@ -89,11 +89,11 @@ const sendOTP = (req, res) => {
     const { phoneNumber } = req.body;
 
     //send SMS
-    client.messages.create({
-      body: `OTP code is : ${token}. Your code will expired in 90 seconds. Please don't share your code with anymore!`,
-      from: "+19362431819",
-      to: `${phoneNumber}`,
-    });
+    // client.messages.create({
+    //   body: `OTP code is : ${token}. Your code will expired in 90 seconds. Please don't share your code with anymore!`,
+    //   from: "+19362431819",
+    //   to: `${phoneNumber}`,
+    // });
 
     // send email
     // sendMail(token);

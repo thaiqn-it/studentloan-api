@@ -22,7 +22,8 @@ const findAll = async (req, res, next) => {
 const findAllByLoanId = async (req, res, next) => {
     try {
         const {id} = req.params
-        const loanSchedules = await loanScheduleService.findAllByLoanId(id);
+        const user = req.user
+        const loanSchedules = await loanScheduleService.findAllByLoanId(id, user.id);
         return res.json(loanSchedules);
     } catch (error) {
         console.log(error)
