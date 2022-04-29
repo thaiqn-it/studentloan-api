@@ -11,7 +11,7 @@ const { loanHistoryService } = require("../services/loanHistory.service");
 const { LOAN_STATUS, LOAN_SCHEDULE_STATUS } = require("../models/enum");
 const { loanScheduleService } = require("../services/loanSchedule.service");
 const { contractService } = require("../services/contract.service");
-const moment = require("moment")
+const moment = require("moment");
 
 const findAll = async (req, res, next) => {
   try {
@@ -26,10 +26,12 @@ const findAll = async (req, res, next) => {
 
 const getLoanStudent = async (req, res, next) => {
   const user = req.user;
+  const { type } = req.params;
   try {
-    const loans = await loanService.getLoanStudent(user.Student.id);
+    const loans = await loanService.getLoanStudent(user.Student.id, type);
     return res.json(loans);
   } catch (error) {
+    console.log(error);
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default);
@@ -100,55 +102,69 @@ const findByIdStudentSide = async (req, res, next) => {
 };
 
 const randomCharater = (length) => {
-  var result           = '';
-  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var result = "";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
-}
+};
 
 const delayLoan = async (req, res, next) => {
   const { id } = req.params;
-  const { duration } = req.body
+  const { duration } = req.body;
   try {
     const loan = await loanService.findById(id);
 
-    const loanStartAt = moment(loan.loanStartAt).add(duration, 'M');
-    const loanEndAt = moment(loan.loanEndAt).add(duration, 'M');
-    const newDuration = parseInt(loan.duration) + parseInt(duration)
+    const loanStartAt = moment(loan.loanStartAt).add(duration, "M");
+    const loanEndAt = moment(loan.loanEndAt).add(duration, "M");
+    const newDuration = parseInt(loan.duration) + parseInt(duration);
 
+    const loanSchedules = await loanScheduleService.findAllByLoanIdOption(
+      id,
+      LOAN_SCHEDULE_STATUS.COMPLETED
+    );
 
-    const loanSchedules = await loanScheduleService.findAllByLoanIdOption(id, LOAN_SCHEDULE_STATUS.COMPLETED)
+    JSON.parse(JSON.stringify(loanSchedules)).forEach((item) => {
+      const startAt = moment(item.startAt).add(duration, "M");
+      const endAt = moment(item.endAt).add(duration, "M");
+    });
 
-    JSON.parse(JSON.stringify(loanSchedules)).forEach(item => {
-      const startAt = moment(item.startAt).add(duration, 'M');
-      const endAt = moment(item.endAt).add(duration, 'M');
-    })
+    const totalMoneyCompleted =
+      await loanScheduleService.getTotalMoneyCompleted();
 
-    const totalMoneyCompleted = await loanScheduleService.getTotalMoneyCompleted()
+    const contracts = await contractService.getAllByLoanId(id);
 
-    const contracts = await contractService.getAllByLoanId(id)
+    const randomCha = randomCharater(3);
+    const mili =
+      (moment().millisecond() < 10
+        ? "00"
+        : moment().millisecond() < 100
+        ? "0"
+        : "") + moment().millisecond().toString();
+    const second =
+      (moment().second() < 10 ? "0" : "") + moment().second().toString();
 
-    const randomCha = randomCharater(3)
-    const mili = (moment().millisecond() < 10 ? '00' : moment().millisecond() < 100 ? '0' : '') + moment().millisecond().toString()
-    const second = (moment().second() < 10 ? '0' : '') + moment().second().toString()
+    const contractCode = randomCha + second + mili;
 
-    const contractCode = randomCha + second + mili
-
-    const totalRemaining = parseFloat(loan.totalMoney) + parseFloat(loan.totalMoney) * parseFloat(loan.interest) * parseFloat(loan.duration) - parseFloat(totalMoneyCompleted)
+    const totalRemaining =
+      parseFloat(loan.totalMoney) +
+      parseFloat(loan.totalMoney) *
+        parseFloat(loan.interest) *
+        parseFloat(loan.duration) -
+      parseFloat(totalMoneyCompleted);
 
     const data = {
       contractCode,
-      total : totalRemaining,
+      total: totalRemaining,
       loanStartAt,
       loanEndAt,
-      duration : newDuration,
-      interest : loan.interest
-    }
+      duration: newDuration,
+      interest: loan.interest,
+    };
 
-    // const borrower = { 
+    // const borrower = {
     //   headers: [`Bên vay: ${item.Student.User.firstName + " " + item.Student.User.lastName}`,""],
     //   rows: [
     //       [`Ngày sinh: ${moment(item.Student.User.birthDate).format("DD/MM/YYYY")}`,`Địa chỉ: ${item.Student.User.address}`],
@@ -159,14 +175,14 @@ const delayLoan = async (req, res, next) => {
     //   ],
     // }
 
-    // const lenders = { 
+    // const lenders = {
     //   headers: [`Bên cho vay: ${investment.Investor.User.firstName + " " + investment.Investor.User.lastName}`,""],
     //   rows: [
     //       [`Ngày sinh: ${moment(investment.Investor.User.birthDate).format("DD/MM/YYYY")}`,`Địa chỉ: ${investment.Investor.User.address}`],
     //       [`Số CMND: ${investment.Investor.Information.citizenId}`, `Cấp tại : ${investment.Investor.Information.citizenCardCreatedPlace}     Ngày: ${moment(investment.Investor.Information.citizenCardCreatedDate).format("DD/MM/YYYY")}`],
     //       [`Email: ${investment.Investor.User.email}`, `Số điện thoại: ${investment.Investor.User.phoneNumber}`],
     //   ],
-    // } 
+    // }
 
     console.log(data);
 
@@ -174,7 +190,7 @@ const delayLoan = async (req, res, next) => {
 
     if (loan === null) throw new Error();
     return res.json({
-      loan
+      loan,
     });
   } catch (error) {
     return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());
@@ -228,9 +244,11 @@ const updateById = async (req, res, next) => {
         type: type,
         isActive: true,
       };
-      await loanHistoryService.updateById(loanHistory.id, {isActive: false}).then(res=>{
-        loanHistoryService.create(loanHistoryData);
-      })
+      await loanHistoryService
+        .updateById(loanHistory.id, { isActive: false })
+        .then((res) => {
+          loanHistoryService.create(loanHistoryData);
+        });
     }
     return res.json({
       returnLoan,
@@ -266,5 +284,5 @@ exports.loanController = {
   findByIdStudentSide,
   countLoan,
   countLoanBaseTime,
-  delayLoan
+  delayLoan,
 };

@@ -36,7 +36,16 @@ const findAll = async () => {
   });
 };
 
-const getLoanStudent = async (id) => {
+const getLoanStudent = async (id, typeRes) => {
+  var typeOption = {
+    [Op.not]: LOAN_STATUS.DELETED,
+  };
+  if (typeRes !== "null" && typeRes !== "undefined") {
+    typeOption = {
+      [Op.eq]: typeRes,
+    };
+  }
+
   return await db.Loan.findAll({
     where: {
       studentId: id,
@@ -66,7 +75,7 @@ const getLoanStudent = async (id) => {
         attributes: ["type"],
         where: {
           isActive: true,
-          type: { [Op.not]: LOAN_STATUS.DELETED },
+          type: typeOption,
         },
       },
       {
@@ -258,19 +267,19 @@ const findById = async (id) => {
         attributes: ["id"],
         include: [
           {
-            required : true,
+            required: true,
             model: db.Student,
-            as : "Information",
+            as: "Information",
             attributes: ["id"],
-            include : {
-              required : true,
+            include: {
+              required: true,
               model: db.SchoolMajor,
               attributes: ["id"],
               include: [
                 { model: db.Major, attributes: ["name"] },
                 { model: db.School, attributes: ["name"] },
               ],
-            }
+            },
           },
           {
             required: false,
@@ -310,7 +319,7 @@ const findByIdStudentSide = async (id, type) => {
       // },
     },
     {
-      required : false,
+      required: false,
       model: db.Student,
       attributes: ["id"],
       include: [
@@ -633,7 +642,7 @@ const getTotalById = async (id) => {
     attributes: ["totalMoney"],
     where: {
       id,
-    }
+    },
   });
 };
 
@@ -782,9 +791,9 @@ const search = async (data) => {
           {
             required: true,
             model: db.Student,
-            as : "Information",
+            as: "Information",
             attributes: ["id"],
-            include : {
+            include: {
               required: true,
               model: db.SchoolMajor,
               where: {
@@ -795,7 +804,7 @@ const search = async (data) => {
                 { model: db.Major, attributes: ["name"] },
                 { model: db.School, attributes: ["name"] },
               ],
-            }
+            },
           },
           {
             model: db.User,
@@ -832,5 +841,5 @@ exports.loanService = {
   getLoanStudent,
   getFinishLoan,
   getAll,
-  getTotalById
+  getTotalById,
 };

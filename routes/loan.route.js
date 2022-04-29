@@ -7,22 +7,21 @@ const { studentAuth } = require("../middlewares/jwt_auth");
 const router = express.Router();
 
 router.get("/", loanController.findAll);
+router.get("/student/:type", studentAuth, loanController.getLoanStudent);
+
+router.get("/student/:id", studentAuth, loanController.findByIdStudentSide);
 
 router.get("/waiting/:id", loanController.getOne);
 
-router.get("/countLoan/:type",loanController.countLoan);
+router.get("/countLoan/:type", loanController.countLoan);
 
-router.get("/search",loanController.search);
-
-router.get("/student", studentAuth, loanController.getLoanStudent);
-
-router.get("/student/:id", studentAuth, loanController.findByIdStudentSide);
+router.get("/search", loanController.search);
 
 router.get("/:id", loanController.findById);
 
 router.post("/waiting", loanController.findAllWaiting);
 
-router.post("/countLoan/",loanController.countLoanBaseTime);
+router.post("/countLoan/", loanController.countLoanBaseTime);
 
 router.post(
   "/",
