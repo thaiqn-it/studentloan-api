@@ -1,4 +1,4 @@
-const { LOAN_SCHEDULE_STATUS, INVESTMENT_STATUS } = require("../models/enum");
+const { LOAN_SCHEDULE_STATUS, INVESTMENT_STATUS, LOAN_STATUS } = require("../models/enum");
 const db = require("../models/index");
 const { Op } = require("sequelize");
 
@@ -70,6 +70,26 @@ const findAllByLoanIdOption = async (id, option) => {
 //   })
 // };
 
+const countIncompleted = async (loanId) => {
+  return db.LoanSchedule.count({
+    where : {
+      status : LOAN_SCHEDULE_STATUS.INCOMPLETE,
+      loanId
+    },
+    include : {
+      attributes:['id'],
+      model : db.Loan,
+      include : {
+        model : db.LoanHistory,
+        where : {
+          type : LOAN_STATUS.ONGOING,
+          isActive : true
+        }
+      }
+    }
+  })
+};
+
 const getAllExpired = async (id) => {
   return await db.LoanSchedule.findAll({
     where: {
@@ -136,5 +156,6 @@ exports.loanScheduleService = {
   findAllByLoanId,
   getAllExpired,
   findAllByLoanIdOption,
-  getTotalMoneyCompleted
+  getTotalMoneyCompleted,
+  countIncompleted
 };

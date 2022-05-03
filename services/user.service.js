@@ -131,13 +131,14 @@ const getPushTokenByUserId = async (id) => {
 
 const getListAdmin = async () => {
   return await User.findAll({
-    attributes: ["id","parentId","firstName","lastName"],
+    attributes: ["id","firstName","lastName"],
     where: {
       type: [USER_TYPE.ADMIN],
       status: [USER_STATUS.VERIFIED]
     },
   });
 };
+
 module.exports = {
   createUserService,
   loginService,

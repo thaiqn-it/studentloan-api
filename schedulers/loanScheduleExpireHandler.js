@@ -8,7 +8,7 @@ module.exports = async () => {
     const schedules = await loanScheduleService.getAllExpired()
     if (schedules === null || schedules.length === 0) return
     else {
-        JSON.parse(JSON.stringify(schedules)).forEach(item => {
+        JSON.parse(JSON.stringify(schedules)).forEach(async item => {
             const penaltyMoney = item.Loan.penaltyFee * parseInt(item.money) 
             loanScheduleService.updateById(item.id, {
                 penaltyMoney,
@@ -51,7 +51,22 @@ module.exports = async () => {
                     type : NOTIFICATION_TYPE.LOAN,
                     status : NOTIFICATION_STATUS.ACTIVE
                 })
-            })           
+            })    
+            const result = await loanScheduleService.countIncompleted(item.loanId)
+            if(result >= 4) {
+                const admin = await userService.getListAdmin()
+                JSON.parse(JSON.stringify(admin)).forEach(item => {
+                    notificationService.create({
+                        userId : item.id,
+                        redirectUrl : `myapp://investmentDetail/${item.id}`,
+                        description : "Sinh viên không thanh toán kỳ hạn nhiều hơn 3 lần.",
+                        isRead : false,
+                        type : NOTIFICATION_TYPE.LOAN,
+                        status : NOTIFICATION_STATUS.ACTIVE
+                    })
+                })
+                
+            }       
         })
     }
 

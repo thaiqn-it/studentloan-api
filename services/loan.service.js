@@ -637,6 +637,39 @@ const getTotalById = async (id) => {
   });
 };
 
+const getLoanDropOut = async () => {
+  return await db.Loan.findAll({
+    attributes: {
+      include: [
+        [
+          db.sequelize.literal(
+            "(SELECT ISNULL(COUNT(id),0) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND LoanSchedule.status = 'INCOMPLETE')"
+          ),
+          "CountIncompleted",
+        ],
+      ],
+    },
+    where : {
+      lastCheck : {
+        [Op.or] : [
+          null,
+          {
+            [Op.lte] : moment().subtract(30, 'days').toDate()
+          }
+        ]
+      }
+    },
+    include : {
+      model : db.LoanHistory,
+      where : {
+        type : LOAN_STATUS.ONGOING,
+        isActive : true
+      },
+      required: true,
+    }
+  });
+};
+
 const search = async (data) => {
   const PAGE_LIMIT = 5;
   const sort = data.sort;
@@ -832,5 +865,6 @@ exports.loanService = {
   getLoanStudent,
   getFinishLoan,
   getAll,
-  getTotalById
+  getTotalById,
+  getLoanDropOut
 };
