@@ -87,13 +87,13 @@ InvestmentService.countInterest = async (investorId) => {
           ["duration","duration"],
           [
             db.sequelize.literal(
-              "(SELECT SUM(money) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND LoanSchedule.status = 'COMPLETED')"
+              "(SELECT ISNULL(SUM(money),0) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND LoanSchedule.status = 'COMPLETED')"
             ),
             "PaidMoney",
           ],
           [
             db.sequelize.literal(
-              "(SELECT SUM(money) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND (LoanSchedule.status = 'INCOMPLETE' OR LoanSchedule.status = 'ONGOING'))"
+              "(SELECT ISNULL(SUM(money),0) FROM LoanSchedule WHERE LoanSchedule.loanId = Loan.id AND (LoanSchedule.status = 'INCOMPLETE' OR LoanSchedule.status = 'ONGOING'))"
             ),
             "UnpaidMoney",
           ]

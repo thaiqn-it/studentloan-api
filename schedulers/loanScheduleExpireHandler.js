@@ -32,7 +32,8 @@ module.exports = async () => {
                             "notification" : {
                                 "body" : "Sinh viên đã không trả đúng hạn cho bạn",
                                 "title": "Thông báo",
-                                "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
+                                "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
+                                "image" : "https://res.cloudinary.com/larrytran/image/upload/v1651638169/image/logo_duwoyg.png"
                             },
                             "data" : {
                                 "experienceId": "@thainq2k/student-loan-app-client",

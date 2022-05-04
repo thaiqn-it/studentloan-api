@@ -290,7 +290,7 @@ const findById = async (id) => {
           },
           {
             model: db.User,
-            attributes: ["firstname", "lastname", "profileUrl"],
+            attributes: ["firstname", "lastname", "profileUrl","id"],
           },
         ],
       },

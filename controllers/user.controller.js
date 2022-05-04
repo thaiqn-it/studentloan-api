@@ -402,6 +402,17 @@ const getAll = async (req, res, next) => {
   }
 };
 
+const getAllAdmin = async (req, res, next) => {
+  try {
+    const admins = await userService.getListAdmin();
+    return res.json(admins);
+  } catch (e) {
+    res
+      .status(NOT_FOUND)
+      .json(restError.NOT_FOUND.default());
+  }
+};
+
 const count = async (req, res, next) => {
   const data = req.body;
   try {
@@ -493,5 +504,6 @@ module.exports = {
   verifyPassword,
   changePassword,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  getAllAdmin
 };

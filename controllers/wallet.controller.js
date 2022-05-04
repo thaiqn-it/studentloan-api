@@ -174,41 +174,39 @@ const repayment = async (req, response) => {
                                   );
                                 if (pushToken) {
                                   firebaseService.pushNotificationService(
-                                    `${pushToken}`,
-                                    {
-                                      notification: {
-                                        body: `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
-                                          loanSchedule.startAt
-                                        ).format("MM/YYYY")}`,
-                                        title: "Thông báo",
-                                        link: "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
-                                      },
-                                      data: {
-                                        experienceId:
-                                          "@thainq2k/student-loan-app-client",
-                                        scopeKey:
-                                          "@thainq2k/student-loan-app-client",
-                                        title: "Thông báo",
-                                        message: `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
-                                          loanSchedule.startAt
-                                        ).format("MM/YYYY")}`,
-                                        link: "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
-                                      },
-                                    }
-                                  );
-                                }
-
-                                notificationService.create({
-                                  userId: investorUser.id,
-                                  redirectUrl: `myapp://investmentDetail/${investment.id}`,
-                                  description: `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
-                                    loanSchedule.startAt
-                                  ).format("MM/YYYY")}`,
-                                  isRead: false,
-                                  type: NOTIFICATION_TYPE.LOAN,
-                                  status: NOTIFICATION_STATUS.ACTIVE,
-                                });
-                              });
+                                      `${pushToken}`,
+                                      {
+                                          "notification" : {
+                                              "body" : `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
+                                                loanSchedule.startAt
+                                              ).format("MM/YYYY")}`,
+                                              "title": "Thông báo",
+                                              "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
+                                              "image" : "https://res.cloudinary.com/larrytran/image/upload/v1651638169/image/logo_duwoyg.png"
+                                          },
+                                          "data" : {
+                                              "experienceId": "@thainq2k/student-loan-app-client",
+                                              "scopeKey": "@thainq2k/student-loan-app-client",
+                                              "title": "Thông báo",
+                                              "message": `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
+                                                loanSchedule.startAt
+                                              ).format("MM/YYYY")}`,
+                                              "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
+                                      }
+                                  })
+                              }
+                              
+                              notificationService.create({
+                                userId : investorUser.id,
+                                redirectUrl : `myapp://investmentDetail/${investment.id}`,
+                                description : `Sinh viên đã thanh toán kỳ hạn tháng ${moment(
+                                  loanSchedule.startAt
+                                ).format("MM/YYYY")}`,
+                                isRead : false,
+                                type : NOTIFICATION_TYPE.LOAN,
+                                status : NOTIFICATION_STATUS.ACTIVE
+                              })
+                            });
                           });
                       });
                   });
@@ -302,22 +300,35 @@ const repaymentAll = async (req, response) => {
                         });
                       });
 
-                    const { pushToken } =
-                      await userService.getPushTokenByUserId(investorUser.id);
-                    if (pushToken) {
-                      firebaseService.pushNotificationService(`${pushToken}`, {
-                        notification: {
-                          body: `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
-                          title: "Thông báo",
-                          link: "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
-                        },
-                        data: {
-                          experienceId: "@thainq2k/student-loan-app-client",
-                          scopeKey: "@thainq2k/student-loan-app-client",
-                          title: "Thông báo",
-                          message: `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
-                          link: "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
-                        },
+                          const { pushToken } = await userService.getPushTokenByUserId(investorUser.id)
+                          if (pushToken) {
+                              firebaseService.pushNotificationService(
+                                  `${pushToken}`,
+                                  {
+                                      "notification" : {
+                                          "body" : `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
+                                          "title": "Thông báo",
+                                          "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23",
+                                          "image" : "https://res.cloudinary.com/larrytran/image/upload/v1651638169/image/logo_duwoyg.png"
+                                      },
+                                      "data" : {
+                                          "experienceId": "@thainq2k/student-loan-app-client",
+                                          "scopeKey": "@thainq2k/student-loan-app-client",
+                                          "title": "Thông báo",
+                                          "message": `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
+                                          "link": "myapp://detailPost/22874fd0-4ebf-48b2-a33a-43843d0fea23"
+                                  }
+                              })
+                          }
+                          
+                          notificationService.create({
+                            userId : investorUser.id,
+                            redirectUrl : `myapp://investmentDetail/${investment.id}`,
+                            description : `Sinh viên đã thanh toán hoàn toàn khoản nợ.`,
+                            isRead : false,
+                            type : NOTIFICATION_TYPE.LOAN,
+                            status : NOTIFICATION_STATUS.ACTIVE
+                          })
                       });
                     }
 
