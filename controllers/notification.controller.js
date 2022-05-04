@@ -92,7 +92,7 @@ const pushNotifToAdmin = async (req, res, next) => {
             body: message,
             title: "Thông báo",
             image:
-              "https://res.cloudinary.com/larrytran/image/upload/v1649698286/file/1649698287372-newLogo1.png",
+              "https://res.cloudinary.com/larrytran/image/upload/v1651637962/file/1651637961475-newLogo3.png",
           },
           data: {
             experienceId: "@thainq2k/student-loan-app-client",
