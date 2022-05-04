@@ -17,7 +17,7 @@ const topup = async (req, res, next) => {
     const { money } = req.body
     const now = new Date().getTime()
     let currencyConverter = new CC()
-    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert() / 100
+    const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money)).convert()
     try {   
         var create_payment_json = {
             "intent": "sale",
@@ -33,22 +33,24 @@ const topup = async (req, res, next) => {
                     "items": [{
                         "name": "Nạp tiền vào Student Loan",
                         "sku": "item",
-                        "price": `${cvrtMoney}`,
+                        "price": `${cvrtMoney.toFixed(2)}`,
                         "currency": "USD",
                         "quantity": 1
                     }]
                 },
                 "amount": {
                     "currency": "USD",
-                    "total": `${cvrtMoney}`
+                    "total": `${cvrtMoney.toFixed(2)}`
                 },
-                "description": `Nạp ${cvrtMoney} vào Student Loan vào lúc ${now}`
+                "description": `Nạp ${cvrtMoney.toFixed(2)} vào Student Loan vào lúc ${now}`
             }]
         };
 
         paypal.payment.create(create_payment_json, function (error, payment) {
             if (error) {
-                throw error;
+                return res
+                .status(BAD_REQUEST)
+                .json(restError.BAD_REQUEST.extra({ error: error }));
             } else {
                 res.json(payment.links[1].href)
             }
@@ -74,20 +76,20 @@ const transfer = async (req, res, next) => {
             .json(restError.BAD_REQUEST.extra({ error: "Số dư ví không đủ" }));
         }
         const fee = parseInt(money) * transactionFee.transactionFee
-        const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money) - fee).convert() / 100
+        const cvrtMoney = await currencyConverter.from("VND").to("USD").amount(parseInt(money) - fee).convert()
         
         let requestBody = {
             "sender_batch_header": {
               "email_message": `Chuyển tiền đến tài khoản ${email}`,
-              "note": `Số tiền ${cvrtMoney} đã được chuyển`,
+              "note": `Số tiền ${cvrtMoney.toFixed(2)} đã được chuyển`,
               "email_subject": "Chuyển tiền Paypal"
             },
             "items": [{
               "recipient_type": "EMAIL",
-              "note": `Chuyển ${cvrtMoney} đến tài khoản ${email}`,
+              "note": `Chuyển ${cvrtMoney.toFixed(2)} đến tài khoản ${email}`,
               "amount": {
                 "currency": "USD",
-                "value": `${cvrtMoney}`
+                "value": `${cvrtMoney.toFixed(2)}`
               },
               "receiver": `${email}`,
               "sender_item_id": `${now}`

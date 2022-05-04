@@ -8,10 +8,13 @@ const { restError } = require("../errors/rest");
 const { mapErrorArrayExpressValidator } = require("../utils");
 const { validationResult } = require("express-validator");
 const { loanHistoryService } = require("../services/loanHistory.service");
-const { LOAN_STATUS, LOAN_SCHEDULE_STATUS } = require("../models/enum");
+const { LOAN_STATUS, LOAN_SCHEDULE_STATUS, TUTOR_STATUS } = require("../models/enum");
 const { loanScheduleService } = require("../services/loanSchedule.service");
 const { contractService } = require("../services/contract.service");
-const moment = require("moment");
+const moment = require("moment")
+const { studentService } = require("../services/student.service");
+const tutorService = require("../services/tutor.service");
+const { createPDF } = require("../utils/generatePDF");
 
 const findAll = async (req, res, next) => {
   try {
@@ -88,8 +91,7 @@ const findById = async (req, res, next) => {
 };
 
 const findByIdStudentSide = async (req, res, next) => {
-  const { id } = req.params;
-  const { type } = req.query;
+  const { id, type } = req.params;
   try {
     const loan = await loanService.findByIdStudentSide(id, type);
     if (loan === null) throw new Error();
@@ -244,16 +246,50 @@ const updateById = async (req, res, next) => {
         type: type,
         isActive: true,
       };
-      await loanHistoryService
-        .updateById(loanHistory.id, { isActive: false })
-        .then((res) => {
-          loanHistoryService.create(loanHistoryData);
-        });
+      await loanHistoryService.updateById(loanHistory.id, { isActive: false }).then(res => {
+        loanHistoryService.create(loanHistoryData);
+      })
     }
     return res.json({
       returnLoan,
     });
   } catch (error) {
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.default());
+  }
+};
+
+const generatePDF = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const loan = await loanService.getOne(id)
+    if (loan === null) throw new Error();
+    const student = await studentService.findByUserId(loan.Student.userId)
+    var tutorlist = []
+    await tutorService.getListTutorByStudentId(student.id).then(res => {
+      for (let index = 0; index < res.length; index++) {
+        const element = res[index];
+        if (element.status === TUTOR_STATUS.VERIFIED) {
+          tutorlist.push(element)
+        }
+      }
+    }
+    )
+    const data = {
+      loan,
+      student,
+      tutorlist
+    }
+    const pdfRes = await createPDF(data)
+    return res.json({
+      pdfRes,
+      loan,
+      student,
+      tutorlist
+    });
+  } catch (error) {
+    console.log(error)
     return res
       .status(INTERNAL_SERVER_ERROR)
       .json(restError.INTERNAL_SERVER_ERROR.default());
@@ -285,4 +321,5 @@ exports.loanController = {
   countLoan,
   countLoanBaseTime,
   delayLoan,
+  generatePDF
 };

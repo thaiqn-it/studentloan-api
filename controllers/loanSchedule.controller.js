@@ -64,7 +64,6 @@ const create = async (req, res, next) => {
     var scheduleData = [];
     try {     
         const loan = await loanService.findById(id)
-
         for (let i = 0; i < loan.expectedGraduationTime ; i++) {
             const startAt = moment(new Date()).add(i,'month');
             const endAt = moment(new Date()).add(i + 1,'month');

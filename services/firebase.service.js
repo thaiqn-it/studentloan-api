@@ -1,7 +1,7 @@
 const FCM = require("fcm-node");
 
 var serverKey =
-  "AAAAsTkfFbA:APA91bF2cc2Af_4o-yc8c7g2rnNMjYg5AQMnSGTPvL-j-Uoslj6D71V1Z-Ev9WAo12n8QC5mROmc1l2VkiKPjY7LTa6ZrRDP9phcp5kvFJPB1ZYXOggV8mnKHn0Nc-BS2lAsHZXrEmT8";
+  "AAAAxHZu1RE:APA91bG38CxAbi6G95Er8pXaOW2U3g66URY2HL2HClbLYX2ZnrtAayH3kTE_ZuT41t6Y0Br0KUrS5-wTf7-XZ7-jX_y4ZN5Zdia4hDKxyZdUXD3yjOSnjsIKqmfHkBhH1IYQXTtQg21z";
 var fcm = new FCM(serverKey);
 
 // var message = {

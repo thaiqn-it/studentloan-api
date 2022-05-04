@@ -18,6 +18,21 @@ module.exports = (sequelize, DataTypes) => {
         penaltyFee:{
             type: DataTypes.FLOAT,
         },
+        minRaiseMoney:{
+            type: DataTypes.INTEGER,
+        },
+        maxRaiseMoney:{
+            type: DataTypes.INTEGER,
+        },
+        minDuration:{
+            type: DataTypes.INTEGER,
+        },
+        maxDuration:{
+            type: DataTypes.INTEGER,
+        },
+        postExpireTime:{
+            type: DataTypes.INTEGER,
+        },
         status: {
             type: DataTypes.BOOLEAN,
         },
