@@ -33,12 +33,12 @@ const uploadImage = async (req, res) => {
     let shortResponseOne = {};
     if (fileResponses.length > 1) {
       fileResponses.map((file) => {
-        shortResponses.push({ url: file.url });
+        shortResponses.push({ url: file.secure_url });
       });
       res.status(200).json(shortResponses);
     } else {
       fileResponses.map((file) => {
-        shortResponseOne = { ...shortResponseOne, url: file.url };
+        shortResponseOne = { ...shortResponseOne, url: file.secure_url};
       });
       res.status(200).json(shortResponseOne);
     }
