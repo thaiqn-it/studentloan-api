@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
-exports.APP_PORT = process.env.PORT || 3124;
+exports.APP_PORT = process.env.PORT || 3000;
 exports.DB_USERNAME = process.env.DB_USERNAME || "sa";
 exports.DB_PASSWORD = process.env.DB_PASSWORD || "123";
 exports.DB_NAME = process.env.DB_NAME || "StudentLoan";

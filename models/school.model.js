@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(500),
       allowNull: false,
     },
+    // emailPaypal: {
+    //   type: DataTypes.STRING(500),
+    // },
     city: {
       type: DataTypes.STRING(100),
     },
