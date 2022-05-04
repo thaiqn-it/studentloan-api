@@ -248,7 +248,8 @@ module.exports = async () => {
                                         loanStartAt : moment().local(),
                                         loanEndAt : moment().local().add(item.duration,'M'),
                                         duration : item.duration,
-                                        interest : item.interest
+                                        interest : item.interest,
+                                        penaltyFee : item.penaltyFee
                                     }
 
                                     const borrower = { 
