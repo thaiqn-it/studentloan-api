@@ -143,7 +143,6 @@ const creatUser = async (req, res) => {
     });
     res.json(user);
   } catch (err) {
-    console.log(err);
     res.status(INTERNAL_SERVER_ERROR).json(restError.INTERNAL_SERVER_ERROR);
   }
 };

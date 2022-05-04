@@ -44,8 +44,8 @@ const checkDuplicateName = async (req, res, next) => {
 const createNewSchool = async (req, res, next) => {
   const data = req.body;
   try {
-    const newSchool = await schoolServices.createNewSchool(data);
-    return res.json(newSchool);
+    const school = await schoolServices.createNewSchool(data);
+    return res.json(school);
   } catch (error) {
     return res
       .status(INTERNAL_SERVER_ERROR)
@@ -58,8 +58,8 @@ const updateSchool = async (req, res, next) => {
   const { id } = req.params;
   const data = req.body;
   try {
-    const newSchoolForUpdate = await schoolServices.updateById(id, data);
-    return res.json(newSchoolForUpdate);
+    const school = await schoolServices.updateById(id, data);
+    return res.json(school);
   } catch (error) {
     return res
       .status(INTERNAL_SERVER_ERROR)
