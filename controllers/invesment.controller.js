@@ -1,7 +1,7 @@
 const InvestmentService = require("../services/invesment.service");
 const { INTERNAL_SERVER_ERROR } = require("http-status");
 const { restError } = require("../errors/rest");
-const { INVESTMENT_STATUS } = require('../models/enum');
+const { INVESTMENT_STATUS } = require("../models/enum");
 const { loanScheduleService } = require("../services/loanSchedule.service");
 const { loanService } = require("../services/loan.service");
 const { vndFormat } = require("../utils");
@@ -10,7 +10,7 @@ const InvestmentController = {};
 
 InvestmentController.getAllByInvestorID = async (req, res, next) => {
   try {
-    const investor = req.user.Investor
+    const investor = req.user.Investor;
     const investments = await InvestmentService.getAllByInvestorId(investor.id);
     return res.json(investments);
   } catch (error) {
@@ -21,24 +21,34 @@ InvestmentController.getAllByInvestorID = async (req, res, next) => {
 };
 
 InvestmentController.checkValidMoney = async (req, res, next) => {
-  const investor = req.user.Investor
-  const { loanId, money } = req.query
+  const investor = req.user.Investor;
+  const { loanId, money } = req.query;
 
   try {
-    const totalInvest = await InvestmentService.sumInvestedMoney(loanId,investor.id);
-    const { totalMoney } = await loanService.getTotalById(loanId)
+    const totalInvest = await InvestmentService.sumInvestedMoney(
+      loanId,
+      investor.id
+    );
+    const { totalMoney } = await loanService.getTotalById(loanId);
 
-    if (parseFloat(totalMoney) - parseFloat(totalInvest !== null ? totalInvest : 0) >= parseFloat(money)) {
+    if (
+      parseFloat(totalMoney) -
+        parseFloat(totalInvest !== null ? totalInvest : 0) >=
+      parseFloat(money)
+    ) {
       return res.json({
-        status : true,
-        message : 'Thành công'
+        status: true,
+        message: "Thành công",
       });
     } else {
       return res.json({
-        status : false,
-        message : `Khoản đầu tư không thể lớn hơn ${vndFormat.format(parseFloat(totalMoney) - parseFloat(totalInvest !== null ? totalInvest : 0))}`
+        status: false,
+        message: `Khoản đầu tư không thể lớn hơn ${vndFormat.format(
+          parseFloat(totalMoney) -
+            parseFloat(totalInvest !== null ? totalInvest : 0)
+        )}`,
       });
-    } 
+    }
   } catch (error) {
     return res
       .status(INTERNAL_SERVER_ERROR)
@@ -48,7 +58,7 @@ InvestmentController.checkValidMoney = async (req, res, next) => {
 
 InvestmentController.findAllByLoanId = async (req, res, next) => {
   try {
-    const {id} = req.params
+    const { id } = req.params;
     const investments = await InvestmentService.findAllByLoanId(id);
     return res.json(investments);
   } catch (error) {
@@ -59,22 +69,16 @@ InvestmentController.findAllByLoanId = async (req, res, next) => {
 };
 
 InvestmentController.createInvestment = async (req, res, next) => {
-  const {
-    interest,
-    total,
-    investorId,
-    loanId,
-    percent
-  } = req.body;
+  const { interest, total, investorId, loanId, percent } = req.body;
   try {
     const data = {
-      status : INVESTMENT_STATUS.PENDING,
+      status: INVESTMENT_STATUS.PENDING,
       interest,
       total,
       investorId,
       loanId,
-      percent
-    }
+      percent,
+    };
     const investment = await InvestmentService.createOne(data);
     // const Investment = await create(req.body);
     return res.json(investment);
@@ -99,6 +103,19 @@ InvestmentController.updateInvestment = async (req, res, next) => {
   }
 };
 
+InvestmentController.updateAllInvestment = async (req, res, next) => {
+  const data = req.body;
+  const { id } = req.params;
+  try {
+    const value = await InvestmentService.updateByLoanId(id, data);
+    return res.json({ msg: "success" });
+  } catch (error) {
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .json(restError.INTERNAL_SERVER_ERROR.extra({ msg: "fail" }));
+  }
+};
+
 InvestmentController.deleteInvestment = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -113,21 +130,28 @@ InvestmentController.deleteInvestment = async (req, res, next) => {
   }
 };
 
-InvestmentController.checkExistInvestmentByInvestorId = async (req, res, next) => {
+InvestmentController.checkExistInvestmentByInvestorId = async (
+  req,
+  res,
+  next
+) => {
   const investor = req.user.Investor;
-  const { id : loanId } = req.params
+  const { id: loanId } = req.params;
   try {
-    const investment = await InvestmentService.findOneByLoanIdAndInvestorId(loanId,investor.id);
-    let result = {}
+    const investment = await InvestmentService.findOneByLoanIdAndInvestorId(
+      loanId,
+      investor.id
+    );
+    let result = {};
     if (!investment) {
       result = {
-        isInvest : false
-      }
+        isInvest: false,
+      };
     } else {
       result = {
-        isInvest : true,
-        investmentId : investment.id
-      }
+        isInvest: true,
+        investmentId: investment.id,
+      };
     }
     return res.json(result);
   } catch (error) {
@@ -139,7 +163,7 @@ InvestmentController.checkExistInvestmentByInvestorId = async (req, res, next) =
 };
 
 InvestmentController.findOneById = async (req, res, next) => {
-  const { id } = req.params
+  const { id } = req.params;
   try {
     const investment = await InvestmentService.findOneById(id);
     return res.json(investment);
@@ -154,31 +178,53 @@ InvestmentController.findOneById = async (req, res, next) => {
 InvestmentController.countByInvestorId = async (req, res, next) => {
   const investor = req.user.Investor;
   try {
-    const countTotal = await InvestmentService.countTotalByInvestorId(investor.id);
-    const countPending = await InvestmentService.countPendingByInvestorId(investor.id);
-    const countLoanFinish = await InvestmentService.countLoanFinishByInvestorId(investor.id);
-    const countLoanOngoing = await InvestmentService.countLoanOngoingByInvestorId(investor.id);
-    const totalInvestment = await InvestmentService.sumTotalInvestmentByInvetorId(investor.id);
-    const totalPending = await InvestmentService.sumTotalPendingByInvetorId(investor.id);
+    const countTotal = await InvestmentService.countTotalByInvestorId(
+      investor.id
+    );
+    const countPending = await InvestmentService.countPendingByInvestorId(
+      investor.id
+    );
+    const countLoanFinish = await InvestmentService.countLoanFinishByInvestorId(
+      investor.id
+    );
+    const countLoanOngoing =
+      await InvestmentService.countLoanOngoingByInvestorId(investor.id);
+    const totalInvestment =
+      await InvestmentService.sumTotalInvestmentByInvetorId(investor.id);
+    const totalPending = await InvestmentService.sumTotalPendingByInvetorId(
+      investor.id
+    );
     const interestMaterial = await InvestmentService.countInterest(investor.id);
 
-    var interestReceived = 0
-    var interestUnreceived = 0
-    
-    JSON.parse(JSON.stringify(interestMaterial)).forEach(item => {
-      interestReceived = interestReceived + parseFloat(item.Loan.PaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
-      interestUnreceived = interestUnreceived + parseFloat(item.Loan.UnpaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
-    })
-    
+    var interestReceived = 0;
+    var interestUnreceived = 0;
+
+    JSON.parse(JSON.stringify(interestMaterial)).forEach((item) => {
+      interestReceived =
+        interestReceived +
+        (parseFloat(item.Loan.PaidMoney) *
+          item.percent *
+          item.Loan.duration *
+          item.Loan.interest) /
+          (1 + item.Loan.duration * item.Loan.interest);
+      interestUnreceived =
+        interestUnreceived +
+        (parseFloat(item.Loan.UnpaidMoney) *
+          item.percent *
+          item.Loan.duration *
+          item.Loan.interest) /
+          (1 + item.Loan.duration * item.Loan.interest);
+    });
+
     return res.json({
-      total : countTotal,
-      pending : countPending,
-      loanFinish : countLoanFinish,
-      loanOngoing : countLoanOngoing,
+      total: countTotal,
+      pending: countPending,
+      loanFinish: countLoanFinish,
+      loanOngoing: countLoanOngoing,
       totalInvestment,
       totalPending,
       interestReceived,
-      interestUnreceived
+      interestUnreceived,
     });
   } catch (error) {
     console.log(error);
