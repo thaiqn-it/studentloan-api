@@ -130,7 +130,7 @@ function generateRule(doc,data) {
     .font('fonts/NotoSans-Regular.ttf')
     .text('5.1 Phạt vi phạm hợp đồng')
     .text('Vi phạm hợp đồng được xác định khi một trong hai bên có hành vi không thực hiện hoặc thực hiện không đúng những thỏa thuận đã nêu trong hợp đồng này.')
-    .text('Mức phạt được quy định bằng .... giá trị khoản vay/1 ngày, được tính từ ngày một bên có hành vi vi phạm đến thời điểm bên đó khắc phục hậu quả và thực hiện đúng hợp đồng.')
+    .text(`Mức phạt được quy định bằng ${data.penaltyFee * 100}% giá trị khoản vay/tháng, được tính từ ngày một bên có hành vi vi phạm đến thời điểm bên đó khắc phục hậu quả và thực hiện đúng hợp đồng.`)
     .text('5.2 Phạt trả chậm ')
     .text('Trong quá trình thực hiện hợp đồng, trường hợp bên A chậm trả lãi, bên A sẽ phải trả một khoản tiền phạt bằng ')
     .moveDown()
