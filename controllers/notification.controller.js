@@ -83,10 +83,10 @@ const pushNotifToAdmin = async (req, res, next) => {
     var noti = [];
     const admins = await userService.getListAdmin();
     admins.map(async (admin) => {
-      // const { pushToken } = await userService.getPushTokenByUserId(admin.)
-      // if (pushToken) {
+      const { pushToken } = await userService.getPushTokenByUserId(admin.)
+      if (pushToken) {
       firebaseService.pushNotificationService(
-        `e_LHZwv8qHid5-wlOfgO9B:APA91bFXc5LK3TdU1AxkFtRZA240z5PWNA1CYgQ11TpP01Mase4PVqMTpQKqf0zoWZz5Y3rtBIvlnx_2n9sS7zD0jO8GxwgMd8n0rE8CLE5QQIQI5UWgcJmU-ILm7fAJeVCLfYHK2Who`,
+        pushToken,
         {
           notification: {
             body: message,
