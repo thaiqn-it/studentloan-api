@@ -96,7 +96,7 @@ const pushNotiToUser = async (req, res, next) => {
 const pushNotifToAdmin = async (req, res, next) => {
   try {
     // const data = req.body
-    const { redirectUrl, message } = req.body;
+    const { redirectUrl, message, notiType } = req.body;
     var noti = [];
     const admins = await userService.getListAdmin();
     admins.map(async (admin) => {
@@ -124,7 +124,7 @@ const pushNotifToAdmin = async (req, res, next) => {
         redirectUrl: redirectUrl,
         description: message,
         isRead: false,
-        type: NOTIFICATION_TYPE.LOAN,
+        type: notiType,
         status: NOTIFICATION_STATUS.ACTIVE,
       });
       noti.push(notification)
