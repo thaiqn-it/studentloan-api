@@ -83,11 +83,9 @@ const pushNotifToAdmin = async (req, res, next) => {
     var noti = [];
     const admins = await userService.getListAdmin();
     admins.map(async (admin) => {
-      const { pushToken } = await userService.getPushTokenByUserId(admin.)
+      const { pushToken } = await userService.getPushTokenByUserId(admin.id);
       if (pushToken) {
-      firebaseService.pushNotificationService(
-        pushToken,
-        {
+        firebaseService.pushNotificationService(pushToken, {
           notification: {
             body: message,
             title: "Thông báo",
@@ -101,10 +99,10 @@ const pushNotifToAdmin = async (req, res, next) => {
             message: message,
             click_action: redirectUrl,
           },
-        }
-      );
+        });
+      }
 
-      const notification = await notificationService.create({
+      var notification = await notificationService.create({
         userId: admin.id,
         redirectUrl: redirectUrl,
         description: message,
@@ -112,6 +110,7 @@ const pushNotifToAdmin = async (req, res, next) => {
         type: NOTIFICATION_TYPE.LOAN,
         status: NOTIFICATION_STATUS.ACTIVE,
       });
+      noti.push(notification)
     });
 
     // if (noti.length === 0) throw new Error();
