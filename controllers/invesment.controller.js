@@ -164,10 +164,10 @@ InvestmentController.countByInvestorId = async (req, res, next) => {
 
     var interestReceived = 0
     var interestUnreceived = 0
-
+    
     JSON.parse(JSON.stringify(interestMaterial)).forEach(item => {
-      interestReceived = interestReceived + parseInt(item.Loan.PaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
-      interestUnreceived = interestUnreceived + parseInt(item.Loan.UnpaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
+      interestReceived = interestReceived + parseFloat(item.Loan.PaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
+      interestUnreceived = interestUnreceived + parseFloat(item.Loan.UnpaidMoney) * item.percent * item.Loan.duration * item.Loan.interest / (1 + item.Loan.duration * item.Loan.interest)
     })
     
     return res.json({

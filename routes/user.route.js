@@ -45,6 +45,8 @@ router.post("/verifyPassword",userAuth, userController.verifyPassword);
 
 router.get("/student/me", studentAuth, userController.getProfile);
 
+router.get("/admin/all", userController.getAllAdmin);
+
 router.get("/investor/me", investorAuth, userController.getProfile);
 
 router.get("/admin/me", adminAuth, userController.getProfile);

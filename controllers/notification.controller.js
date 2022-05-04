@@ -46,7 +46,8 @@ const pushNotifToInvestor = async (req, res, next) => {
                     "notification": {
                         "body": "Tài khoản của bạn đã được xác thực!",
                         "title": "Thông báo",
-                        "link": "myapp://verify"
+                        "link": "myapp://verify",
+                        "image" : "https://res.cloudinary.com/larrytran/image/upload/v1651638169/image/logo_duwoyg.png"
                     },
                     "data": {
                         "experienceId": "@thainq2k/student-loan-app-client",
