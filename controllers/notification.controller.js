@@ -83,16 +83,14 @@ const pushNotifToAdmin = async (req, res, next) => {
     var noti = [];
     const admins = await userService.getListAdmin();
     admins.map(async (admin) => {
-      // const { pushToken } = await userService.getPushTokenByUserId(admin.)
-      // if (pushToken) {
-      firebaseService.pushNotificationService(
-        `e_LHZwv8qHid5-wlOfgO9B:APA91bFXc5LK3TdU1AxkFtRZA240z5PWNA1CYgQ11TpP01Mase4PVqMTpQKqf0zoWZz5Y3rtBIvlnx_2n9sS7zD0jO8GxwgMd8n0rE8CLE5QQIQI5UWgcJmU-ILm7fAJeVCLfYHK2Who`,
-        {
+      const { pushToken } = await userService.getPushTokenByUserId(admin.id);
+      if (pushToken) {
+        firebaseService.pushNotificationService(pushToken, {
           notification: {
             body: message,
             title: "Thông báo",
             image:
-              "https://res.cloudinary.com/larrytran/image/upload/v1649698286/file/1649698287372-newLogo1.png",
+              "https://res.cloudinary.com/larrytran/image/upload/v1651637962/file/1651637961475-newLogo3.png",
           },
           data: {
             experienceId: "@thainq2k/student-loan-app-client",
@@ -101,10 +99,10 @@ const pushNotifToAdmin = async (req, res, next) => {
             message: message,
             click_action: redirectUrl,
           },
-        }
-      );
+        });
+      }
 
-      const notification = await notificationService.create({
+      var notification = await notificationService.create({
         userId: admin.id,
         redirectUrl: redirectUrl,
         description: message,
@@ -112,6 +110,7 @@ const pushNotifToAdmin = async (req, res, next) => {
         type: NOTIFICATION_TYPE.LOAN,
         status: NOTIFICATION_STATUS.ACTIVE,
       });
+      noti.push(notification)
     });
 
     // if (noti.length === 0) throw new Error();
