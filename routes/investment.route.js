@@ -20,6 +20,8 @@ router.get("/:id", investmentController.findOneById);
 
 router.put("/:id", investmentController.updateInvestment);
 
+router.put("/all/loan/:id", investmentController.updateAllInvestment);
+
 router.delete("/:id", investmentController.deleteInvestment);
 
 module.exports = { investmentRoute: router };

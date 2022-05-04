@@ -97,7 +97,6 @@ const pushNotifToAdmin = async (req, res, next) => {
   try {
     // const data = req.body
     const { redirectUrl, message, notiType } = req.body;
-    var noti = [];
     const admins = await userService.getListAdmin();
     admins.map(async (admin) => {
       const { pushToken } = await userService.getPushTokenByUserId(admin.id);
@@ -119,7 +118,7 @@ const pushNotifToAdmin = async (req, res, next) => {
         });
       }
 
-      var notification = await notificationService.create({
+     await notificationService.create({
         userId: admin.id,
         redirectUrl: redirectUrl,
         description: message,
@@ -127,16 +126,15 @@ const pushNotifToAdmin = async (req, res, next) => {
         type: notiType,
         status: NOTIFICATION_STATUS.ACTIVE,
       });
-      noti.push(notification)
     });
 
-    // if (noti.length === 0) throw new Error();
+    // if (noti.length === 0  ) throw new Error();
     return res.json({
-      noti,
+      msg: "Success"
     });
   } catch (error) {
     console.log(error);
-    return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.default());
+    return res.status(BAD_REQUEST).json(restError.BAD_REQUEST.extra({...error}));
   }
 };
 
