@@ -29,45 +29,83 @@ const createSchedule = async (loanId) => {
     var scheduleData = [];
     try {     
         const loan = await loanService.findById(loanId)
-        // const moneyPaidInGraduation = loan.expectedGraduationTime * parseFloat(loan.fixedMoney) 
-        // if (parseFloat(loan.total) - moneyPaidInGraduation > 100000)
-        
-        for (let i = 0; i < loan.expectedGraduationTime ; i++) {
-            const startAt = moment(new Date()).add(i,'month');
-            const endAt = moment(new Date()).add(i + 1,'month');
-            const paidAtStudying = {
-                money : loan.fixedMoney,
-                startAt : startAt,
-                endAt : endAt,
-                type : LOAN_SCHEDULE_TYPE.STP,
-                status : LOAN_SCHEDULE_STATUS.ONGOING,
-                loanId,
-                penaltyMoney : 0
+        const moneyPaidInGraduation = loan.expectedGraduationTime * parseFloat(loan.fixedMoney) 
+        if (parseFloat(loan.totalMoney) - moneyPaidInGraduation > parseFloat(loan.totalMoney) / 2) {
+            for (let i = 0; i < loan.expectedGraduationTime ; i++) {
+                const startAt = moment(new Date()).add(i,'month');
+                const endAt = moment(new Date()).add(i + 1,'month');
+                const paidAtStudying = {
+                    money : loan.fixedMoney,
+                    startAt : startAt,
+                    endAt : endAt,
+                    type : LOAN_SCHEDULE_TYPE.STP,
+                    status : LOAN_SCHEDULE_STATUS.ONGOING,
+                    loanId,
+                    penaltyMoney : 0
+                }
+                scheduleData.push(paidAtStudying)
             }
-            scheduleData.push(paidAtStudying)
-        }
-
-        const leftMoney = (parseFloat(loan.totalMoney)  + (parseFloat(loan.totalMoney) * loan.duration * loan.interest)) - loan.expectedGraduationTime * parseInt(loan.fixedMoney);
-
-        const moneyPaidGraduted = Math.round(leftMoney / (loan.duration - loan.expectedGraduationTime))
-
-        const expectedGraduationDay = moment().add(loan.expectedGraduationTime, 'month')
-       
-        for (let i = 0; i < loan.duration - loan.expectedGraduationTime ; i++) {
-            const startAt = moment(new Date(expectedGraduationDay)).add(i,'month');
-            const endAt = moment(new Date(expectedGraduationDay)).add(i + 1,'month');
-            const paidAtStudying = {
-                money : moneyPaidGraduted,
-                startAt : startAt,
-                endAt : endAt,
-                type : LOAN_SCHEDULE_TYPE.GP,
-                status : LOAN_SCHEDULE_STATUS.ONGOING,
-                loanId,
-                penaltyMoney : 0
+    
+            const leftMoney = (parseFloat(loan.totalMoney) + (parseFloat(loan.totalMoney) * loan.duration * loan.interest)) - loan.expectedGraduationTime * parseInt(loan.fixedMoney);
+    
+            const moneyPaidGraduted = Math.round(leftMoney / (loan.duration - loan.expectedGraduationTime))
+    
+            const expectedGraduationDay = moment().add(loan.expectedGraduationTime, 'month')
+           
+            for (let i = 0; i < loan.duration - loan.expectedGraduationTime ; i++) {
+                const startAt = moment(new Date(expectedGraduationDay)).add(i,'month');
+                const endAt = moment(new Date(expectedGraduationDay)).add(i + 1,'month');
+                const paidAtStudying = {
+                    money : moneyPaidGraduted,
+                    startAt : startAt,
+                    endAt : endAt,
+                    type : LOAN_SCHEDULE_TYPE.GP,
+                    status : LOAN_SCHEDULE_STATUS.ONGOING,
+                    loanId,
+                    penaltyMoney : 0
+                }
+    
+                scheduleData.push(paidAtStudying)
             }
+        } else {
+            const paidMoney = parseFloat(loan.totalMoney) / loan.duration
+            for (let i = 0; i < loan.expectedGraduationTime; i++) {
+                const startAt = moment(new Date()).add(i,'month');
+                const endAt = moment(new Date()).add(i + 1,'month');
+                
+                const paidAtStudying = {
+                    money : paidMoney,
+                    startAt : startAt,
+                    endAt : endAt,
+                    type : LOAN_SCHEDULE_TYPE.STP,
+                    status : LOAN_SCHEDULE_STATUS.ONGOING,
+                    loanId,
+                    penaltyMoney : 0
+                }
+    
+                scheduleData.push(paidAtStudying)
+            } 
 
-            scheduleData.push(paidAtStudying)
+            const expectedGraduationDay = moment().add(loan.expectedGraduationTime, 'month')
+
+            for (let i = 0; i < loan.duration - loan.expectedGraduationTime; i++) {
+                const startAt = moment(new Date(expectedGraduationDay)).add(i,'month');
+                const endAt = moment(new Date(expectedGraduationDay)).add(i + 1,'month');
+                
+                const paidAtStudying = {
+                    money : paidMoney,
+                    startAt : startAt,
+                    endAt : endAt,
+                    type : LOAN_SCHEDULE_TYPE.GP,
+                    status : LOAN_SCHEDULE_STATUS.ONGOING,
+                    loanId,
+                    penaltyMoney : 0
+                }
+    
+                scheduleData.push(paidAtStudying)
+            }
         }
+     
         await loanScheduleService.create(scheduleData);
     } catch (error) {
         console.log(error);

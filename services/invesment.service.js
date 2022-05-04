@@ -255,11 +255,9 @@ InvestmentService.updateOne = async (id, investmentInfo) => {
     where: { 
       id,
       status : INVESTMENT_STATUS.PENDING
-    },
-    returning: true,
-    plain: true,
+    }
   });
-  return investment[1];
+  return investment;
 };
 
 InvestmentService.updateByLoanId = async (loanId, investmentInfo) => {
