@@ -52,6 +52,16 @@ const findByUserId = async (id) => {
   });
 };
 
+const findParentIdOfStudent = async (id) => {
+  return await db.Student.findOne({
+    attributes:['id'],
+    where:{
+      userId:id,
+      parentId:null
+    }
+  })
+};
+
 const create = async ({ ...data }) => {
   return await db.Student.create(data);
 };
@@ -124,5 +134,6 @@ exports.studentService = {
   findByUserId,
   createNewStudent,
   updateNewStudentById,
+  findParentIdOfStudent
   // getStudentProfile
 };

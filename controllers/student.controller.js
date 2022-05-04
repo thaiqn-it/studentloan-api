@@ -39,9 +39,11 @@ const findByUserId = async (req, res, next) => {
   const { id } = req.params;
   try {
     const student = await studentService.findByUserId(id);
+    const parent = await studentService.findParentIdOfStudent(id)
     if (student === null) throw new Error();
     return res.json({
       student,
+      parent
     });
   } catch (error) {
     return res.status(NOT_FOUND).json(restError.NOT_FOUND.default());

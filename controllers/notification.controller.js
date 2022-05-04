@@ -95,6 +95,7 @@ const pushNotiToUser = async (req, res, next) => {
 
 const pushNotifToAdmin = async (req, res, next) => {
   try {
+      
     // const data = req.body
     const { redirectUrl, message, notiType } = req.body;
     const admins = await userService.getListAdmin();
