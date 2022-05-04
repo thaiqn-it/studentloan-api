@@ -24,6 +24,7 @@ const create = async (req, res, next) => {
   }
 };
 
+
 const getAllByUserId = async (req, res, next) => {
   const user = req.user;
   try {
